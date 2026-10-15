@@ -1,0 +1,383 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26221,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629",
+            "tipoTarifa": {
+                "nombre": "Tarifa establecida",
+                "tipo": {
+                    "codigo": "026001",
+                    "nombre": "Establecida"
+                },
+                "caracteresNombreTarifa": 80,
+                "idTipoTarifa": 326
+            },
+            "modalidad": {
+                "nombre": "Otras tarifas de telefonía fija",
+                "codigo": "031",
+                "registraTarifaInstalacion": false,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": true,
+                "idModalidad": 187,
+                "codigoModalidad": null
+            },
+            "condicion": {
+                "nombre": "Monoproducto",
+                "codigo": "017002"
+            },
+            "nombre": "asfasf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-13T00:00:00",
+            "finVigencia": null,
+            "inicioComercial": "2026-10-13T00:00:00",
+            "finComercial": null,
+            "valorPlan": null,
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "flagModificacion": 0,
+            "nroModificacion": 0,
+            "alcances": [
+                {
+                    "nombre": "Residencial",
+                    "codigo": "001001"
+                }
+            ],
+            "tarifaInstalacion": null,
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "estadoLD": null,
+            "fechaRegistro": null,
+            "esActiva": false,
+            "tieneAccionPendiente": null,
+            "registrarTarifaInstalacion": null,
+            "duracionContrato": null,
+            "identificadorContrato": null,
+            "esPrueba": null
+        },
+        "secciones": [
+            {
+                "codigoSeccion": "003002",
+                "seccion": "Características específicas",
+                "tieneCabecera": true,
+                "idModalidad": 187,
+                "nombreModalidad": "Otras tarifas de telefonía fija",
+                "apartados": [
+                    {
+                        "idApartado": 861,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "010",
+                        "dependencia": null,
+                        "nombre": "Valor del servicio",
+                        "nombreLargo": "Valor del servicio",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Valor del servicio",
+                        "descripcion": "Valor del servicio",
+                        "unidadMedida": "Soles",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    },
+                    {
+                        "idApartado": 862,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Categorica Excluyente",
+                            "codigo": "009007"
+                        },
+                        "listado": {
+                            "nombre": "Periocidad",
+                            "codigo": "023000"
+                        },
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "Diario",
+                                "codigo": "023001"
+                            },
+                            {
+                                "nombre": "Mensual",
+                                "codigo": "023002"
+                            },
+                            {
+                                "nombre": "Trimestral",
+                                "codigo": "023003"
+                            },
+                            {
+                                "nombre": "Semestral",
+                                "codigo": "023004"
+                            },
+                            {
+                                "nombre": "Anual",
+                                "codigo": "023005"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "056",
+                        "dependencia": null,
+                        "nombre": "Periodicidad",
+                        "nombreLargo": "Periodicidad",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Se refiere a la unidad de tiempo a la que corresponde el valor del servicio.",
+                        "descripcion": "Seleccione una opción de Periodicidad",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 875,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (enteros)",
+                            "codigo": "009003"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "038",
+                        "dependencia": null,
+                        "nombre": "Duración",
+                        "nombreLargo": "Duración 123",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Días",
+                        "descripcion": "Prueba para ver donde aparece el texto",
+                        "unidadMedida": "Días",
+                        "validarPatron": {
+                            "valor": "^\\d+$",
+                            "mensaje": "Ingrese un valor entero positivo.",
+                            "codigo": "036001",
+                            "nombre": "Númerico (Entero)"
+                        }
+                    },
+                    {
+                        "idApartado": 876,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "MULTIPLE",
+                        "tipoDato": {
+                            "nombre": "Categórica Multiple",
+                            "codigo": "009006"
+                        },
+                        "listado": {
+                            "nombre": "Tipo de contrato",
+                            "codigo": "082000"
+                        },
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "Postpago",
+                                "codigo": "082001"
+                            },
+                            {
+                                "nombre": "Prepago",
+                                "codigo": "082002"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "093",
+                        "dependencia": null,
+                        "nombre": "Tipo de línea",
+                        "nombreLargo": "Tipo de línea",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Seleccione los tipos de lineas que puede contratar el paquete",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 877,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "094",
+                        "dependencia": null,
+                        "nombre": "Tarifa por minuto",
+                        "nombreLargo": "Tarifa por minuto",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Tarifa por minuto para el tipo de llamada",
+                        "descripcion": null,
+                        "unidadMedida": "Soles",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    }
+                ],
+                "flagVelocidades": true
+            },
+            {
+                "codigoSeccion": "003003",
+                "seccion": "Características adicionales",
+                "tieneCabecera": true,
+                "idModalidad": 187,
+                "nombreModalidad": "Otras tarifas de telefonía fija",
+                "apartados": [
+                    {
+                        "idApartado": 860,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "003",
+                        "dependencia": null,
+                        "nombre": "Condiciones generales ",
+                        "nombreLargo": "Condiciones generales ",
+                        "apartadoCondicion": null,
+                        "caracteres": 2000,
+                        "comentario": "condiciones generales de la tarifa",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": true
+            },
+            {
+                "codigoSeccion": "003004",
+                "seccion": "Restricciones",
+                "tieneCabecera": true,
+                "idModalidad": 187,
+                "nombreModalidad": "Otras tarifas de telefonía fija",
+                "apartados": [
+                    {
+                        "idApartado": 868,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "008",
+                        "dependencia": null,
+                        "nombre": "Restricciones técnicas",
+                        "nombreLargo": "Restricciones técnicas",
+                        "apartadoCondicion": null,
+                        "caracteres": 500,
+                        "comentario": "Restricciones técnicas para el acceso al servicio.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

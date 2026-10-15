@@ -1,0 +1,20 @@
+Promoción de Paquetes adicionales y otros servicios de internet fijo (PIF) - tarifa monoproducto
+
+Tarifa usada para la grabación: TE-PIF-PROMO-00_   (debe tener registro definitivo)
+
+Archivos en esta carpeta:
+- grabacion_paso2.py  grabación del paso 2 (atributos promocionales de este servicio):
+                      marcar cada atributo, Tipo de variación, Variación, Duración y Guardar.
+                      Si es más cómodo, grabar pasos 1, 2 y 3 juntos.
+- paso2.json          respuesta del GET del paso 2 de la promoción (F12 > Red), la que
+                      trae los atributos que se pueden promocionar y sus listas.
+- *.png               capturas: todos los atributos del paso 2, listas desplegadas
+                      (Tipo de variación) y cualquier mensaje de error.
+
+Completar:
+- Atributos que se pueden promocionar (los que tienen casilla):
+- Unidad de cada uno (Mbps, GB, minutos, soles...):
+- ¿Algún atributo tiene opciones distintas a Ilimitado / Porcentual / Cantidad?:
+- ¿Con "Ilimitado" la Variación queda vacía o bloqueada?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

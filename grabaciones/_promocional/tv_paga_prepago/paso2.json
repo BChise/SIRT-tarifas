@@ -1,0 +1,233 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26340,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asfasf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-21T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-21T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": null,
+            "tarifaInstalacion": null,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19931,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26308,
+                    "fechaRegistro": "2026-10-14T17:27:13",
+                    "codigo": "TEMTV2026000315",
+                    "nombre": "TE-TVPR-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Televisión de paga Prepago",
+                        "codigo": "007",
+                        "registraTarifaInstalacion": true,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 7,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 50,
+                    "tarifaInstalacion": 10
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMTV2026000315",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Televisión de paga Prepago",
+                "codigo": "007",
+                "registraTarifaInstalacion": true,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 7,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+
+{
+    "data": [
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "tieneDatos": false,
+            "apartados": [
+                {
+                    "idApartado": 128,
+                    "tipo": "PROMOCIONAL_ADJUNTO",
+                    "nombre": "Canales analógicos",
+                    "codigo": "039",
+                    "comentario": "Cantidad de canales analogicos",
+                    "tipoDato": {
+                        "nombre": "Carga y descarga",
+                        "codigo": "009013"
+                    },
+                    "variacion": [],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": "https://sirt-api-qa.be1business.com/api/recurso/descargar/128",
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 129,
+                    "tipo": "PROMOCIONAL_ADJUNTO",
+                    "nombre": "Canales digitales definición estándar",
+                    "codigo": "040",
+                    "comentario": "Cantidad de canales digitales en definición estandar (SD)",
+                    "tipoDato": {
+                        "nombre": "Carga y descarga",
+                        "codigo": "009013"
+                    },
+                    "variacion": [],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": "https://sirt-api-qa.be1business.com/api/recurso/descargar/129",
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 130,
+                    "tipo": "PROMOCIONAL_ADJUNTO",
+                    "nombre": "Canales digitales alta definición",
+                    "codigo": "041",
+                    "comentario": "Cantidad de canales digitales en alta definición (HD)",
+                    "tipoDato": {
+                        "nombre": "Carga y descarga",
+                        "codigo": "009013"
+                    },
+                    "variacion": [],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": "https://sirt-api-qa.be1business.com/api/recurso/descargar/130",
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 131,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Decodificadores o similares",
+                    "codigo": "042",
+                    "comentario": "Cantidad de decodificadores que recibe el usuario u otro equipo similar.",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                }
+            ]
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

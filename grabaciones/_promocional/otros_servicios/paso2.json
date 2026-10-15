@@ -1,0 +1,118 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26347,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asfasf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-20T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-20T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": null,
+            "tarifaInstalacion": null,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19938,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26328,
+                    "fechaRegistro": "2026-10-15T09:17:56",
+                    "codigo": "TEMOS2026000327",
+                    "nombre": "TE-OS-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Otros servicios",
+                        "codigo": "011",
+                        "registraTarifaInstalacion": true,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 11,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 50,
+                    "tarifaInstalacion": 10
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMOS2026000327",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Otros servicios",
+                "codigo": "011",
+                "registraTarifaInstalacion": true,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 11,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+
+{"data":[],"isValid":true,"messages":[],"validaciones":[]}

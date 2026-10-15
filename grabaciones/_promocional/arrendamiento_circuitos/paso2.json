@@ -1,0 +1,197 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26346,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asfasf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-21T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-21T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": null,
+            "tarifaInstalacion": null,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19937,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26326,
+                    "fechaRegistro": "2026-10-15T09:17:28",
+                    "codigo": "TEMAC2026000325",
+                    "nombre": "TE-AC-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Arrendamiento de circuitos",
+                        "codigo": "010",
+                        "registraTarifaInstalacion": false,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 10,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 50,
+                    "tarifaInstalacion": null
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMAC2026000325",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Arrendamiento de circuitos",
+                "codigo": "010",
+                "registraTarifaInstalacion": false,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 10,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+{
+    "data": [
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "tieneDatos": false,
+            "apartados": [
+                {
+                    "idApartado": 464,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Velocidad de transmisión",
+                    "codigo": "063",
+                    "comentario": "Velocidad de transmisión",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "Mbps",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 684,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Vel. transmisión garant.",
+                    "codigo": "073",
+                    "comentario": "Velocidad de transmisión garantizada",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "Mbps",
+                    "registraCambio": false,
+                    "esActivo": true
+                }
+            ]
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

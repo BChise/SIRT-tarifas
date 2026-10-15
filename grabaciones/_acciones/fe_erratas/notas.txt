@@ -1,0 +1,19 @@
+Acción: Fe de erratas
+
+Tarifa usada en la grabación:            (nombre y código SIRT; debe estar En comercialización)
+
+Archivos:
+- grabacion.py   grabación completa: buscar la tarifa → menú de acciones → Fe de erratas →
+                 llenar el formulario → confirmar → mensaje final.
+- accion.json    respuesta del GET que carga el formulario de la acción (F12 > Red), y si
+                 se puede, la del POST al confirmar (pegar uno tras otro en el mismo archivo).
+- *.png          capturas del formulario, listas desplegadas y mensajes (de éxito y de error).
+
+Completar:
+- ¿Qué se puede corregir? (¿todos los campos del paso 1 y 2 o solo algunos?):
+- ¿El formulario es el mismo que el de registro (pasos 1, 2 y 3)?:
+- ¿Cambia según el servicio? (anotar qué servicio se usó en la grabación):
+- ¿Genera una versión nueva de la tarifa?:
+- ¿Lleva registro definitivo / disponibilidad después?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

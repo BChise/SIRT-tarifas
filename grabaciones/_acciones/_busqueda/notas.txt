@@ -1,0 +1,16 @@
+Búsqueda de la tarifa en "Tarifas registradas"
+
+Archivos:
+- grabacion.py   buscar una tarifa por nombre (o código) y abrir su menú ⋮ / Acciones.
+- filtro.json    respuesta del filtro de Tarifas registradas (F12 > Red, al pulsar Buscar).
+                 Sirve para leer el estado de comercialización y de vigencia sin mirar
+                 la pantalla.
+- *.png          el menú de acciones desplegado (qué opciones aparecen y cuáles salen
+                 deshabilitadas según el estado).
+
+Completar:
+- ¿Se busca por nombre, por código SIRT o por ambos?:
+- ¿Las acciones salen en el menú ⋮ de la fila o en un botón de arriba?:
+- ¿Qué acciones aparecen deshabilitadas si la tarifa está "Por iniciar comercialización"?:
+- ¿Se pueden aplicar acciones a varias tarifas a la vez?:
+- Otras observaciones:

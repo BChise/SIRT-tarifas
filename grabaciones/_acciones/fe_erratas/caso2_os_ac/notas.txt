@@ -1,0 +1,19 @@
+Fe de erratas - caso2_os_ac
+
+Servicios: Otros servicios, Arrendamiento de circuitos
+Campos vistos (capturas del 15/10): Paso 1: Otros datos generales. Paso 2: Condiciones generales, Otras condiciones tarifa, Restricciones técnicas, Otras restricciones.
+Tarifa sugerida: TE-OS-MUESTRA-001 o TE-AC-PROMO-001 (desde el 16/10)   (debe estar En comercialización y vigente)
+
+Archivos:
+- grabacion.py   grabación completa: buscar → ⋮ → Fe de Erratas → paso 1 → Continuar con el
+                 paso 2 → paso 2 → Continuar con el paso 3 → confirmar → mensaje final.
+                 Basta cambiar el texto de 1 o 2 campos.
+- *.png          el paso 3 (resumen) y las ventanas de confirmación y de resultado.
+
+Completar:
+- Tarifa usada:
+- ¿Algún campo es obligatorio o tiene un mínimo de caracteres?:
+- ¿Hay campos que no sean de texto (listas, fechas, números)?:
+- ¿Qué botones y mensajes aparecen en el paso 3 hasta terminar?:
+- ¿Genera una versión nueva de la tarifa (versión 2)?:
+- Otras observaciones:

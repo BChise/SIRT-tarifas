@@ -1,0 +1,23 @@
+Registro definitivo (Tarifas temporales)
+
+Archivos en esta carpeta:
+- grabacion.py   flujo completo de UNA tarifa (desde Tarifas temporales: buscar,
+                 marcar, disponibilidad comercial, Guardar, Aceptar, Registro definitivo)
+- filtro.json    respuesta del GET/POST que usa el filtro de Tarifas temporales (si lo encuentras)
+- *.png          capturas: menú ⋮ de una fila, árbol de ubicaciones desplegado,
+                 ventanas al pulsar "Registro definitivo", dónde queda la tarifa después
+
+Disponibilidad comercial según paso2.json (flagDisponibilidadComercial):
+  SÍ:  telefonia_fija_prepago, otras_tarifas_telefonia_fija, paquetes_telefonia_fija,
+       tv_paga_postpago, tv_paga_prepago, paquetes_tv_paga, paquetes_internet_fijo
+       (sin JSON, probablemente SÍ: telefonia_fija, internet_fijo)
+  NO:  movil_postpago, movil_control, movil_paquete, movil_otros,
+       arrendamiento_circuitos, otros_servicios
+  -> Confirmar con las muestras del lote MUESTRA.
+
+Decisiones (completar):
+- Ubicaciones a usar ("A nivel nacional" / departamentos / provincias): usaremos Amazonas por el momento para las pruebas, ya luego se incluirá la base de los lugares a utilizar para que se elija varios
+- ¿Las mismas para todos los servicios?:
+- ¿De a una tarifa o varias marcadas a la vez?: Se puede realizar de varias a la vez, seleccionar varias y asignar la disponibilidad comercial
+- ¿Qué tarifas se registran (todas las de prueba / solo el lote MUESTRA)?: por el momento sería bueno que haya un bash  para el registro de estas nuevas tarifas creadas
+- Otras observaciones:

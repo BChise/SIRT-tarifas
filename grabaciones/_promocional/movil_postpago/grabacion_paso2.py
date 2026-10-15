@@ -1,0 +1,63 @@
+import re
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page.locator("mat-stepper").click()
+    page.get_by_role("checkbox", name="Datos para tethering").check()
+    page.locator("mat-stepper").click()
+    page.get_by_role("listbox", name="Tipo de Variación").click()
+    page.locator("mat-stepper").click()
+    page.locator("#mat-input-0").fill("20")
+    page.locator("#mat-input-1").click()
+    page.locator("#mat-input-1").fill("180")
+    page.get_by_role("checkbox", name="Traslada datos").check()
+    page.locator("#mat-select-1").click()
+    page.get_by_role("listbox", name="Tipo de Variación").click()
+    page.locator("#mat-input-2").click()
+    page.locator("#mat-input-2").fill("12")
+    page.locator("mat-stepper").click()
+    page.locator("#mat-input-3").click()
+    page.locator("#mat-input-3").fill("60")
+    page.get_by_role("checkbox", name="Datos para Apps 1").check()
+    page.locator("mat-stepper").click()
+    page.get_by_role("listbox", name="Tipo de Variación").click()
+    page.locator("#mat-input-6").click()
+    page.locator("#mat-input-6").fill("50")
+    page.locator("#mat-input-7").click()
+    page.locator("#mat-input-7").fill("60")
+    page.get_by_role("checkbox", name="Apps sin consumo de datos").check()
+    page.get_by_role("combobox", name="Plataforma Seleccione").click()
+    page.get_by_role("listbox", name="Plataforma").click()
+    page.get_by_role("listbox", name="Plataforma").click()
+    page.locator(".cdk-overlay-backdrop").click()
+    page.locator("#mat-input-14").click()
+    page.locator("#mat-input-14").fill("015")
+    page.locator("#mat-input-14").press("ArrowLeft")
+    page.locator("#mat-input-14").press("ArrowLeft")
+    page.locator("#mat-input-14").fill("15")
+    page.get_by_role("checkbox", name="Tarifa por MB adicional").check()
+    page.locator("#mat-select-12").click()
+    page.get_by_role("listbox", name="Tipo de Variación").click()
+    page.locator("#mat-input-23").click()
+    page.locator("#mat-input-23").fill("20")
+    page.locator("#mat-select-12").click()
+    page.get_by_role("listbox", name="Tipo de Variación").click()
+    page.locator("#mat-input-24").click()
+    page.locator("#mat-input-24").fill("75")
+    page.get_by_role("button", name="Guardar").click()
+    page.get_by_role("button", name="Continuar con el paso").click()
+    page.get_by_role("button", name="Confirmar Tarifa").click()
+    page.get_by_role("button", name="Confirmar tarifa").click()
+    page.get_by_role("button", name="Aceptar").click()
+
+    # ---------------------
+    context.close()
+    browser.close()
+
+
+with sync_playwright() as playwright:
+    run(playwright)
+

@@ -1,0 +1,65 @@
+{
+    "data": {
+        "items": [
+            {
+                "idTarifa": 26367,
+                "fechaRegistro": "2026-10-15T09:24:47",
+                "codigoSIRT": "TEMMV2026000323",
+                "version": 1,
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-SMO-PROMO-001_RENOMBRE",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "comercializacion": {
+                    "nombre": "Por iniciar comercialización",
+                    "codigo": "030002"
+                },
+                "vigencia": {
+                    "nombre": "Por iniciar vigencia",
+                    "codigo": "029002"
+                },
+                "modalidad": {
+                    "idModalidad": 182,
+                    "codigo": "013",
+                    "nombre": "Servicio móvil otros",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                },
+                "tarifaInstalacion": 0,
+                "esUltimaVersion": true
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "pageSize": 20
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

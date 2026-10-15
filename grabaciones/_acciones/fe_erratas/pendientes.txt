@@ -1,0 +1,11 @@
+Fe de erratas - servicios aún sin revisar (sin tarifas en comercialización el 15/10)
+
+- Otras tarifas de telefonía fija
+- Televisión de paga postpago
+- Televisión de paga prepago
+- Paquetes adicionales y otras tarifas de televisión de paga
+- Servicio público móvil paquete
+- Paquetes adicionales y otros servicios de internet fijo
+
+Desde el 16/10 sus tarifas PROMO-001 estarán en comercialización. Anotar a qué caso se
+parece cada uno (caso1_fijos, caso2_os_ac, caso3_moviles) o si es distinto.

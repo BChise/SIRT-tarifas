@@ -1,0 +1,396 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26332,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asfasfsaf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-12T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-12T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": {
+                "flagVariacion": true,
+                "tipoVariacion": {
+                    "nombre": "Porcentual",
+                    "codigo": "021002"
+                },
+                "variacion": 10,
+                "duracion": 18
+            },
+            "tarifaInstalacion": {
+                "flagVariacion": true,
+                "tipoVariacion": {
+                    "nombre": "Porcentual",
+                    "codigo": "021002"
+                },
+                "variacion": 10,
+                "duracion": null
+            },
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19923,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26284,
+                    "fechaRegistro": "2026-10-14T17:22:35",
+                    "codigo": "TEMTF2026000303",
+                    "nombre": "TE-TFP-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Telefonía fija prepago",
+                        "codigo": "002",
+                        "registraTarifaInstalacion": true,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 2,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 30,
+                    "tarifaInstalacion": 10
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMTF2026000303",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Telefonía fija prepago",
+                "codigo": "002",
+                "registraTarifaInstalacion": true,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 2,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+
+
+{
+    "data": [
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "tieneDatos": false,
+            "apartados": [
+                {
+                    "idApartado": 758,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos todo destino nacional",
+                    "codigo": "085",
+                    "comentario": "Minutos de voz para todo destino nacional",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "No aplica",
+                        "codigo": "049003"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 141,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos red fija on net",
+                    "codigo": "045",
+                    "comentario": "Minutos de voz para fijo on net.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 350,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos red fija off net",
+                    "codigo": "046",
+                    "comentario": "Minutos de voz para fijo off net.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 139,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos móvil on net",
+                    "codigo": "043",
+                    "comentario": "Minutos de voz para móvil on net.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        },
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 140,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos móvil off net",
+                    "codigo": "044",
+                    "comentario": "Minutos de voz para móvil off net.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 761,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa por minuto a fijo LDI",
+                    "codigo": "088",
+                    "comentario": "Tarifa por minuto hacia fijo LDI por bloque de paises",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 762,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa por minuto a móvil LDI",
+                    "codigo": "089",
+                    "comentario": "Tarifa por minuto hacia móvil LDI por bloque de paises",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                }
+            ]
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

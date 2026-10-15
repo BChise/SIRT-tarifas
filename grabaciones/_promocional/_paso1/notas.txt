@@ -1,0 +1,24 @@
+Promoción - paso 1 (común a todos los servicios)
+
+Archivos en esta carpeta:
+- grabacion_paso1.py  grabación del paso 1: Tipo de Tarifa "Tarifa promocional", Condición,
+                      Agregar Tarifa (buscar por nombre, marcar, Agregar), datos de la tarifa,
+                      Datos promocionales (Valor del plan y Tarifa instalación) y
+                      "Guardar y continuar con el paso 2".
+- *.png               capturas: lista de Condición desplegada, Tipo de variación desplegado,
+                      campos bloqueados (p. ej. Inicio de vigencia) y mensajes de error.
+
+Completar:
+- Opciones de Condición (¿Monoproducto / Empaquetada? ¿se llena sola al agregar la tarifa?): Sí, esto dependerá de cuantas tarifas se agreguen
+- ¿Se pueden agregar varias tarifas a una sola promoción? ¿de servicios distintos?: Sí es posible agregar varias tarifas
+- Si se agregan varias, en el paso 2: ¿una pestaña por tarifa o por servicio?: Se agrega una pestaña por servicio
+- Fechas: ¿qué campos se llenan y cuáles vienen bloqueados?: Se llenan a los que se hace check
+- Valor del plan: qué significa Variación con cada tipo (Porcentual = %, Cantidad = soles?) la cantidad depende del tipo de atributo, si es valor del servicio sí son soles, pero si es velocidad se hace referencia a las Mbps, varia, en el caso de porcentual en el caso de valor de servicio corresponde al porcentaje del descauento ya que al ser proomocines debe ser en beneficio al usuario, cuando se trata con velocidad el procentaje corresponde al incremento de velocidad y así
+  y qué indica la flecha de Variación (¿rebaja?): sí la flecha me parece que señala si aumenta o baja
+- Duración: ¿alguna regla además de 180 días? ¿relación con las fechas de comercialización?: no me parece que no hay una relación con las fechas de comercialización
+- Tarifa instalación: ¿lleva duración?: no lleva duración
+- ¿Es obligatorio marcar Valor del plan o Tarifa instalación, o se puede promocionar solo
+  atributos del paso 2?: Sí, es posible que solo se promcoionen los atributos del paso 2
+- Después de confirmar: ¿pasa a Tarifas temporales? ¿lleva registro definitivo y
+  disponibilidad comercial?: Esto está por verificarse, aún no implementarse
+- Otras observaciones:

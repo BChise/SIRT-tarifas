@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Entorno virtual (si alguna vez se crea dentro del proyecto)
+register_web_env/
+venv/
+.venv/
+
+# Resultados generados por los scripts (CSV, capturas, diagnósticos, logs)
+resultados/
+*.log
+trace.zip
+
+# Capturas que muestran el token de acceso (Bearer) de SIRT: NO subir
+grabaciones/_registro_definitivo/Pasted image*.png
+
+# Credenciales
+.env
+*.secret

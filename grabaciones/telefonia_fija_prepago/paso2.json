@@ -1,0 +1,617 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26197,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629",
+            "tipoTarifa": {
+                "nombre": "Tarifa establecida",
+                "tipo": {
+                    "codigo": "026001",
+                    "nombre": "Establecida"
+                },
+                "caracteresNombreTarifa": 80,
+                "idTipoTarifa": 326
+            },
+            "modalidad": {
+                "nombre": "Telefonía fija prepago",
+                "codigo": "002",
+                "registraTarifaInstalacion": true,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": true,
+                "idModalidad": 2,
+                "codigoModalidad": null
+            },
+            "condicion": {
+                "nombre": "Monoproducto",
+                "codigo": "017002"
+            },
+            "nombre": "ASASFASF",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-13T00:00:00",
+            "finVigencia": null,
+            "inicioComercial": "2026-10-13T00:00:00",
+            "finComercial": null,
+            "valorPlan": null,
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "flagModificacion": 0,
+            "nroModificacion": 0,
+            "alcances": [
+                {
+                    "nombre": "Residencial",
+                    "codigo": "001001"
+                },
+                {
+                    "nombre": "Comercial",
+                    "codigo": "001002"
+                }
+            ],
+            "tarifaInstalacion": 12,
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "estadoLD": null,
+            "fechaRegistro": null,
+            "esActiva": false,
+            "tieneAccionPendiente": null,
+            "registrarTarifaInstalacion": null,
+            "duracionContrato": null,
+            "identificadorContrato": null,
+            "esPrueba": null
+        },
+        "secciones": [
+            {
+                "codigoSeccion": "003002",
+                "seccion": "Características específicas",
+                "tieneCabecera": true,
+                "idModalidad": 2,
+                "nombreModalidad": "Telefonía fija prepago",
+                "apartados": [
+                    {
+                        "idApartado": 137,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "010",
+                        "dependencia": null,
+                        "nombre": "Valor del servicio",
+                        "nombreLargo": "Valor del servicio",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Valor del servicio",
+                        "descripcion": "Valor del servicio",
+                        "unidadMedida": "Soles",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    },
+                    {
+                        "idApartado": 764,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (enteros)",
+                            "codigo": "009003"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "038",
+                        "dependencia": null,
+                        "nombre": "Duración",
+                        "nombreLargo": "Duración 123",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Días",
+                        "descripcion": "Prueba para ver donde aparece el texto",
+                        "unidadMedida": "Días",
+                        "validarPatron": {
+                            "valor": "^\\d+$",
+                            "mensaje": "Ingrese un valor entero positivo.",
+                            "codigo": "036001",
+                            "nombre": "Númerico (Entero)"
+                        }
+                    },
+                    {
+                        "idApartado": 763,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "MULTIPLE",
+                        "tipoDato": {
+                            "nombre": "Categórica Multiple",
+                            "codigo": "009006"
+                        },
+                        "listado": {
+                            "nombre": "Tipo de acceso al plan",
+                            "codigo": "010000"
+                        },
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "Alta nueva",
+                                "codigo": "010001"
+                            },
+                            {
+                                "nombre": "Migración",
+                                "codigo": "010002"
+                            },
+                            {
+                                "nombre": "Portabilidad",
+                                "codigo": "010003"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "011",
+                        "dependencia": null,
+                        "nombre": "Tipo de acceso",
+                        "nombreLargo": "Tipo de acceso al plan",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Seleccionar los tipos de usuarios que pueden acceder al plan",
+                        "descripcion": "Seleccionar los tipos de usuarios que pueden acceder al plan",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 508,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Listado multiple tecnologías",
+                            "codigo": "009018"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "HFC",
+                                "codigo": "012008"
+                            },
+                            {
+                                "nombre": "Tecnología 1",
+                                "codigo": "012015"
+                            },
+                            {
+                                "nombre": "Tecnología 2",
+                                "codigo": "012016"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "067",
+                        "dependencia": null,
+                        "nombre": "Tecnologia",
+                        "nombreLargo": "Tecnologia",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Seleccione la tecnología del servicio",
+                        "descripcion": "Seleccione la tecnología del servicio",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 758,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "CARACTERISTICA",
+                        "tipoDato": {
+                            "nombre": "Condicional triple",
+                            "codigo": "009014"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "085",
+                        "dependencia": null,
+                        "nombre": "Minutos todo destino nacional",
+                        "nombreLargo": "Minutos todo destino nacional",
+                        "apartadoCondicion": {
+                            "etiquetaFlag": "Es ilimitado",
+                            "unidadValor1": "Minutos",
+                            "unidadValor2": "Soles",
+                            "patronValor1": "^\\d+$",
+                            "patronValor2": "^\\d+(\\.\\d{1,4})?$",
+                            "etiquetaValor1": "Cantidad de minutos",
+                            "etiquetaValor2": "Tarifa por minuto adicional",
+                            "comentarioValor1": "Minutos incluidos para este tipo de llamada",
+                            "comentarioValor2": "Tarifa por minuto adicional para este tipo de llamada"
+                        },
+                        "caracteres": null,
+                        "comentario": "Minutos de voz para todo destino nacional",
+                        "descripcion": "Minutos de voz para todo destino nacional",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 141,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "CARACTERISTICA",
+                        "tipoDato": {
+                            "nombre": "Condicional triple",
+                            "codigo": "009014"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "045",
+                        "dependencia": null,
+                        "nombre": "Minutos red fija on net",
+                        "nombreLargo": "Minutos de voz para fijo on net.",
+                        "apartadoCondicion": {
+                            "etiquetaFlag": "Es ilimitado",
+                            "unidadValor1": "Minutos",
+                            "unidadValor2": "Soles",
+                            "patronValor1": "^\\d+$",
+                            "patronValor2": "^\\d+(\\.\\d{1,4})?$",
+                            "etiquetaValor1": "Cantidad de minutos",
+                            "etiquetaValor2": "Tarifa por minuto adicional",
+                            "comentarioValor1": "Minutos incluidos para este tipo de llamada",
+                            "comentarioValor2": "Tarifa por minuto adicional para este tipo de llamada"
+                        },
+                        "caracteres": null,
+                        "comentario": "Minutos de voz para fijo on net.",
+                        "descripcion": "Minutos de voz para fijo on net.",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 350,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "CARACTERISTICA",
+                        "tipoDato": {
+                            "nombre": "Condicional triple",
+                            "codigo": "009014"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "046",
+                        "dependencia": null,
+                        "nombre": "Minutos red fija off net",
+                        "nombreLargo": "Minutos de voz para fijo off net.",
+                        "apartadoCondicion": {
+                            "etiquetaFlag": "Es ilimitado",
+                            "unidadValor1": "Minutos",
+                            "unidadValor2": "Soles",
+                            "patronValor1": "^\\d+$",
+                            "patronValor2": "^\\d+(\\.\\d{1,4})?$",
+                            "etiquetaValor1": "Cantidad de minutos",
+                            "etiquetaValor2": "Tarifa por minuto adicional",
+                            "comentarioValor1": "Minutos incluidos para este tipo de llamada",
+                            "comentarioValor2": "Tarifa por minuto adicional para este tipo de llamada"
+                        },
+                        "caracteres": null,
+                        "comentario": "Minutos de voz para fijo off net.",
+                        "descripcion": "Minutos de voz para fijo off net.",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 139,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "CARACTERISTICA",
+                        "tipoDato": {
+                            "nombre": "Condicional triple",
+                            "codigo": "009014"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "043",
+                        "dependencia": null,
+                        "nombre": "Minutos móvil on net",
+                        "nombreLargo": "Minutos de voz para móvil on net.",
+                        "apartadoCondicion": {
+                            "etiquetaFlag": "Es ilimitado",
+                            "unidadValor1": "Minutos",
+                            "unidadValor2": "Soles",
+                            "patronValor1": "^\\d+$",
+                            "patronValor2": "^\\d+(\\.\\d{1,4})?$",
+                            "etiquetaValor1": "Cantidad de minutos",
+                            "etiquetaValor2": "Tarifa por minuto adicional",
+                            "comentarioValor1": "Minutos incluidos para este tipo de llamada",
+                            "comentarioValor2": "Tarifa por minuto adicional para este tipo de llamada"
+                        },
+                        "caracteres": null,
+                        "comentario": "Minutos de voz para móvil on net.",
+                        "descripcion": "Minutos de voz para móvil on net.",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 140,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "CARACTERISTICA",
+                        "tipoDato": {
+                            "nombre": "Condicional triple",
+                            "codigo": "009014"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "044",
+                        "dependencia": null,
+                        "nombre": "Minutos móvil off net",
+                        "nombreLargo": "Minutos de voz para móvil off net.",
+                        "apartadoCondicion": {
+                            "etiquetaFlag": "Es ilimitado",
+                            "unidadValor1": "Minutos",
+                            "unidadValor2": "Soles",
+                            "patronValor1": "^\\d+$",
+                            "patronValor2": "^\\d+(\\.\\d{1,4})?$",
+                            "etiquetaValor1": "Cantidad de minutos",
+                            "etiquetaValor2": "Tarifa por minuto adicional",
+                            "comentarioValor1": "Minutos incluidos para este tipo de llamada",
+                            "comentarioValor2": "Tarifa por minuto adicional para este tipo de llamada"
+                        },
+                        "caracteres": null,
+                        "comentario": "Minutos de voz para móvil off net.",
+                        "descripcion": "Minutos de voz para móvil off net.",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 761,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "BLOQUE",
+                        "tipoDato": {
+                            "nombre": "Bloque de tarifas por paises",
+                            "codigo": "009011"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "088",
+                        "dependencia": null,
+                        "nombre": "Tarifa por minuto a fijo LDI",
+                        "nombreLargo": "Tarifa por minuto a fijo LDI",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Tarifa por minuto hacia fijo LDI por bloque de paises",
+                        "descripcion": "Tarifa por minuto hacia fijo LDI por bloque de paises",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 762,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "BLOQUE",
+                        "tipoDato": {
+                            "nombre": "Bloque de tarifas por paises",
+                            "codigo": "009011"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "089",
+                        "dependencia": null,
+                        "nombre": "Tarifa por minuto a móvil LDI",
+                        "nombreLargo": "Tarifa por minuto a móvil LDI",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Tarifa por minuto hacia móvil LDI por bloque de paises",
+                        "descripcion": "Tarifa por minuto hacia móvil LDI por bloque de paises",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": true
+            },
+            {
+                "codigoSeccion": "003003",
+                "seccion": "Características adicionales",
+                "tieneCabecera": true,
+                "idModalidad": 2,
+                "nombreModalidad": "Telefonía fija prepago",
+                "apartados": [
+                    {
+                        "idApartado": 537,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "003",
+                        "dependencia": null,
+                        "nombre": "Condiciones generales ",
+                        "nombreLargo": "Condiciones generales ",
+                        "apartadoCondicion": null,
+                        "caracteres": 2000,
+                        "comentario": "condiciones generales de la tarifa",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": true
+            },
+            {
+                "codigoSeccion": "003004",
+                "seccion": "Restricciones",
+                "tieneCabecera": true,
+                "idModalidad": 2,
+                "nombreModalidad": "Telefonía fija prepago",
+                "apartados": [
+                    {
+                        "idApartado": 534,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "008",
+                        "dependencia": null,
+                        "nombre": "Restricciones técnicas",
+                        "nombreLargo": "Restricciones técnicas",
+                        "apartadoCondicion": null,
+                        "caracteres": 500,
+                        "comentario": "Restricciones técnicas para el acceso al servicio.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

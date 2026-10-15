@@ -1,0 +1,9 @@
+Grabaciones de tarifas promocionales
+
+_paso1/        paso 1, común a todas las promociones (empezar por aquí).
+<servicio>/    paso 2 de la promoción de una tarifa monoproducto de ese servicio.
+_empaquetada/  promoción de una tarifa empaquetada (pestañas Servicio 1, 2...).
+
+Usar tarifas con registro definitivo (lote PROMO, 2 por servicio).
+No hace falta grabar los 15 servicios de una vez: con _paso1 y un servicio ya se
+puede construir y probar el script; el resto se agrega servicio por servicio.

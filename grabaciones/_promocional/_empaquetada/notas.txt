@@ -1,0 +1,16 @@
+Promoción de una tarifa EMPAQUETADA
+
+Paquete usado para la grabación: TE-EMP-MUESTRA-00_   (p. ej. 002: TFP + SMP)
+
+Archivos en esta carpeta:
+- grabacion_paso1_y_2.py  grabación completa de la promoción del paquete.
+- paso2.json              respuesta del GET del paso 2 (si aparece).
+- *.png                   capturas de cada pestaña "Servicio N" del paso 2.
+
+Completar:
+- ¿Las pestañas del paso 2 son una por servicio del paquete? ¿en qué orden?:
+- ¿Cada pestaña muestra los mismos atributos que la promoción del monoproducto?:
+- ¿Hay que pulsar Guardar en cada pestaña?:
+- ¿Es obligatorio promocionar algo en todas las pestañas?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

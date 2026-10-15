@@ -1,0 +1,11 @@
+Servicio: Otras tarifas de telefonía fija
+
+Archivos en esta carpeta:
+- paso2.json           JSON del GET del paso 2 (F12 > Red > Fetch/XHR > clic derecho > Copiar respuesta)
+- grabacion_paso2.py   código grabado con grabar_sirt.py (empezar a grabar ya en el paso 2, sin login)
+- *.png                capturas de ventanas emergentes o listas nuevas (si las hay)
+
+Reglas especiales (completar si aplica; si se deja vacío, se usa el criterio que se acuerde en el chat):
+- Listas que se combinan:
+- Valores fijos (montos, minutos, etc.):
+- Otras observaciones:

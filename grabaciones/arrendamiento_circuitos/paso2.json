@@ -1,0 +1,537 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26233,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629",
+            "tipoTarifa": {
+                "nombre": "Tarifa establecida",
+                "tipo": {
+                    "codigo": "026001",
+                    "nombre": "Establecida"
+                },
+                "caracteresNombreTarifa": 80,
+                "idTipoTarifa": 326
+            },
+            "modalidad": {
+                "nombre": "Arrendamiento de circuitos",
+                "codigo": "010",
+                "registraTarifaInstalacion": false,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": false,
+                "idModalidad": 10,
+                "codigoModalidad": null
+            },
+            "condicion": {
+                "nombre": "Monoproducto",
+                "codigo": "017002"
+            },
+            "nombre": "arremndamientos_circuitos_prueba",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-14T00:00:00",
+            "finVigencia": null,
+            "inicioComercial": "2026-10-14T00:00:00",
+            "finComercial": null,
+            "valorPlan": null,
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "flagModificacion": 0,
+            "nroModificacion": 0,
+            "alcances": [
+                {
+                    "nombre": "Residencial",
+                    "codigo": "001001"
+                },
+                {
+                    "nombre": "Comercial",
+                    "codigo": "001002"
+                }
+            ],
+            "tarifaInstalacion": null,
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "estadoLD": null,
+            "fechaRegistro": null,
+            "esActiva": false,
+            "tieneAccionPendiente": null,
+            "registrarTarifaInstalacion": null,
+            "duracionContrato": null,
+            "identificadorContrato": null,
+            "esPrueba": null
+        },
+        "secciones": [
+            {
+                "codigoSeccion": "003001",
+                "seccion": "Datos generales",
+                "tieneCabecera": false,
+                "idModalidad": 10,
+                "nombreModalidad": "Arrendamiento de circuitos",
+                "apartados": [
+                    {
+                        "idApartado": 765,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Categorica Excluyente",
+                            "codigo": "009007"
+                        },
+                        "listado": {
+                            "nombre": "Tipo de moneda",
+                            "codigo": "071000"
+                        },
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "Soles",
+                                "codigo": "071001"
+                            },
+                            {
+                                "nombre": "Dolares",
+                                "codigo": "071002"
+                            },
+                            {
+                                "nombre": "Euro",
+                                "codigo": "071003"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "074",
+                        "dependencia": null,
+                        "nombre": "Tipo de moneda",
+                        "nombreLargo": "Tipo de moneda",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Moneda a la cual es ofertada y a la que corresponde el valor del servicio.",
+                        "descripcion": "Hace referencia al tipo de moneda de tarifa de instalación",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": false
+            },
+            {
+                "codigoSeccion": "003002",
+                "seccion": "Características específicas",
+                "tieneCabecera": true,
+                "idModalidad": 10,
+                "nombreModalidad": "Arrendamiento de circuitos",
+                "apartados": [
+                    {
+                        "idApartado": 483,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "010",
+                        "dependencia": null,
+                        "nombre": "Valor del servicio",
+                        "nombreLargo": "Valor del servicio",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Valor del servicio",
+                        "descripcion": "Valor del servicio",
+                        "unidadMedida": "Soles",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    },
+                    {
+                        "idApartado": 766,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (enteros)",
+                            "codigo": "009003"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "090",
+                        "dependencia": null,
+                        "nombre": "Periodo de contrato",
+                        "nombreLargo": "Periodo de contrato",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Cantidad de meses de contratacion",
+                        "descripcion": null,
+                        "unidadMedida": "Meses",
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 581,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Categorica Excluyente",
+                            "codigo": "009007"
+                        },
+                        "listado": {
+                            "nombre": "Periocidad",
+                            "codigo": "023000"
+                        },
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [
+                            {
+                                "nombre": "Diario",
+                                "codigo": "023001"
+                            },
+                            {
+                                "nombre": "Mensual",
+                                "codigo": "023002"
+                            },
+                            {
+                                "nombre": "Trimestral",
+                                "codigo": "023003"
+                            },
+                            {
+                                "nombre": "Semestral",
+                                "codigo": "023004"
+                            },
+                            {
+                                "nombre": "Anual",
+                                "codigo": "023005"
+                            }
+                        ],
+                        "operador": null,
+                        "codigo": "056",
+                        "dependencia": null,
+                        "nombre": "Periodicidad",
+                        "nombreLargo": "Periodicidad",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Se refiere a la unidad de tiempo a la que corresponde el valor del servicio.",
+                        "descripcion": "Seleccione una opción de Periodicidad",
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 463,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto",
+                            "codigo": "009001"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "062",
+                        "dependencia": null,
+                        "nombre": "Tecnología de transmisión",
+                        "nombreLargo": "Tecnología de transmisión",
+                        "apartadoCondicion": null,
+                        "caracteres": 40,
+                        "comentario": "Tecnología de transmisión",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 464,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "063",
+                        "dependencia": null,
+                        "nombre": "Velocidad de transmisión",
+                        "nombreLargo": "Velocidad de transmisión",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Velocidad de transmisión",
+                        "descripcion": null,
+                        "unidadMedida": "Mbps",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    },
+                    {
+                        "idApartado": 684,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Numérica (Decimales)",
+                            "codigo": "009004"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": {
+                            "valor": "<=",
+                            "mensaje": "El apartado Vel. transmisión garant. debe ser menor o igual que ",
+                            "codigo": "022004",
+                            "nombre": "Menor o igual que"
+                        },
+                        "codigo": "073",
+                        "dependencia": {
+                            "nombre": "Velocidad de transmisión",
+                            "codigo": "063"
+                        },
+                        "nombre": "Vel. transmisión garant.",
+                        "nombreLargo": "Velocidad de transmisión garantizada",
+                        "apartadoCondicion": null,
+                        "caracteres": null,
+                        "comentario": "Velocidad de transmisión garantizada",
+                        "descripcion": null,
+                        "unidadMedida": "Mbps",
+                        "validarPatron": {
+                            "valor": "^\\d+(\\.\\d{1,4})?$",
+                            "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                            "codigo": "036008",
+                            "nombre": "Númerico (Cuatro decimales)"
+                        }
+                    }
+                ],
+                "flagVelocidades": false
+            },
+            {
+                "codigoSeccion": "003003",
+                "seccion": "Características adicionales",
+                "tieneCabecera": true,
+                "idModalidad": 10,
+                "nombreModalidad": "Arrendamiento de circuitos",
+                "apartados": [
+                    {
+                        "idApartado": 686,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "075",
+                        "dependencia": null,
+                        "nombre": "Condiciones generales ",
+                        "nombreLargo": "Condiciones generales ",
+                        "apartadoCondicion": null,
+                        "caracteres": 2000,
+                        "comentario": "Se debe cargar el detalle de la oferta comercial del servicio mediante un archivo Excel. En caso el servicio esté expresado en dólares, se deberá indicar al usuario, en la caja de texto correspondiente, que el monto mostrado en soles es solo referencial.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 578,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "004",
+                        "dependencia": null,
+                        "nombre": "Otras condiciones tarifa",
+                        "nombreLargo": "Otras condiciones tarifa",
+                        "apartadoCondicion": null,
+                        "caracteres": 1000,
+                        "comentario": "otras condiciones de la tarifa.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": false
+            },
+            {
+                "codigoSeccion": "003004",
+                "seccion": "Restricciones",
+                "tieneCabecera": true,
+                "idModalidad": 10,
+                "nombreModalidad": "Arrendamiento de circuitos",
+                "apartados": [
+                    {
+                        "idApartado": 579,
+                        "esObligatorio": true,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "008",
+                        "dependencia": null,
+                        "nombre": "Restricciones técnicas",
+                        "nombreLargo": "Restricciones técnicas",
+                        "apartadoCondicion": null,
+                        "caracteres": 500,
+                        "comentario": "Restricciones técnicas para el acceso al servicio.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    },
+                    {
+                        "idApartado": 580,
+                        "esObligatorio": false,
+                        "apartadoValor": null,
+                        "etiquetaValor1": null,
+                        "etiquetaValor2": null,
+                        "subApartados": null,
+                        "flagActivo": false,
+                        "registraCambio": false,
+                        "tipo": "DETALLE",
+                        "tipoDato": {
+                            "nombre": "Texto área",
+                            "codigo": "009009"
+                        },
+                        "listado": null,
+                        "tipoApartado": {
+                            "nombre": "Por Servicio",
+                            "codigo": "006002"
+                        },
+                        "lista": [],
+                        "operador": null,
+                        "codigo": "009",
+                        "dependencia": null,
+                        "nombre": "Otras restricciones",
+                        "nombreLargo": "Otras restricciones",
+                        "apartadoCondicion": null,
+                        "caracteres": 1000,
+                        "comentario": "Otro tipo de restricciones.",
+                        "descripcion": null,
+                        "unidadMedida": null,
+                        "validarPatron": null
+                    }
+                ],
+                "flagVelocidades": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

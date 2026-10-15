@@ -1,0 +1,19 @@
+Acción: Renombre
+
+Tarifa usada en la grabación:            (nombre y código SIRT; debe estar En comercialización)
+
+Archivos:
+- grabacion.py   grabación completa: buscar la tarifa → menú de acciones → Renombre →
+                 llenar el formulario → confirmar → mensaje final.
+- accion.json    respuesta del GET que carga el formulario de la acción (F12 > Red), y si
+                 se puede, la del POST al confirmar (pegar uno tras otro en el mismo archivo).
+- *.png          capturas del formulario, listas desplegadas y mensajes (de éxito y de error).
+
+Completar:
+- ¿Qué campos pide? (nombre nuevo, motivo, fecha, sustento/archivo...):
+- ¿Hay reglas para el nombre nuevo (largo, caracteres, que no exista otra igual)?:
+- ¿Necesita que la tarifa esté en comercialización o vale también "Por iniciar"?:
+- ¿Genera una versión nueva de la tarifa o cambia la misma?:
+- ¿Funciona igual para monoproductos, empaquetadas y promocionales?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

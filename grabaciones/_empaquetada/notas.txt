@@ -1,0 +1,24 @@
+Tarifa empaquetada (Tarifa establecida / Empaquetada) - un caso
+
+Tarifas base (lote MUESTRA, ya con registro definitivo, ambas "Residencial"):
+- TE-TFP-MUESTRA-001  (Telefonía fija prepago, valor del servicio 30)
+- TE-SMP-MUESTRA-001  (Servicio público móvil postpago, valor del servicio 50)
+
+Archivos en esta carpeta:
+- grabacion_paso1.py  desde "Nueva Tarifa": Tipo, Condición "Empaquetada", Agregar Tarifa
+                      (buscar por nombre, marcar, Agregar) x2, Datos de la tarifa,
+                      hasta "Guardar y continuar con el paso"
+- grabacion_paso2.py  pestañas Servicio 1 / Servicio 2 (Valor del servicio + Guardar),
+                      "Guardar y continuar", Confirmar Tarifa, Confirmar tarifa, Aceptar
+                      (si es más cómodo, todo en una sola grabación en grabacion_paso1.py)
+- paso2.json          respuesta del GET al entrar al paso 2 (como en los servicios)
+- *.png               capturas: ventana "Agregar tarifas", pestañas del paso 2, mensajes
+                      de error de validación (valor del servicio), resultado final
+
+Preguntas (completar):
+- Valor del servicio usado en cada pestaña y si dio error (para saber la regla):
+- Alcance usado en el paquete:
+- ¿Al confirmar, el paquete aparece en Tarifas temporales?:
+- ¿Pide disponibilidad comercial?:
+- ¿Se puede mezclar cualquier servicio? (pendiente de consultar; por ahora sí)
+- Otras observaciones:

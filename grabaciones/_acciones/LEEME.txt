@@ -1,0 +1,16 @@
+Grabaciones de ACCIONES sobre tarifas registradas (Tarifas registradas → ⋮ / Acciones)
+
+_busqueda/   cómo se busca la tarifa en "Tarifas registradas" y el JSON del filtro
+             (para leer el estado de comercialización y de vigencia antes de actuar).
+renombre/    acción Renombre.
+cese/        acción Cese.
+fe_erratas/  acción Fe de erratas.
+
+Regla: fe de erratas y cese solo funcionan si la tarifa está "En comercialización" y
+vigente. Una tarifa pasa a "En comercialización" al día siguiente de su registro
+definitivo. Tarifas que ya lo están (registradas el 14/10): las del lote MUESTRA
+(TE-TF/TFP/IF/SMP/OS-MUESTRA-001 y los paquetes TE-EMP-MUESTRA-002/003/005/006).
+Las del lote PROMO (registradas el 15/10) lo estarán a partir del 16/10.
+
+Referencia del proyecto anterior: referencia_lyc/renombrar_tarifas.py y
+referencia_lyc/fe_erratas_tarifas.py (búsqueda por "Filtro avanzado" y menú Acciones).

@@ -1,0 +1,19 @@
+Acción: Cese
+
+Tarifa usada en la grabación:            (nombre y código SIRT; debe estar En comercialización)
+
+Archivos:
+- grabacion.py   grabación completa: buscar la tarifa → menú de acciones → Cese →
+                 llenar el formulario → confirmar → mensaje final.
+- accion.json    respuesta del GET que carga el formulario de la acción (F12 > Red), y si
+                 se puede, la del POST al confirmar (pegar uno tras otro en el mismo archivo).
+- *.png          capturas del formulario, listas desplegadas y mensajes (de éxito y de error).
+
+Completar:
+- ¿Qué campos pide? (fecha de cese, motivo, sustento/archivo...):
+- Reglas de la fecha de cese (¿desde mañana? ¿dentro de la vigencia?):
+- ¿Qué pasa con la tarifa después (estado de vigencia / comercialización)?:
+- ¿Se puede cesar un paquete o una promoción? ¿afecta a sus tarifas?:
+- ¿Es irreversible?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

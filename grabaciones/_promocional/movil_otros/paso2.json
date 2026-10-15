@@ -1,0 +1,1036 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26345,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asvasfas",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-21T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-21T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": null,
+            "tarifaInstalacion": null,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19936,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26324,
+                    "fechaRegistro": "2026-10-15T09:16:09",
+                    "codigo": "TEMMV2026000323",
+                    "nombre": "TE-SMO-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Servicio móvil otros",
+                        "codigo": "013",
+                        "registraTarifaInstalacion": false,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 182,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 50,
+                    "tarifaInstalacion": null
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMMV2026000323",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Servicio móvil otros",
+                "codigo": "013",
+                "registraTarifaInstalacion": false,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 182,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+{
+    "data": [
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "tieneDatos": false,
+            "apartados": [
+                {
+                    "idApartado": 944,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Duración",
+                    "codigo": "038",
+                    "comentario": "Días",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "Días",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 783,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos para tethering",
+                    "codigo": "016",
+                    "comentario": "cantidad de datos tope de descarga de Internet del plan que se puede compartir a otros usuarios en la modalidad de tethering.",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 784,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Traslada datos",
+                    "codigo": "017",
+                    "comentario": "cantidad de datos tope de descarga de Internet del plan que se puede compartir a otros usuarios en la modalidad de traslada datos",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 785,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Bolsa de datos para apps",
+                    "codigo": "018",
+                    "comentario": "cantidad de datos exclusivos para el acceso a redes sociales y aplicativos, sin consumo del tope de datos del plan móvil, sin degradación de velocidad (por grupo de aplicativos y/o redes sociales).",
+                    "tipoDato": {
+                        "nombre": "Bolsa de gigas para\u00A0plataformas",
+                        "codigo": "009012"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 925,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos para Apps 1",
+                    "codigo": "0151",
+                    "comentario": "Cantidad de datos exclusivos para el acceso a redes sociales y aplicativos, sin consumo del tope de datos del plan móvil, sin degradación de velocidad (por grupo de aplicativos y/o redes sociales).",
+                    "tipoDato": {
+                        "nombre": "Bolsa de gigas para\u00A0plataformas",
+                        "codigo": "009012"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 945,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos para Apps 2",
+                    "codigo": "0152",
+                    "comentario": "Cantidad de datos exclusivos para el acceso a redes sociales y aplicativos, sin consumo del tope de datos del plan móvil, sin degradación de velocidad (por grupo de aplicativos y/o redes sociales).",
+                    "tipoDato": {
+                        "nombre": "Bolsa de gigas para\u00A0plataformas",
+                        "codigo": "009012"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 946,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos para Apps 3",
+                    "codigo": "0153",
+                    "comentario": "Cantidad de datos exclusivos para el acceso a redes sociales y aplicativos, sin consumo del tope de datos del plan móvil, sin degradación de velocidad (por grupo de aplicativos y/o redes sociales).",
+                    "tipoDato": {
+                        "nombre": "Bolsa de gigas para\u00A0plataformas",
+                        "codigo": "009012"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 947,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos para Apps 4",
+                    "codigo": "0154",
+                    "comentario": "Cantidad de datos exclusivos para el acceso a redes sociales y aplicativos, sin consumo del tope de datos del plan móvil, sin degradación de velocidad (por grupo de aplicativos y/o redes sociales).",
+                    "tipoDato": {
+                        "nombre": "Bolsa de gigas para\u00A0plataformas",
+                        "codigo": "009012"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 786,
+                    "tipo": "PROMOCIONAL_APP",
+                    "nombre": "Apps sin consumo de datos",
+                    "codigo": "019",
+                    "comentario": "Tipos de aplicativos y redes sociales incluidos en el beneficio de zero rating (sin consumo de datos). La empresa deberá activar casillas con selección múltiple, para cada grupo de aplicativos y/o redes sociales.",
+                    "tipoDato": {
+                        "nombre": "Listado multiple con incremento en promoción",
+                        "codigo": "009017"
+                    },
+                    "variacion": [],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [
+                        {
+                            "nombre": "Otros",
+                            "codigo": "024007"
+                        },
+                        {
+                            "nombre": "Whatsapp",
+                            "codigo": "024001"
+                        },
+                        {
+                            "nombre": "Messenger",
+                            "codigo": "024002"
+                        },
+                        {
+                            "nombre": "Facebook",
+                            "codigo": "024003"
+                        },
+                        {
+                            "nombre": "TikTok",
+                            "codigo": "024004"
+                        },
+                        {
+                            "nombre": "YouTube",
+                            "codigo": "024005"
+                        },
+                        {
+                            "nombre": "Instagram",
+                            "codigo": "024006"
+                        }
+                    ],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 791,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos tope descarga",
+                    "codigo": "015",
+                    "comentario": "Permite ingresar el valor de datos tope de descarga en alta velocidad",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 794,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos móvil nacional",
+                    "codigo": "025",
+                    "comentario": "Minutos de voz móvil para todo destino nacional.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 795,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Cantidad SMS nacional",
+                    "codigo": "026",
+                    "comentario": "cantidad de mensajes de texto para cualquier destino nacional",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 796,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Cantidad SMS internacional",
+                    "codigo": "027",
+                    "comentario": "cantidad de mensajes de texto para cualquier destino internacional",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 797,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa por MB adicional",
+                    "codigo": "028",
+                    "comentario": "Tarifa por MB nacional",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": "Soles",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 801,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa minuto móvil a fijo",
+                    "codigo": "031",
+                    "comentario": "Tarifa por minuto de voz a telefonos fijos",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": "Soles",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 802,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa minuto móvil todo destino",
+                    "codigo": "032",
+                    "comentario": "Tarifa por minuto de voz para todo destino nacional.",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": "Soles",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 803,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa por minuto LDI",
+                    "codigo": "033",
+                    "comentario": "Tarifa por minuto LDI",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 804,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa minuto roaming",
+                    "codigo": "034",
+                    "comentario": "Tarifa por minuto roaming",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 886,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa SMS roaming",
+                    "codigo": "035",
+                    "comentario": "Tarifa por SMS ",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 887,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Tarifa MB roaming",
+                    "codigo": "036",
+                    "comentario": "Tarifa por MB para roaming ",
+                    "tipoDato": {
+                        "nombre": "Bloque de tarifas por paises",
+                        "codigo": "009011"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Disminución",
+                        "codigo": "049002"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 949,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Minutos LDI dentro del plan",
+                    "codigo": "0155",
+                    "comentario": "Minutos de voz móvil LDI incluidos en el plan o paquete.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 787,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos Roaming incluidos en los datos del plan",
+                    "codigo": "020",
+                    "comentario": "cantidad de datos sin degradación de velocidad para ser usado fuera del país (como parte de los datos del plan o paquete).",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 788,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Datos Roaming adicionales a los datos del plan",
+                    "codigo": "021",
+                    "comentario": "cantidad de datos sin degradación de velocidad para ser usado fuera del país (adicionales a los datos del plan o paquete).",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 950,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Min. Roaming dentro del plan",
+                    "codigo": "0156",
+                    "comentario": "Minutos de voz móvil Roaming incluidos en el plan o paquete.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 951,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "SMS Roaming dentro del plan",
+                    "codigo": "0157",
+                    "comentario": "Cantidad de SMS Roaming incluidos en el plan o paquete.",
+                    "tipoDato": {
+                        "nombre": "Condicional triple",
+                        "codigo": "009014"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                }
+            ]
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

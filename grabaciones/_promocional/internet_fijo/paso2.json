@@ -1,0 +1,344 @@
+{
+    "data": {
+        "tarifa": {
+            "idTarifa": 26335,
+            "tipoTarifa": {
+                "nombre": "Tarifa promocional",
+                "tipo": {
+                    "codigo": "026002",
+                    "nombre": "Promocional"
+                },
+                "caracteresNombreTarifa": 0,
+                "idTipoTarifa": 264
+            },
+            "nombre": "asfasfasf",
+            "codigo": "Por generar",
+            "version": 0,
+            "paso": 1,
+            "prioridad": false,
+            "inicioVigencia": "2026-10-15T00:00:00",
+            "finVigencia": "2026-11-26T05:00:00",
+            "inicioComercial": "2026-10-15T00:00:00",
+            "finComercial": "2026-11-26T05:00:00",
+            "enlace": "www.example.com",
+            "telefono": "06124581",
+            "email": "example.com@example.pe",
+            "alcances": [],
+            "comercializacion": {
+                "nombre": "Borrador",
+                "codigo": "030001"
+            },
+            "vigencia": {
+                "nombre": "Borrador",
+                "codigo": "029001"
+            },
+            "estado": {
+                "nombre": "En borrador",
+                "codigo": "027001"
+            },
+            "valorPlan": null,
+            "tarifaInstalacion": null,
+            "nombreOperador": "FLOR TV E.I.R.L.",
+            "nroDocumentoOperador": "20601544629"
+        },
+        "secciones": null,
+        "subTarifas": [
+            {
+                "idSubTarifa": 19926,
+                "valor": null,
+                "tarifa": {
+                    "idTarifa": 26296,
+                    "fechaRegistro": "2026-10-14T17:24:56",
+                    "codigo": "TEMIF2026000309",
+                    "nombre": "TE-IF-PROMO-001",
+                    "tipoTarifa": {
+                        "nombre": "Tarifa establecida",
+                        "tipo": {
+                            "codigo": "026001",
+                            "nombre": "Establecida"
+                        },
+                        "caracteresNombreTarifa": 0,
+                        "idTipoTarifa": 326
+                    },
+                    "condicion": {
+                        "nombre": "Monoproducto",
+                        "codigo": "017002"
+                    },
+                    "alcances": [
+                        {
+                            "nombre": "Residencial",
+                            "codigo": "001001"
+                        }
+                    ],
+                    "comercializacion": {
+                        "nombre": "Por iniciar vigencia",
+                        "codigo": "029002"
+                    },
+                    "vigencia": {
+                        "nombre": "Por iniciar comercialización",
+                        "codigo": "030002"
+                    },
+                    "modalidad": {
+                        "nombre": "Internet fijo postpago",
+                        "codigo": "008",
+                        "registraTarifaInstalacion": true,
+                        "flagEmpaquetado": true,
+                        "flagDisponibilidadComercial": null,
+                        "idModalidad": 8,
+                        "codigoModalidad": null
+                    },
+                    "version": 1,
+                    "valorPlan": 100,
+                    "tarifaInstalacion": 10
+                },
+                "registraCambio": false
+            }
+        ],
+        "modalidades": [
+            {
+                "codigosTarifa": "TEMIF2026000309",
+                "totalTarifas": 1,
+                "registraApartadoPromocional": false,
+                "nombre": "Internet fijo postpago",
+                "codigo": "008",
+                "registraTarifaInstalacion": true,
+                "flagEmpaquetado": true,
+                "flagDisponibilidadComercial": null,
+                "idModalidad": 8,
+                "codigoModalidad": null
+            }
+        ]
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
+
+
+
+{
+    "data": [
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "tieneDatos": false,
+            "apartados": [
+                {
+                    "idApartado": 768,
+                    "tipo": "PROMOCIONAL_VELOCIDAD",
+                    "nombre": "Velocidades de navegación",
+                    "codigo": "091",
+                    "comentario": "Ingresar las velocidades de navegación del plan",
+                    "tipoDato": {
+                        "nombre": "Tabla de velocidades de descarga y carga",
+                        "codigo": "009015"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": [
+                        {
+                            "idSubApartado": 105,
+                            "nombre": "Velocidad de descarga contratada",
+                            "comentario": "Velocidad de descarga máxima contratada",
+                            "comentarioPromocional": "0",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "001"
+                        },
+                        {
+                            "idSubApartado": 106,
+                            "nombre": "Velocidad de descarga garantizada",
+                            "comentario": "Velocidad de descarga mínima garantizada",
+                            "comentarioPromocional": "0",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "002"
+                        },
+                        {
+                            "idSubApartado": 107,
+                            "nombre": "Velocidad de carga contratada",
+                            "comentario": "Velocidad de carga máxima contratada",
+                            "comentarioPromocional": "0",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "003"
+                        },
+                        {
+                            "idSubApartado": 108,
+                            "nombre": "Velocidad de carga garantizada",
+                            "comentario": "Velocidad de carga mínima garantizada",
+                            "comentarioPromocional": "0",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "004"
+                        }
+                    ],
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": null,
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 883,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Cantidad de datos",
+                    "codigo": "095",
+                    "comentario": "Ingrese la cantidad de datos si el plan no incluye Internet Ilimitado.",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        },
+                        {
+                            "nombre": "Ilimitado",
+                            "codigo": "021001"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": "GB",
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 745,
+                    "tipo": "PROMOCIONAL_VELOCIDAD",
+                    "nombre": "Velocidades con degradación",
+                    "codigo": "083",
+                    "comentario": "Ingrese las velocidades de navegación con degradación aplicables al agotar los datos del plan, solo si cuenta con esta funcionalidad.",
+                    "tipoDato": {
+                        "nombre": "Tabla de velocidades de descarga y carga",
+                        "codigo": "009015"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        },
+                        {
+                            "nombre": "Porcentual",
+                            "codigo": "021002"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": [
+                        {
+                            "idSubApartado": 101,
+                            "nombre": "Velocidad de descarga contratada con degradación",
+                            "comentario": "Velocidad de descarga contratada con degradación",
+                            "comentarioPromocional": "Velocidad de descarga contratada con degradación",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "001"
+                        },
+                        {
+                            "idSubApartado": 102,
+                            "nombre": "Velocidad de descarga garantizada con degragación",
+                            "comentario": "Velocidad de descarga garantizada con degragación",
+                            "comentarioPromocional": "Velocidad de descarga contratada con degradación",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "002"
+                        },
+                        {
+                            "idSubApartado": 103,
+                            "nombre": "Velocidad de carga contratada con degradación",
+                            "comentario": "Velocidad de carga contratada con degradación",
+                            "comentarioPromocional": "Velocidad de descarga contratada con degradación",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "003"
+                        },
+                        {
+                            "idSubApartado": 104,
+                            "nombre": "Velocidad de carga garantizada con degradación",
+                            "comentario": "Velocidad de carga garantizada con degradación",
+                            "comentarioPromocional": "Velocidad de descarga contratada con degradación",
+                            "subApartadoValor": null,
+                            "flagActivo": false,
+                            "unidadMedida": "Mbps",
+                            "codigo": "004"
+                        }
+                    ],
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                },
+                {
+                    "idApartado": 746,
+                    "tipo": "PROMOCIONAL",
+                    "nombre": "Repetidores y/o equipos similares",
+                    "codigo": "084",
+                    "comentario": "Ingrese la cantidad de equipos adicionales de tipo repetidor, mesh o similar incluidos, si aplica. No considere el router principal.",
+                    "tipoDato": {
+                        "nombre": "Numérica (enteros)",
+                        "codigo": "009003"
+                    },
+                    "variacion": [
+                        {
+                            "nombre": "Cantidad",
+                            "codigo": "021003"
+                        }
+                    ],
+                    "apartadoValor": null,
+                    "subApartados": null,
+                    "urlFormato": null,
+                    "flagActivo": false,
+                    "listado": [],
+                    "modoVariacion": {
+                        "nombre": "Incremento",
+                        "codigo": "049001"
+                    },
+                    "unidadMedida": null,
+                    "registraCambio": false,
+                    "esActivo": true
+                }
+            ]
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

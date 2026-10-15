@@ -1,0 +1,911 @@
+{"page":{"page":1,"pageSize":20},"filter":{"idTipoTarifa":0,"codCondicion":"","idModalidad":0,"idServicio":0,"codAlcance":"","nombre":"","fechaDesde":null,"fechaHasta":null,"creador":0}}
+
+
+Response:
+
+{
+    "data": {
+        "items": [
+            {
+                "idTarifa": 26262,
+                "fechaRegistro": "2026-10-14T11:20:22",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-PTF-PRUEBA2-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 1,
+                "estado": "En borrador",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 186,
+                    "codigo": null,
+                    "nombre": "Paquetes adicionales de telefonía fija",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26261,
+                "fechaRegistro": "2026-10-14T11:20:12",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-OTF-PRUEBA2-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 187,
+                    "codigo": null,
+                    "nombre": "Otras tarifas de telefonía fija",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26260,
+                "fechaRegistro": "2026-10-14T11:19:59",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TFP-PRUEBA2-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 2,
+                    "codigo": null,
+                    "nombre": "Telefonía fija prepago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26259,
+                "fechaRegistro": "2026-10-14T11:19:45",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TF-PRUEBA2-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 1,
+                    "codigo": null,
+                    "nombre": "Telefonía fija postpago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26258,
+                "fechaRegistro": "2026-10-14T11:08:43",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-OS-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 11,
+                    "codigo": null,
+                    "nombre": "Otros servicios",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26257,
+                "fechaRegistro": "2026-10-14T11:08:34",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-AC-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 10,
+                    "codigo": null,
+                    "nombre": "Arrendamiento de circuitos",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26256,
+                "fechaRegistro": "2026-10-14T11:08:02",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-SMO-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 182,
+                    "codigo": null,
+                    "nombre": "Servicio móvil otros",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26255,
+                "fechaRegistro": "2026-10-14T11:07:29",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-SMQ-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 5,
+                    "codigo": null,
+                    "nombre": "Servicio público móvil paquete",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26254,
+                "fechaRegistro": "2026-10-14T11:06:57",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-SMC-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 4,
+                    "codigo": null,
+                    "nombre": "Servicio público móvil control",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26253,
+                "fechaRegistro": "2026-10-14T11:06:24",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-SMP-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 3,
+                    "codigo": null,
+                    "nombre": "Servicio público móvil postpago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26252,
+                "fechaRegistro": "2026-10-14T11:06:12",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-PTV-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 184,
+                    "codigo": null,
+                    "nombre": "Paquetes adicionales y otras tarifas de televisión de paga",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26251,
+                "fechaRegistro": "2026-10-14T11:06:00",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TVPR-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 7,
+                    "codigo": null,
+                    "nombre": "Televisión de paga Prepago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26250,
+                "fechaRegistro": "2026-10-14T11:05:48",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TVP-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 6,
+                    "codigo": null,
+                    "nombre": "Televisión de paga Postpago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26249,
+                "fechaRegistro": "2026-10-14T11:05:36",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-PIF-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 185,
+                    "codigo": null,
+                    "nombre": "Paquetes adicionales y otros servicios de internet fijo",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26248,
+                "fechaRegistro": "2026-10-14T11:05:23",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-IF-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 8,
+                    "codigo": null,
+                    "nombre": "Internet fijo postpago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26247,
+                "fechaRegistro": "2026-10-14T11:05:09",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-PTF-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 186,
+                    "codigo": null,
+                    "nombre": "Paquetes adicionales de telefonía fija",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26246,
+                "fechaRegistro": "2026-10-14T11:04:59",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-OTF-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 187,
+                    "codigo": null,
+                    "nombre": "Otras tarifas de telefonía fija",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26245,
+                "fechaRegistro": "2026-10-14T11:04:46",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TFP-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 10,
+                "modalidad": {
+                    "idModalidad": 2,
+                    "codigo": null,
+                    "nombre": "Telefonía fija prepago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": true
+                }
+            },
+            {
+                "idTarifa": 26244,
+                "fechaRegistro": "2026-10-14T11:04:31",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017002",
+                    "nombre": "Monoproducto"
+                },
+                "nombre": "TE-TF-MUESTRA-001",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 3,
+                "estado": "Confirmado",
+                "tarifaInstalacion": 0,
+                "modalidad": {
+                    "idModalidad": 1,
+                    "codigo": null,
+                    "nombre": "Telefonía fija postpago",
+                    "flagEmpaquetado": true,
+                    "registraTarifaInstalacion": false
+                }
+            },
+            {
+                "idTarifa": 26243,
+                "fechaRegistro": "2026-10-14T09:45:34",
+                "tipoTarifa": {
+                    "idTipoTarifa": 1,
+                    "nombre": "Tarifa establecida",
+                    "tipo": {
+                        "codigo": "026001",
+                        "nombre": "Tarifa establecida"
+                    },
+                    "version": 0,
+                    "orden": null,
+                    "estado": null,
+                    "inicioVigencia": null,
+                    "finVigencia": null
+                },
+                "condicion": {
+                    "codigo": "017001",
+                    "nombre": "Empaquetada"
+                },
+                "nombre": "12412412",
+                "alcances": [
+                    {
+                        "codigo": "001001",
+                        "nombre": "Residencial"
+                    }
+                ],
+                "creador": {
+                    "nombre": "Bryan",
+                    "apellidoPaterno": "Quispe",
+                    "apellidoMaterno": "Chise"
+                },
+                "prioridad": false,
+                "disponibilidadComercial": false,
+                "paso": 1,
+                "estado": "En borrador",
+                "tarifaInstalacion": 123,
+                "modalidad": null
+            }
+        ],
+        "total": 216,
+        "page": 1,
+        "pageSize": 20
+    },
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}
