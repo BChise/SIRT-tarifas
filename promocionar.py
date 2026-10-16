@@ -365,8 +365,14 @@ def completar_paso_1(page, nombre: str, tarifas: list[str], args, con_instalacio
 # --- Paso 2 --------------------------------------------------------------------
 
 def guardar_pestana(page) -> None:
-    """Guardar; si SIRT abre una ventana (error), se lee, se cierra y se informa."""
-    page.get_by_role("button", name="Guardar", exact=True).click()
+    """Guardar; si SIRT abre una ventana (error), se lee, se cierra y se informa.
+    Con un solo servicio el botón es "Guardar"; en un empaquetado (varias pestañas
+    "Servicio N") es "Guardar e ir al siguiente" (visto el 16/10 con TE-EMP-MUESTRA-005)."""
+    boton = page.get_by_role("button", name=re.compile(r"^Guardar( e ir al siguiente)?$"))
+    visibles = [b for b in boton.all() if b.is_visible()]
+    if not visibles:
+        raise RuntimeError("No aparece el botón 'Guardar' / 'Guardar e ir al siguiente' de la pestaña.")
+    visibles[0].click()
     aceptar = page.get_by_role("button", name="Aceptar", exact=True)
     try:
         aceptar.wait_for(state="visible", timeout=2_500)

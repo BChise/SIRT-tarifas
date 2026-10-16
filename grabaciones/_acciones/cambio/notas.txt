@@ -1,0 +1,34 @@
+Acción CAMBIO - grabación de referencia
+
+Servicio: Otros servicios (OS)      Tarifa: TE-OS-MUESTRA-001
+(debe estar En comercialización y Vigente)
+
+Ya sabemos (verificacion_cambio.xlsx, 16/10):
+- Paso 1 (igual en los 15): Fecha de ejecución, Tarifa de instalación (bloqueada si el
+  servicio no la tiene) y Otros datos generales.
+- Paso 2: el del registro SIN los campos que definen el plan. En OS faltan Tipo de moneda
+  y Periodicidad; quedan Valor del servicio, Condiciones generales, Otras condiciones
+  tarifa, Restricciones técnicas y Otras restricciones.
+
+Qué grabar (de principio a fin, GUARDANDO hasta el último "Aceptar"):
+buscar → ⋮ → opción de Cambio → paso 1 (elegir Fecha de ejecución, cambiar Tarifa de
+instalación y un texto) → continuar → paso 2 (cambiar Valor del servicio y un texto) →
+continuar → resumen (si hay) → guardar → todas las confirmaciones y "Aceptar".
+
+Archivos:
+- grabacion.py   la grabación completa (codegen).
+- *.png          capturas: calendario de Fecha de ejecución abierto, resumen, cada
+                 ventana de confirmación y el mensaje final.
+
+Completar:
+- Nombre exacto de la opción en el menú ⋮:
+- Fecha de ejecución: ¿calendario? ¿desde qué día deja elegir (hoy, mañana)? ¿hay límite?:
+- ¿La fecha es obligatoria?:
+- ¿Hay resumen (paso 3) antes de guardar? Nombre de los botones:
+- Mensajes / ventanas que aparecen al guardar (en orden):
+- ¿SIRT exige cambiar algo en particular (p. ej. valor distinto al actual)?:
+- Después de guardar, en Tarifas registradas:
+    ¿versión nueva (2)?:
+    ¿estado de comercialización / vigencia?:
+    ¿aparece en Tarifas temporales o pide registro definitivo?:
+- Otras observaciones:

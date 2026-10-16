@@ -10,6 +10,13 @@ Subcomandos:
     fe_erratas agrega "| Fe de erratas <fecha hora>" a todos los campos de texto de
               los pasos 1 y 2 (cualquier servicio), revisa el resumen y guarda.
               --hasta-resumen se detiene en el paso 3 sin guardar.
+    rectificar igual que fe_erratas (textos con "| Rectificación <fecha hora>") y además
+              suma --delta (1) al Valor del servicio (paso 2) y a la Tarifa de
+              instalación (paso 1, si está habilitada). No toca listas ni tablas.
+    cambio    "Cambio de Tarifa": mismo flujo de 3 pasos + "Fecha de ejecución" (paso 1).
+              Por defecto BAJA 1 el valor del servicio y la instalación (--delta -1) con
+              fecha hoy + DIAS_ANTICIPACION_BAJA (mañana); si sube (--delta 1), hoy +
+              DIAS_ANTICIPACION_ALZA. --fecha AAAA-MM-DD fija la fecha.
 
 Flujo grabado (grabaciones/_acciones/):
     Tarifas registradas → Filtro avanzado → "Ingresa nombre de tarifa" → Buscar →
@@ -29,6 +36,9 @@ Uso:
     python acciones.py cese --tarifas TE-TF-MUESTRA-001 --solo-listar
     python acciones.py cese --tarifas TE-TF-MUESTRA-001 --fecha 2026-10-20 --diagnostico
     python acciones.py fe_erratas --tarifas TE-IF-MUESTRA-001 --hasta-resumen --diagnostico
+    python acciones.py rectificar --tarifas TE-OS-MUESTRA-001 --hasta-resumen --diagnostico
+    python acciones.py cambio --tarifas TE-OS-MUESTRA-001 --hasta-resumen --diagnostico
+    python acciones.py cambio --tarifas TE-OS-MUESTRA-001 --delta 1 --diagnostico
 
 Resultados (reanudable): resultados/ACCIONES/acciones.csv
 """
@@ -38,6 +48,7 @@ import csv
 import re
 import sys
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 
 import comun
@@ -50,6 +61,16 @@ CAMPOS = ["fecha_hora", "accion", "nombre", "codigo_sirt", "version", "nombre_nu
           "comercializacion", "vigencia", "resultado", "detalle"]
 TIMEOUT_BUSQUEDA = 20_000
 SUFIJO_POR_DEFECTO = "_REN"
+
+# --- Cambio de tarifa: anticipación de la "Fecha de ejecución" (días desde hoy) ------
+# SIRT (16/10, al SUBIR valor del servicio e instalación con fecha de hoy): "La fecha de
+# ejecución de la acción no puede ser anterior a 2 días a partir de la fecha actual,
+# según los tipos de variación aplicados". Si OSIPTEL cambia el plazo, se cambia aquí.
+DIAS_ANTICIPACION_ALZA = 2      # cambio perjudicial para el usuario (sube precios)
+DIAS_ANTICIPACION_BAJA = 1      # cambio beneficioso (baja precios): el calendario siempre
+                                # bloquea HOY (visto 16/10), lo antes posible es mañana
+# Si el día calculado está bloqueado en el calendario, se prueban hasta estos días siguientes.
+DIAS_EXTRA_SI_BLOQUEADO = 7
 
 
 # --- Resultados ------------------------------------------------------------------
@@ -105,6 +126,18 @@ def buscar_tarifa(page, nombre: str) -> dict | None:
             respuestas.append(respuesta)
 
     abrir_filtro_avanzado(page)
+    # SIRT a veces deja filtros de la búsqueda anterior (Condición, Tipo de servicio,
+    # Modalidad: visto el 16/10 tras un cambio en SMC → "no se encontraron resultados"
+    # al buscar una SMP). Se limpian antes de buscar por nombre.
+    limpiar = page.get_by_role("button", name="Limpiar filtro")
+    if limpiar.count() and limpiar.first.is_visible():
+        limpiar.first.click()
+        try:
+            page.wait_for_load_state("networkidle", timeout=5_000)
+        except Exception:
+            pass
+        page.wait_for_timeout(500)
+        abrir_filtro_avanzado(page)
     page.get_by_role("textbox", name="Ingresa nombre de tarifa").fill(nombre)
 
     page.on("response", capturar)
@@ -239,21 +272,29 @@ def validar_para_cese(tarifa: dict, sin_validar: bool, accion: str = "el cese") 
                              " siguiente al registro definitivo). Usa --sin-validar para intentarlo igual.")
 
 
-def elegir_fecha_calendario(page, fecha: date) -> None:
-    """Abre el único calendario del formulario y avanza mes a mes hasta la fecha."""
+def elegir_fecha_calendario(page, fecha: date, dias_extra: int = 0) -> date:
+    """Abre el único calendario del formulario y avanza mes a mes hasta la fecha.
+    Si el día está bloqueado y `dias_extra` > 0, prueba los días siguientes (hasta
+    `dias_extra`) y devuelve la fecha que eligió."""
     page.get_by_role("button", name="Open calendar").first.click()
-    texto = f"{fecha.day} de {comun.MESES[fecha.month - 1]} de {fecha.year}"
-    for _ in range(24):
-        dia = page.get_by_role("button", name=texto, exact=True)
-        if dia.count():
+    for extra in range(dias_extra + 1):
+        dia_buscado = fecha + timedelta(days=extra)
+        texto = f"{dia_buscado.day} de {comun.MESES[dia_buscado.month - 1]} de {dia_buscado.year}"
+        for _ in range(24):
+            dia = page.get_by_role("button", name=texto, exact=True)
+            if dia.count():
+                break
+            siguiente = page.get_by_role("button", name="Next month")
+            if not siguiente.is_enabled():
+                break
+            siguiente.click()
+        if dia.count() and dia.first.is_enabled():
             dia.click()
             page.locator("mat-calendar").wait_for(state="hidden")
-            return
-        siguiente = page.get_by_role("button", name="Next month")
-        if not siguiente.is_enabled():
-            break
-        siguiente.click()
-    raise RuntimeError(f"El calendario no permite elegir el {texto}.")
+            return dia_buscado
+    page.keyboard.press("Escape")
+    raise RuntimeError(f"El calendario no permite elegir el {fecha:%d/%m/%Y}"
+                       + (f" ni los {dias_extra} días siguientes" if dias_extra else "") + " (día bloqueado).")
 
 
 def cesar(page, tarifa: dict, fecha: date) -> str:
@@ -268,71 +309,204 @@ def cesar(page, tarifa: dict, fecha: date) -> str:
 
 # --- Fe de erratas ----------------------------------------------------------------
 
-def _texto_nuevo(actual: str, sello: str, maximo: int | None) -> str:
-    """Quita un sello anterior ('| Fe de erratas ...') y agrega el nuevo, sin pasar del máximo."""
-    base = re.sub(r"\s*\|[^|]*\d{2}/\d{2}/\d{4} \d{2}:\d{2}\s*$", "", actual or "").rstrip()
+def _texto_nuevo(actual: str, sello: str, prefijo: str, maximo: int | None) -> str:
+    """Quita un sello anterior DEL MISMO TIPO ('| <prefijo> dd/mm/aaaa hh:mm') y agrega el
+    nuevo al final, sin pasar del máximo de caracteres del campo. Los sellos de otras
+    acciones (p. ej. una fe de erratas previa) se conservan."""
+    patron = rf"\s*\|\s*{re.escape(prefijo)} \d{{2}}/\d{{2}}/\d{{4}} \d{{2}}:\d{{2}}\s*$"
+    base = re.sub(patron, "", actual or "").rstrip()
     nuevo = f"{base} {sello}".strip()
     if maximo and len(nuevo) > maximo:
         nuevo = (base[: max(0, maximo - len(sello) - 1)] + " " + sello)[:maximo]
     return nuevo
 
 
-def corregir_textos(page) -> list[str]:
-    """Agrega el sello a TODOS los campos de texto visibles y editables de la pantalla.
-    Sirve para cualquier servicio: solo cambia cuántos campos hay."""
+# Marca las textarea de la pestaña ACTIVA: SIRT deja en la página las del paso 2
+# (pestaña oculta) y a veces se ven un instante mientras carga (SMQ 16/10).
+MARCAR_TEXTOS = """() => {
+  let n = 0;
+  for (const t of document.querySelectorAll('textarea')) {
+    t.removeAttribute('data-fe');
+    const r = t.getBoundingClientRect();
+    if (t.disabled || t.readOnly || r.width === 0 || r.height === 0) continue;
+    let ok = true;
+    for (let a = t.parentElement; a && ok; a = a.parentElement) {
+      if (a.tagName === 'MAT-TAB-BODY' && !a.classList.contains('mat-mdc-tab-body-active')) ok = false;
+      if (a.getAttribute('aria-hidden') === 'true') ok = false;
+      const s = getComputedStyle(a);
+      if (s.display === 'none' || s.visibility === 'hidden') ok = false;
+    }
+    if (ok) { t.setAttribute('data-fe', String(n++)); }
+  }
+  return n;
+}"""
+
+
+def corregir_textos(page, sello: str, prefijo: str) -> list[str]:
+    """Agrega el sello a los campos de texto (textarea) visibles y editables de la
+    pestaña activa. Sirve para cualquier servicio: solo cambia cuántos campos hay."""
     corregidos = []
-    for campo in page.locator("textarea").all():
-        if not (campo.is_visible() and campo.is_editable()):
-            continue
-        maximo = campo.get_attribute("maxlength")
-        nuevo = _texto_nuevo(campo.input_value(), corregir_textos.sello, int(maximo) if maximo else None)
-        campo.fill(nuevo)
+    total = page.evaluate(MARCAR_TEXTOS)
+    for i in range(total):
+        campo = page.locator(f'textarea[data-fe="{i}"]')
+        try:
+            if not (campo.is_visible() and campo.is_editable()):
+                continue
+            maximo = campo.get_attribute("maxlength")
+            nuevo = _texto_nuevo(campo.input_value(), sello, prefijo, int(maximo) if maximo else None)
+            campo.fill(nuevo, timeout=5_000)
+        except Exception:
+            if campo.count() and campo.is_visible():
+                raise                                    # visible y aun así falló: error real
+            continue                                     # se ocultó (no era de este paso)
         corregidos.append(nuevo)
     return corregidos
 
 
-def fe_de_erratas(page, tarifa: dict, sello: str, hasta_resumen: bool) -> tuple[int, str]:
-    corregir_textos.sello = sello
-    fila = fila_en_tabla(page, tarifa)
-    abrir_accion(page, fila, "Fe de Erratas")
+def _numero_nuevo(actual: str, delta: Decimal) -> str:
+    """'50' + 1 → '51'; '0.5' + 1 → '1.5' (mantiene los decimales que tenía)."""
+    from decimal import Decimal as D
+    texto = (actual or "").strip().replace(",", "")
+    valor = D(texto) if texto else D(0)
+    decimales = len(texto.split(".")[1]) if "." in texto else 0
+    return f"{valor + delta:.{decimales}f}"
 
-    # Paso 1: datos de la tarifa (p. ej. "Otros datos generales").
-    page.get_by_role("button", name="Continuar con el paso 2").wait_for(state="visible")
-    textos = corregir_textos(page)
-    page.get_by_role("button", name="Continuar con el paso 2").click()
 
-    # Paso 2: datos del servicio; si hay pestañas "Servicio N" (paquetes), se corrige cada una.
-    continuar3 = page.get_by_role("button", name="Continuar con el paso 3")
-    continuar3.wait_for(state="visible")
-    page.wait_for_timeout(500)
-    pestanas = page.get_by_role("tab", name=re.compile(r"^Servicio \d+$"))
-    if pestanas.count():
-        for i in range(pestanas.count()):
-            pestanas.nth(i).click()
-            page.wait_for_timeout(500)
-            textos += corregir_textos(page)
-    else:
-        textos += corregir_textos(page)
-    if not textos:
-        raise RuntimeError("No se encontró ningún campo de texto para corregir.")
-    continuar3.click()
+def cambiar_numero(page, etiqueta: re.Pattern, nombre: str, delta: Decimal,
+                   si_vacio: Decimal | None = None) -> str | None:
+    """Cambia el campo numérico visible y habilitado cuya etiqueta coincide:
+    - con número: le suma `delta` (50 → 51);
+    - vacío de verdad (tras esperar hasta ~5 s a que SIRT lo llene): pone `si_vacio`
+      (por defecto 0 + delta, o sea 1).
+    Devuelve 'Etiqueta: antes → después' o None si el campo no existe o está bloqueado."""
+    for rol in ("textbox", "spinbutton"):
+        for campo in page.get_by_role(rol, name=etiqueta).all():
+            if not (campo.is_visible() and campo.is_editable()):
+                continue
+            antes = campo.input_value()
+            for _ in range(10):                          # ¿aún no cargó?
+                if antes.strip():
+                    break
+                page.wait_for_timeout(500)
+                antes = campo.input_value()
+            if antes.strip():
+                despues = _numero_nuevo(antes, delta)
+                if Decimal(despues) < 0:
+                    return None                          # no se puede bajar de 0
+            elif si_vacio is not None:
+                despues = str(si_vacio)
+            elif delta > 0:
+                despues = str(delta)
+            else:
+                return None                              # vacío y se quería bajar: no se toca
+            campo.fill(despues)
+            return f"{nombre}: {antes.strip() or '(vacío)'} → {despues}"
+    return None
 
-    # Paso 3: el resumen debe mostrar los textos nuevos.
-    guardar = page.get_by_role("button", name="Guardar cambios")
-    guardar.wait_for(state="visible")
-    resumen = page.locator("body").inner_text()
-    faltan = [t for t in textos if _sin_espacios(t) not in _sin_espacios(resumen)]
-    if faltan:
-        raise RuntimeError(f"El resumen no muestra {len(faltan)} de los textos corregidos: {faltan[0][:80]}")
-    if hasta_resumen:
-        return len(textos), "detenido en el resumen (sin guardar)"
 
-    guardar.click()
-    # Puede pedir una confirmación antes del mensaje final.
+# Listas de selección múltiple que la fe de erratas / rectificación también cambia
+# (hoy solo PTV: "Tipo de Contratación" con Postpago / Prepago).
+LISTAS_PASO_2 = [(re.compile(r"^Tipo de Contrataci[oó]n", re.I), "Tipo de Contratación")]
+# Con --todo se cambian además estas listas múltiples (móviles).
+LISTAS_TODO = [(re.compile(r"^Apps sin consumo", re.I), "Apps sin consumo de datos")]
+
+# --- --todo: TODOS los campos numéricos del paso 2 ----------------------------------
+# Marca los input con número de la pestaña activa (como MARCAR_TEXTOS) y devuelve su
+# etiqueta y valor. Excluye fechas, listas y campos bloqueados.
+MARCAR_NUMEROS = """() => {
+  const out = []; let n = 0;
+  for (const i of document.querySelectorAll('input')) {
+    i.removeAttribute('data-num');
+    if (i.disabled || i.readOnly) continue;
+    if (!['text', 'number', ''].includes(i.type || '')) continue;
+    if (i.getAttribute('role') === 'combobox') continue;
+    const r = i.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    let ok = true;
+    for (let a = i.parentElement; a && ok; a = a.parentElement) {
+      if (a.tagName === 'MAT-TAB-BODY' && !a.classList.contains('mat-mdc-tab-body-active')) ok = false;
+      if (a.getAttribute('aria-hidden') === 'true') ok = false;
+    }
+    if (!ok) continue;
+    const v = (i.value || '').trim().replace(/,/g, '');
+    if (!/^-?\\d+(\\.\\d+)?$/.test(v)) continue;
+    const ff = i.closest('mat-form-field');
+    const et = ff && ff.querySelector('mat-label, label');
+    const lab = ((et && et.innerText) || i.getAttribute('aria-label') || i.placeholder || '').trim();
+    i.setAttribute('data-num', String(n));
+    out.push({n: n++, lab: lab.replace(/\\s+/g, ' '), v});
+  }
+  return out;
+}"""
+# Topes de los que dependen otros campos (tethering, traslada datos y datos roaming
+# incluidos deben ser <= "Datos tope descarga"): al SUBIR se cambian primero, al BAJAR al final.
+TOPES = re.compile(r"tope", re.I)
+PORCENTAJE = re.compile(r"%|porcentaje|degradaci", re.I)
+
+
+def cambiar_todos_los_numeros(page, delta: Decimal, excluir: list[re.Pattern]) -> list[str]:
+    """Suma `delta` a todos los campos numéricos visibles y editables de la pestaña activa
+    (datos, velocidades, minutos, SMS, tarifas por minuto, roaming...). No toca los que
+    coinciden con `excluir` (se cambian aparte). Cambia 1 unidad del último decimal
+    (0.10 → 0.11, 12 → 13); no toca los que valen 0, no baja de 0 ni pasa de 100 en %.
+    Las tablas (filas ya registradas) NO se tocan: no son campos editables en pantalla."""
+    campos = page.evaluate(MARCAR_NUMEROS)
+    campos = [c for c in campos if not any(e.search(c["lab"]) for e in excluir)]
+    campos.sort(key=lambda c: (not TOPES.search(c["lab"])) if delta > 0 else bool(TOPES.search(c["lab"])))
+    hechos = []
+    for c in campos:
+        if Decimal(c["v"]) == 0:
+            continue                                     # 0 suele ser "no aplica": no se toca
+        decimales = len(c["v"].split(".")[1]) if "." in c["v"] else 0
+        paso = delta * (Decimal(1).scaleb(-decimales))   # 0.10 → 0.11 (no 1.10); 12 → 13
+        nuevo = _numero_nuevo(c["v"], paso)
+        if Decimal(nuevo) <= 0 or (PORCENTAJE.search(c["lab"]) and Decimal(nuevo) > 100):
+            continue
+        campo = page.locator(f'input[data-num="{c["n"]}"]')
+        try:
+            campo.fill(nuevo, timeout=5_000)
+        except Exception:
+            continue
+        hechos.append(f'{c["lab"] or "(sin etiqueta)"}: {c["v"]} → {nuevo}')
+    return hechos
+
+
+def cambiar_lista_multiple(page, etiqueta: re.Pattern, nombre: str) -> tuple[str, list[str]] | None:
+    """Cambia una lista de casillas (mat-select multiple) sin dejarla vacía:
+    con 2 o más marcadas desmarca la última; con 1 marca la primera que falte.
+    Devuelve ('Nombre: antes → después', opciones marcadas al final) o None si no existe."""
+    for combo in page.get_by_role("combobox", name=etiqueta).all():
+        if not (combo.is_visible() and combo.is_enabled()):
+            continue
+        antes = " ".join(combo.inner_text().split()) or "(vacío)"
+        combo.click()
+        lista = page.get_by_role("listbox").last
+        lista.wait_for(state="visible")
+        opciones = lista.get_by_role("option").all()
+        marcadas = [o for o in opciones if o.get_attribute("aria-selected") == "true"]
+        libres = [o for o in opciones if o.get_attribute("aria-selected") != "true"]
+        if len(marcadas) >= 2:
+            marcadas[-1].click()
+        elif libres:
+            libres[0].click()
+        page.wait_for_timeout(300)
+        finales = [" ".join(o.inner_text().split()) for o in lista.get_by_role("option").all()
+                   if o.get_attribute("aria-selected") == "true"]
+        page.keyboard.press("Escape")                    # la grabación cerraba con clic fuera
+        lista.wait_for(state="hidden")
+        despues = ", ".join(finales) or "(vacío)"
+        if not finales:
+            raise RuntimeError(f"{nombre} quedó vacío.")
+        return f"{nombre}: {antes} → {despues}", finales
+    return None
+
+
+def terminar_guardando(page) -> str:
+    """'Guardar cambios' → confirmaciones → todos los 'Aceptar' seguidos (SIRT muestra
+    dos: '¿Está seguro…?' y 'Registro guardado correctamente')."""
+    page.get_by_role("button", name="Guardar cambios").click()
     for _ in range(60):                                  # hasta ~15 s
         if page.get_by_role("button", name="Aceptar", exact=True).is_visible():
-            # Pueden salir varias ventanas seguidas con "Aceptar" (confirmación y resultado):
-            # se aceptan todas hasta que pasen ~4 s sin ninguna.
             mensajes = []
             aceptar = page.get_by_role("button", name="Aceptar", exact=True)
             while len(mensajes) < 5:
@@ -341,7 +515,11 @@ def fe_de_erratas(page, tarifa: dict, sello: str, hasta_resumen: bool) -> tuple[
                     aceptar.first.wait_for(state="visible", timeout=4_000)
                 except Exception:
                     break
-            return len(textos), " / ".join(mensajes)
+            final = " / ".join(mensajes)
+            if re.search(r"no se cumplieron|no puede|error", final, re.I) and \
+                    not re.search(r"correctamente", final, re.I):
+                raise RuntimeError(f"SIRT rechazó el guardado: {final[:400]}")
+            return final
         dialogo = page.locator("mat-dialog-container")
         if dialogo.count():
             for texto in ("Guardar tarifa", "Guardar cambios", "Confirmar", "Guardar", "Sí", "Si"):
@@ -353,26 +531,171 @@ def fe_de_erratas(page, tarifa: dict, sello: str, hasta_resumen: bool) -> tuple[
     raise RuntimeError(f"No apareció el mensaje final tras 'Guardar cambios'. Pantalla: {texto_dialogo(page)[:200]}")
 
 
+# Campos numéricos que se cambian en la rectificación (los demás no se tocan: hay
+# reglas entre campos, p. ej. tethering ≤ tope de descarga).
+NUMERICOS_PASO_1 = [(re.compile(r"^Tarifa (de )?instalaci[oó]n", re.I), "Tarifa de instalación")]
+NUMERICOS_PASO_2 = [(re.compile(r"^Valor del servicio", re.I), "Valor del servicio")]
+
+
+def esperar_datos_cargados(page) -> None:
+    """El botón 'Continuar' aparece antes que los datos: el 15-16/10 el paso 1 se leyó
+    vacío (0 textos y 'Tarifa de instalación: (vacío) → 1'). Espera a que haya cajas de
+    texto visibles y con contenido, y a que la red se calme (máx. ~10 s, sin fallar)."""
+    try:
+        page.locator("textarea:visible").first.wait_for(state="visible", timeout=8_000)
+        page.wait_for_function(
+            """() => [...document.querySelectorAll('textarea')]
+                     .filter(t => t.offsetParent !== null)
+                     .every(t => t.value.trim() !== '')""", timeout=5_000)
+    except Exception:
+        pass
+    try:
+        page.wait_for_load_state("networkidle", timeout=3_000)
+    except Exception:
+        pass
+    page.wait_for_timeout(300)
+
+
+def avanzar(page, boton, siguiente, nombre: str, intentos: int = 3) -> None:
+    """Pulsa `boton` hasta que aparezca `siguiente`. A veces SIRT ignora el primer clic
+    (p. ej. PIF el 16/10: se quedó en el paso 1 sin mostrar ningún error)."""
+    for intento in range(1, intentos + 1):
+        boton.click()
+        try:
+            siguiente.wait_for(state="visible", timeout=10_000)
+            return
+        except Exception:
+            aviso = texto_dialogo(page)
+            if aviso:
+                raise RuntimeError(f"No se pudo pasar al {nombre}: {aviso[:200]}")
+            print(f"    {nombre} no cargó (intento {intento}); se vuelve a pulsar")
+            page.wait_for_timeout(1_000)
+    raise RuntimeError(f"No se pudo pasar al {nombre} tras {intentos} intentos.")
+
+
+def editar_tres_pasos(page, tarifa: dict, opcion_menu: str, sello: str, prefijo: str,
+                      hasta_resumen: bool, delta: Decimal | None = None,
+                      cambiar_listas: bool = True,
+                      si_vacio: Decimal | None = None,
+                      fecha_ejecucion: date | None = None,
+                      todo: bool = False) -> tuple[list[str], str]:
+    """Flujo común de Fe de erratas y Rectificar: paso 1 → paso 2 → resumen → guardar.
+    Textos: se les agrega el sello. Números (solo con `delta`): valor del servicio y
+    tarifa de instalación, si están habilitados."""
+    fila = fila_en_tabla(page, tarifa)
+    abrir_accion(page, fila, opcion_menu)
+    cambios, textos, numeros = [], [], []
+
+    def corregir_pantalla(numericos, listas=()):
+        nonlocal textos
+        nuevos = corregir_textos(page, sello, prefijo)
+        textos += nuevos
+        cambios.append(f"{len(nuevos)} texto(s)")
+        if cambiar_listas:
+            for etiqueta, nombre in listas:
+                hecho = cambiar_lista_multiple(page, etiqueta, nombre)
+                if hecho:
+                    cambios.append(hecho[0])
+                    numeros.extend(hecho[1])             # se buscan también en el resumen
+        if delta is not None:
+            for etiqueta, nombre in numericos:
+                hecho = cambiar_numero(page, etiqueta, nombre, delta, si_vacio)
+                if hecho:
+                    cambios.append(hecho)
+                    numeros.append(hecho.split("→")[-1].strip())
+            if todo and listas:                          # solo en el paso 2
+                otros = cambiar_todos_los_numeros(page, delta, [e for e, _ in NUMERICOS_PASO_2 + NUMERICOS_PASO_1])
+                cambios.append(f"--todo: {len(otros)} campo(s) numérico(s)")
+                cambios.extend(otros)
+        if todo and cambiar_listas and listas:
+            for etiqueta, nombre in LISTAS_TODO:
+                hecho = cambiar_lista_multiple(page, etiqueta, nombre)
+                if hecho:
+                    cambios.append(hecho[0])
+
+    # Paso 1: datos de la tarifa.
+    page.get_by_role("button", name="Continuar con el paso 2").wait_for(state="visible")
+    esperar_datos_cargados(page)
+    if fecha_ejecucion:                                   # solo Cambio de Tarifa
+        elegida = elegir_fecha_calendario(page, fecha_ejecucion, DIAS_EXTRA_SI_BLOQUEADO)
+        cambios.append(f"Fecha de ejecución: {elegida:%d/%m/%Y}"
+                       + (f" (pedida {fecha_ejecucion:%d/%m/%Y}, estaba bloqueada)" if elegida != fecha_ejecucion else ""))
+    corregir_pantalla(NUMERICOS_PASO_1)
+    continuar3 = page.get_by_role("button", name="Continuar con el paso 3")
+    avanzar(page, page.get_by_role("button", name="Continuar con el paso 2"), continuar3, "paso 2")
+
+    # Paso 2: datos del servicio (si hay pestañas "Servicio N", se corrige cada una).
+    esperar_datos_cargados(page)
+    pestanas = page.get_by_role("tab", name=re.compile(r"^Servicio \d+$"))
+    total = pestanas.count()
+    for i in range(max(1, total)):
+        if total:
+            pestanas.nth(i).click()
+            page.wait_for_timeout(500)
+        numericos = NUMERICOS_PASO_2
+        if total > 1 and delta is not None and delta > 0 and i == total - 1:
+            # Empaquetado: el valor del plan (suma de los servicios) debe ser MENOR a la suma
+            # de las tarifas base, y cada servicio <= su tarifa base. Como el paquete se creó
+            # con base - 1, subir todos daría suma = suma de bases → SIRT lo rechaza (16/10).
+            # Se deja el último servicio sin subir.
+            numericos = []
+            cambios.append(f"Servicio {i + 1}: valor sin subir (regla del empaquetado: plan < suma de bases)")
+        corregir_pantalla(numericos, LISTAS_PASO_2)
+    if not textos and not numeros:
+        raise RuntimeError("No se encontró ningún campo para modificar.")
+    avanzar(page, continuar3, page.get_by_role("button", name="Guardar cambios"), "paso 3 (resumen)")
+
+    # Paso 3: el resumen debe mostrar los textos y números nuevos.
+    page.get_by_role("button", name="Guardar cambios").wait_for(state="visible")
+    resumen = _sin_espacios(page.locator("body").inner_text())
+    faltan = [t for t in textos + numeros if _sin_espacios(t) not in resumen]
+    if faltan:
+        raise RuntimeError(f"El resumen no muestra {len(faltan)} de los cambios: {faltan[0][:80]}")
+    if hasta_resumen:
+        return cambios, "detenido en el resumen (sin guardar)"
+    return cambios, terminar_guardando(page)
+
+
 # --- Principal -------------------------------------------------------------------
 
 def leer_argumentos():
     parser = argparse.ArgumentParser(description="Acciones sobre tarifas registradas.")
-    parser.add_argument("accion", choices=["buscar", "renombre", "cese", "fe_erratas"])
+    parser.add_argument("accion", choices=["buscar", "renombre", "cese", "fe_erratas", "rectificar", "cambio"])
     parser.add_argument("--tarifas", nargs="+", required=True, help="nombres actuales de las tarifas")
     parser.add_argument("--sufijo", default=SUFIJO_POR_DEFECTO, help="renombre: se agrega al nombre actual")
     parser.add_argument("--nuevo-nombre", help="renombre: nombre exacto (solo con una tarifa)")
-    parser.add_argument("--fecha", help="cese: fin de comercialización AAAA-MM-DD (por defecto, mañana)")
+    parser.add_argument("--fecha", help="cese: fin de comercialización AAAA-MM-DD (por defecto, mañana); "
+                                        "cambio: fecha de ejecución (por defecto según --delta)")
     parser.add_argument("--sin-validar", action="store_true",
                         help="cese / fe_erratas: intentar aunque la tarifa no esté En comercialización")
-    parser.add_argument("--texto", default="Fe de erratas",
-                        help="fe_erratas: texto que se agrega a cada campo (con fecha y hora)")
+    parser.add_argument("--texto", default=None,
+                        help="fe_erratas / rectificar: texto del sello (por defecto 'Fe de erratas' / 'Rectificación')")
+    parser.add_argument("--delta", default=None,
+                        help="rectificar / cambio: cuánto se suma al valor del servicio y a la tarifa de "
+                             "instalación (por defecto: rectificar 1, cambio -1)")
+    parser.add_argument("--valor-si-vacio", default=None,
+                        help="rectificar: valor para un campo numérico vacío (por defecto, el delta: 1)")
     parser.add_argument("--hasta-resumen", action="store_true",
-                        help="fe_erratas: llega al paso 3 y se detiene SIN guardar (para revisar)")
+                        help="fe_erratas / rectificar: llega al paso 3 y se detiene SIN guardar")
+    parser.add_argument("--sin-listas", action="store_true",
+                        help="fe_erratas / rectificar: no cambiar listas como 'Tipo de Contratación'")
+    parser.add_argument("--todo", action="store_true",
+                        help="rectificar / cambio: cambia también TODOS los demás campos numéricos del "
+                             "paso 2 (datos, velocidades, minutos, tarifas...) y 'Apps sin consumo de datos'. "
+                             "No toca filas de tablas.")
+    parser.add_argument("--repetir", action="store_true",
+                        help="hacer la acción aunque la tarifa ya la tenga EXITOSA en el CSV")
     parser.add_argument("--si", action="store_true", help="no pedir confirmación")
     parser.add_argument("--solo-listar", action="store_true", help="muestra lo que haría, sin tocar SIRT")
     parser.add_argument("--diagnostico", action="store_true")
     parser.add_argument("--al-frente", action="store_true")
     return parser.parse_args()
+
+
+MENUS = {"fe_erratas": "Fe de Erratas", "rectificar": "Rectificar", "cambio": "Cambio de Tarifa"}
+PREFIJOS = {"fe_erratas": "Fe de erratas", "rectificar": "Rectificación", "cambio": "Cambio"}
+NOMBRES_ACCION = {"fe_erratas": "la fe de erratas", "rectificar": "la rectificación",
+                  "cambio": "el cambio de tarifa"}
 
 
 def nombre_nuevo_de(nombre: str, args) -> str:
@@ -384,7 +707,7 @@ def main() -> None:
     if args.nuevo_nombre and len(args.tarifas) != 1:
         sys.exit("--nuevo-nombre solo se puede usar con una tarifa.")
 
-    hechas = ya_hechas(args.accion) if args.accion != "buscar" else set()
+    hechas = ya_hechas(args.accion) if args.accion not in ("buscar",) and not args.repetir else set()
     pendientes = [t for t in args.tarifas if t not in hechas]
     for t in args.tarifas:
         if t in hechas:
@@ -399,18 +722,34 @@ def main() -> None:
             sys.exit("La fecha de cese debe ser posterior a hoy.")
         for t in pendientes:
             print(f"  {t}  →  fin de comercialización {fecha_cese:%d/%m/%Y}")
+    if args.delta is None:
+        args.delta = "-1" if args.accion == "cambio" else "1"
+    fecha_ejecucion = None
+    if args.accion == "cambio":
+        alza = Decimal(args.delta) > 0
+        minimo = date.today() + timedelta(days=DIAS_ANTICIPACION_ALZA if alza else DIAS_ANTICIPACION_BAJA)
+        fecha_ejecucion = date.fromisoformat(args.fecha) if args.fecha else minimo
+        if fecha_ejecucion < minimo:
+            print(f"  AVISO: fecha {fecha_ejecucion:%d/%m/%Y} antes del mínimo {minimo:%d/%m/%Y} "
+                  f"({'alza' if alza else 'baja'}); SIRT podría rechazarla.")
+    if args.accion in ("fe_erratas", "rectificar", "cambio"):
+        prefijo = args.texto or PREFIJOS[args.accion]
+        extra = "" if args.accion == "fe_erratas" else \
+            f"; valor del servicio y tarifa de instalación {Decimal(args.delta):+}"
+        if fecha_ejecucion:
+            extra += f"; fecha de ejecución {fecha_ejecucion:%d/%m/%Y}"
+        for t in pendientes:
+            print(f"  {t}  →  {args.accion}: textos + '| {prefijo} <fecha hora>'{extra}"
+                  + ("  (se detiene en el paso 3, sin guardar)" if args.hasta_resumen else ""))
     if args.solo_listar:
         print("\n--solo-listar: no se tocó SIRT.")
         return
     if not pendientes:
         print("No hay tarifas pendientes.")
         return
-    if args.accion == "fe_erratas":
-        for t in pendientes:
-            print(f"  {t}  →  fe de erratas: a cada campo de texto se le agrega '| {args.texto} <fecha hora>'"
-                  + ("  (se detiene en el paso 3, sin guardar)" if args.hasta_resumen else ""))
-    if args.accion in ("cese", "fe_erratas") and not args.si and not args.hasta_resumen:
-        accion_txt = "el CESE" if args.accion == "cese" else "una FE DE ERRATAS"
+    if args.accion in ("cese", "fe_erratas", "rectificar", "cambio") and not args.si and not args.hasta_resumen:
+        accion_txt = {"cese": "el CESE", "fe_erratas": "una FE DE ERRATAS",
+                      "rectificar": "una RECTIFICACIÓN", "cambio": "un CAMBIO DE TARIFA"}[args.accion]
         print(f"\nATENCIÓN: se registrará {accion_txt} en {len(pendientes)} tarifa(s) (probablemente irreversible).")
         if input("Escribe 'si' para continuar: ").strip().lower() not in ("si", "sí"):
             print("Cancelado.")
@@ -469,14 +808,22 @@ def main() -> None:
                     fila["resultado"] = "EXITOSO"
                     fila["detalle"] = f"fin comercialización {fecha_cese:%d/%m/%Y} | {mensaje[:250]}"
                     print(f"  Cese programado: fin de comercialización {fecha_cese:%d/%m/%Y}")
-                elif args.accion == "fe_erratas":
-                    validar_para_cese(tarifa, args.sin_validar, "la fe de erratas")
-                    sello = f"| {args.texto} {datetime.now():%d/%m/%Y %H:%M}"
-                    cambios, mensaje = etapa("fe_erratas", lambda: fe_de_erratas(page, tarifa, sello, args.hasta_resumen))
+                elif args.accion in ("fe_erratas", "rectificar", "cambio"):
+                    con_numeros = args.accion != "fe_erratas"
+                    validar_para_cese(tarifa, args.sin_validar, NOMBRES_ACCION[args.accion])
+                    prefijo = args.texto or PREFIJOS[args.accion]
+                    sello = f"| {prefijo} {datetime.now():%d/%m/%Y %H:%M}"
+                    cambios, mensaje = etapa(args.accion, lambda: editar_tres_pasos(
+                        page, tarifa, MENUS[args.accion], sello, prefijo,
+                        args.hasta_resumen, Decimal(args.delta) if con_numeros else None,
+                        not args.sin_listas,
+                        Decimal(args.valor_si_vacio) if args.valor_si_vacio else None,
+                        fecha_ejecucion, args.todo and con_numeros))
                     fila["resultado"] = "EN_RESUMEN" if args.hasta_resumen else "EXITOSO"
-                    fila["detalle"] = f"{cambios} campo(s) {sello} | {mensaje[:250]}"
-                    print(f"  {cambios} campo(s) modificados"
-                          + (" — detenido en el paso 3 SIN guardar." if args.hasta_resumen else ". Guardado."))
+                    fila["detalle"] = f"{' | '.join(cambios)} | {sello} | {mensaje[:250]}"
+                    for c in cambios:
+                        print(f"  {c}")
+                    print("  Detenido en el paso 3 SIN guardar." if args.hasta_resumen else "  Guardado.")
                 exitosas += 1
 
             except NoAplica as aviso:

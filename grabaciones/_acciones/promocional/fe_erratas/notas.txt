@@ -1,0 +1,28 @@
+FE DE ERRATAS de una TARIFA PROMOCIONAL - grabación de referencia
+
+Tarifa usada:
+Requisito: la promoción debe estar En comercialización y Vigente (pasa a ese estado el
+día siguiente a su registro definitivo). Las promociones se llaman TP-<código>-<lote>-NNN.
+
+Qué se espera (diferencias con las tarifas establecidas):
+- El paso 1 de una promoción tiene Fin de comercialización, Valor del plan, Tarifa de
+  instalación y la lista de tarifas base; el paso 2 tiene, por servicio, los atributos
+  promocionados (Tipo de variación, Variación, Duración, archivo adjunto, plataforma APP).
+
+Qué grabar (de principio a fin, GUARDANDO hasta el último "Aceptar"):
+buscar → ⋮ → "Fe de Erratas" → paso 1 → continuar → paso 2 (cada pestaña de servicio si hay
+varias) → continuar → resumen → Guardar cambios → todas las confirmaciones.
+En la grabación: cambia solo textos (1 o 2 campos basta).
+
+Archivos:
+- grabacion.py   la grabación completa (codegen).
+- *.png          capturas del paso 1, del paso 2, del resumen y de cada ventana.
+
+Completar:
+- ¿Qué campos aparecen en el paso 1? ¿Cuáles están bloqueados?:
+- ¿Qué campos aparecen en el paso 2 (por atributo promocionado)? ¿Cuáles se pueden editar?:
+- ¿Se puede cambiar Tipo de variación / Variación / Duración / archivo?:
+- ¿Algún mensaje de validación (p. ej. duración ≤ 180 días, valor del plan)?:
+- ¿Mensajes / ventanas al guardar (en orden)?:
+- ¿Qué pasa con la tarifa después (versión, estado)?:
+- Otras observaciones:

@@ -181,7 +181,7 @@ def guardar_paso_1(page) -> str:
     page.get_by_role("button", name="Guardar y continuar con el paso").click()
     page.wait_for_url(re.compile(r"step=2"))
 
-    coincidencia = re.search(r"nueva-tarifa/(\d+)", page.url)
+    coincidencia = re.search(r"nueva-tarifa(?:-promocional)?/(\d+)", page.url)  # también promociones
     return coincidencia.group(1) if coincidencia else ""
 
 

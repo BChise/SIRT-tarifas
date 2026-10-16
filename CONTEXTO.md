@@ -297,6 +297,43 @@ estado de vigencia: "Vigente"). Cese probado en SIRT el 15/10.
 está grabado: se maneja confirmación genérica + Aceptar). Se rellenan todas las
 textareas visibles con un sello con fecha y hora. Grabaciones en
 `grabaciones/_acciones/fe_erratas/caso1..3`; 6 servicios por revisar el 16/10.
+Fe de erratas probada en SIRT (15/10) en IF, PTF, OS y SMP (casos 1-3).
+16/10: revisados los 6 restantes → OTF, TVP, TVPR, PIF = caso1; SMQ = caso3;
+PTV = caso4 (caso1 + "Tipo de Contratación", mat-select múltiple Postpago/Prepago
+en el paso 2; grabación con TE-PTV-PROMO-003 hasta el resumen). `cambiar_lista_multiple`
+la cambia sin dejarla vacía (2 marcadas → desmarca la última; 1 → marca otra),
+cierra con Escape y busca las opciones finales en el resumen. `--sin-listas` la omite.
+Fallos del 16/10: SMQ-PROMO-001 no existe (usar SMQ-PROMO-002); PIF ignoró el clic en
+"Continuar con el paso 2" → `avanzar()` reintenta hasta 3 veces. El paso 1 se leía
+antes de cargar (0 textos, instalación "(vacío) → 1" en OS/SMC del 15/10) →
+`esperar_datos_cargados()`. Número vacío: espera ~5 s; si sigue vacío pone 1 o
+`--valor-si-vacio`.
+16/10 (prueba de 15): las textarea del paso 2 están en la página desde el paso 1
+(pestaña oculta) → el paso 1 contaba de más y SMQ falló al llenar una que se ocultó.
+`corregir_textos` solo toma las de la pestaña activa (`MARCAR_TEXTOS`, mat-tab-body
+activo) y salta las que se ocultan. SMO-PROMO-001 se renombró a mano a
+`TE-SMO-PROMO-001_RENOMBRE`; OTF/PTF/TVPR/AC/SMO-PROMO-002 tienen sufijo `_REN`.
+**Cambio de tarifa** (16/10; grabación OS TE-OS-MUESTRA-001 en
+`grabaciones/_acciones/cambio/`, verificación de campos en `verificacion_cambio.xlsx`):
+menú "Cambio de Tarifa" → paso 1 (Fecha de ejecución con calendario, Tarifa de
+instalación, Otros datos generales; igual en los 15) → paso 2 (el del registro sin los
+campos que definen el plan: periodicidad/duración, tipo de acceso/línea/contratación,
+tecnología, internet ilimitado, componentes; OS y AC además sin Tipo de moneda, AC sin
+Tecnología de transmisión) → resumen → Guardar cambios → 2 Aceptar. Regla SIRT: al subir
+precios la fecha no puede ser anterior a hoy + 2 días (`DIAS_ANTICIPACION_ALZA`); al
+bajar: hoy siempre está bloqueado en el calendario → mañana (`DIAS_ANTICIPACION_BAJA` = 1).
+`terminar_guardando` ahora falla si el mensaje final es de validación (antes lo daba por
+EXITOSO). Por confirmar: qué pasa con la tarifa tras el cambio (versión, estado).
+`--todo` (16/10): `cambiar_todos_los_numeros` (MARCAR_NUMEROS, pestaña activa) cambia
+todos los input numéricos del paso 2 salvo Valor del servicio (aparte); paso = 1 unidad
+del último decimal; 0 no se toca; % ≤ 100; topes primero al subir / al final al bajar.
+Tablas (filas registradas) sin tocar: para editarlas haría falta grabar la edición de una fila.
+`acciones.py rectificar` (15/10, simulada; grabación OS completa): menú
+"Rectificar" → paso 1 (Alcance, "Tarifa de instalación" textbox, Otros datos
+generales) → paso 2 (= paso 2 del registro, ya lleno) → paso 3 → Guardar cambios
+→ 2 Aceptar. Cambia: textos + "| Rectificación <fecha>" y +1 en Valor del
+servicio y Tarifa de instalación (leídos de la pantalla). Por confirmar: si crea
+versión 2 y si pasa a temporales / registro definitivo.
 
 **Después: renombrar** (sí se usará). Base: `referencia_lyc/renombrar_tarifas.py`.
 Rectificar y fe de erratas quedan para más adelante (sus campos dependen del servicio).
@@ -310,7 +347,34 @@ registro definitivo. Piezas reutilizables: búsqueda por código con "Filtro
 avanzado", menú `get_by_label("Acciones")` → `menuitem`, paginador a 100
 filas (`listar_tarifas.py`), versión más alta, doble "Aceptar".
 
+**Acciones en EMPAQUETADOS** (16/10; grabaciones con TE-EMP-MUESTRA-006 en
+`grabaciones/_acciones/promocional/` — la carpeta dice "promocional" pero es empaquetado):
+fe de erratas / rectificar / cambio = mismo flujo de 3 pasos; paso 1 con Tarifa de
+instalación (+ Fecha de ejecución en cambio, + Alcance en rectificar), paso 2 con pestañas
+"Servicio N" y "Valor del servicio" (spinbutton) en cada una. `editar_tres_pasos` ya
+recorre las pestañas. Reglas SIRT vistas: cada servicio <= valor de su tarifa base y
+valor del plan (suma) < suma de las bases → al SUBIR se deja sin subir el último
+servicio (el paquete se creó con base − 1). Alcance: debe coincidir con la intersección
+de las tarifas base → no se toca. Cambio: alza → hoy + 2 días (igual que monoproducto).
+
 ## Pendientes
+
+- **Licitaciones y Contratos (16/10: se implementará después, no ahora).** Registro
+  de tarifas de tipo Licitación y Contratos (combinan hasta 9 servicios en una tarifa).
+  Base: `referencia_lyc/` (proyecto anterior, ambiente sirt.pe; sin disponibilidad ni
+  registro definitivo). Falta grabarlo en QA para FLOR TV.
+- **Promociones: catálogo completo (16/10).** 145 atributos promocionables en 14
+  servicios (OS: 0), de 4 tipos: PROMOCIONAL (tipo de variación + variación + duración),
+  PROMOCIONAL_VELOCIDAD (filas de la tabla de velocidades), PROMOCIONAL_ADJUNTO (canales
+  TV, Excel) y PROMOCIONAL_APP (plataforma). `promocionar_fila` maneja los 4; probados 45
+  (`ATRIBUTOS_PROBADOS`). `--atributos todos` usa los 145 (sin probar en SIRT).
+
+- **Tablas en cambio / rectificación (16/10, mapeado):** `--todo` no toca filas de tablas
+  (Tecnologías y velocidades, LDI, roaming, bolsas de datos): se editan con el botón de
+  cada fila (ventana). Falta grabar en un Cambio de Tarifa móvil la edición de una fila
+  de "Tecnologías y velocidades" (y si se puede una de países) hasta el resumen. Si la
+  ventana es la de "Agregar" del registro, se reutiliza ese código; vale para cambio y
+  rectificación (mismo flujo `editar_tres_pasos`).
 
 - **Para después:** opción tipo `--hasta-resumen` (llegar al último paso y
   detenerse sin guardar/confirmar) en todos los scripts: ejecutar, empaquetar,

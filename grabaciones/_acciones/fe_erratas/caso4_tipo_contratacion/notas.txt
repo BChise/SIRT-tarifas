@@ -1,0 +1,22 @@
+Fe de erratas - caso4_tipo_contratacion
+
+Servicio: Paquetes adicionales y otras tarifas de televisión de paga (PTV)
+Campos vistos (16/10): Paso 1: Otros datos generales. Paso 2: Tipo de Contratación
+(lista con casillas: Postpago, Prepago), Condiciones generales, Restricciones técnicas.
+Tarifa sugerida: TE-PTV-PROMO-001   (debe estar En comercialización y Vigente)
+
+Archivos:
+- grabacion.py   grabación completa: buscar → ⋮ → Fe de Erratas → paso 1 → Continuar con el
+                 paso 2 → paso 2 (cambiar textos Y el Tipo de Contratación) → Continuar con
+                 el paso 3 → Guardar cambios → Aceptar(es) → mensaje final.
+- *.png          capturas de la lista Tipo de Contratación abierta, del paso 3 (resumen)
+                 y de las ventanas de confirmación.
+
+Completar:
+- Tarifa usada:
+- ¿Qué valor tenía Tipo de Contratación antes y cuál le pusiste?:
+- ¿La fe de erratas DEBE cambiar Tipo de Contratación o es opcional?:
+- ¿Se puede dejar solo una opción (Postpago o Prepago) o deben ir las dos?:
+- ¿Cómo se cierra la lista después de marcar (Escape, clic fuera)?:
+- ¿Qué botones y mensajes aparecen en el paso 3 hasta terminar?:
+- Otras observaciones:

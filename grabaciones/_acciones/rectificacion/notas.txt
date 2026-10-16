@@ -1,0 +1,22 @@
+Acción: Rectificación (monoproducto)
+
+Tarifa usada en la grabación:            (nombre y código SIRT; En comercialización y Vigente)
+Servicio:
+
+Archivos:
+- grabacion.py   grabación completa: buscar → ⋮ → Rectificar → paso 1 (Alcance, Tarifa
+                 Instalación, Otros datos generales) → Continuar con el paso 2 → paso 2
+                 (cambiar 1 o 2 campos, p. ej. Valor del servicio y un texto) → paso 3
+                 (resumen) → guardar → ventanas de confirmación → Aceptar.
+                 Si prefieres no guardar, detente en el resumen.
+- *.png          capturas del paso 3 (resumen y sus botones) y de las ventanas finales.
+
+Completar:
+- ¿Llegaste a guardar? (sí / no, solo hasta el resumen):
+- Botones del paso 3 (nombres exactos):
+- Ventanas que aparecieron al guardar y cuántos "Aceptar":
+- Después de rectificar: ¿se crea una versión 2 de la tarifa?:
+- ¿La tarifa rectificada pasa a Tarifas temporales y necesita registro definitivo / disponibilidad?:
+- ¿SIRT exige cambiar algún campo en particular (p. ej. el valor del servicio)?:
+- Mensajes de error que aparecieron y por qué:
+- Otras observaciones:

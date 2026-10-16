@@ -137,11 +137,46 @@ Pide confirmación salvo `--si`.
 Fe de erratas: agrega "| Fe de erratas <fecha hora>" a todos los campos de texto
 visibles de los pasos 1 y 2 (sirve para cualquier servicio; solo cambia cuántos
 campos hay), comprueba el resumen del paso 3 y pulsa "Guardar cambios".
+Si el paso 2 tiene "Tipo de Contratación" (PTV), también la cambia sin dejarla
+vacía: con Postpago + Prepago desmarca la última; con una sola, marca la otra
+(`--sin-listas` para no tocarla; aplica también a rectificar).
 `--hasta-resumen` se detiene en el paso 3 sin guardar.
+Casos por servicio (`grabaciones/_acciones/fe_erratas/pendientes.txt`): caso1 fijos
+(TF, IF, PTF, OTF, TVP, TVPR, PIF), caso2 OS/AC, caso3 móviles (SMP, SMC, SMO, SMQ),
+caso4 PTV (con Tipo de Contratación).
 ```bash
 python acciones.py fe_erratas --tarifas TE-IF-MUESTRA-001 --hasta-resumen --diagnostico
 python acciones.py fe_erratas --tarifas TE-IF-MUESTRA-001 --diagnostico
 ```
+
+Rectificar: mismo flujo que fe de erratas (menú "Rectificar", pasos 1-2-3,
+"Guardar cambios", dos "Aceptar"); además suma `--delta` (1) al Valor del
+servicio y a la Tarifa de instalación si está habilitada. Si el campo sigue
+vacío tras esperar a que cargue, pone 1 (o `--valor-si-vacio N`). No toca
+tablas ni el alcance.
+Las tarifas con la acción ya EXITOSA en el CSV se saltan; `--repetir` lo evita
+(p. ej. una segunda rectificación).
+```bash
+python acciones.py rectificar --tarifas TE-OS-MUESTRA-001 --hasta-resumen --diagnostico
+python acciones.py rectificar --tarifas TE-OS-MUESTRA-001 --diagnostico
+```
+
+Cambio de tarifa (menú "Cambio de Tarifa"): mismo flujo de 3 pasos + "Fecha de
+ejecución" en el paso 1. Por defecto BAJA 1 el valor del servicio y la instalación
+(`--delta -1`, beneficioso) con fecha hoy + `DIAS_ANTICIPACION_BAJA` (1: el calendario siempre bloquea hoy;
+si el día está bloqueado prueba los siguientes, `DIAS_EXTRA_SI_BLOQUEADO`). Si sube
+(`--delta 1`), la fecha es hoy + `DIAS_ANTICIPACION_ALZA` (2; regla de SIRT). Ambas
+constantes están al inicio de `acciones.py`. `--fecha AAAA-MM-DD` la fija a mano.
+```bash
+python acciones.py cambio --tarifas TE-OS-MUESTRA-001 --hasta-resumen --diagnostico
+python acciones.py cambio --tarifas TE-OS-MUESTRA-001 --diagnostico
+python acciones.py cambio --tarifas TE-OS-MUESTRA-001 --delta 1 --diagnostico
+```
+`--todo` (cambio / rectificar): además cambia TODOS los demás campos numéricos del
+paso 2 (datos, velocidades, minutos/SMS, tarifas por minuto, roaming...) en 1 unidad de
+su último decimal (12 → 13, 0.10 → 0.11), sin tocar los que valen 0 ni pasar de 100 en
+%, y alterna "Apps sin consumo de datos". Con "Datos tope descarga" primero al subir y
+último al bajar (tethering / traslada / roaming ≤ tope). Las filas de tablas no se tocan.
 
 Busca por nombre en Tarifas registradas (Filtro avanzado) y lee código SIRT,
 versión, comercialización y vigencia de la respuesta del filtro. Renombre:
