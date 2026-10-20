@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIRT · Herramienta de pruebas</title>
+<link rel="stylesheet" href="/static/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">
+    <span class="logo">◆</span>
+    <div>
+      <h1>SIRT · Herramienta de pruebas</h1>
+      <p class="sub">FLOR TV E.I.R.L. · ambiente QA</p>
+    </div>
+  </div>
+  <div class="estado">
+    <span id="estado-edge" class="pildora">Edge: comprobando…</span>
+    <span id="estado-tarea" class="pildora">Sin tareas</span>
+  </div>
+</header>
+
+<nav class="pestanas" id="pestanas">
+  <button data-vista="establecidas" class="activa">Registrar establecidas</button>
+  <button data-vista="definitivo">Registro definitivo</button>
+  <button data-vista="empaquetar">Empaquetar</button>
+  <button data-vista="promocionar">Promocionar</button>
+  <button data-vista="acciones">Acciones</button>
+  <button data-vista="resultados">Resultados</button>
+</nav>
+
+<main class="contenido">
+  <section class="panel-izq">
+
+    <!-- ===================== ESTABLECIDAS ===================== -->
+    <form class="vista activa" id="vista-establecidas" data-tarea="establecidas">
+      <h2>Registrar tarifas establecidas</h2>
+      <p class="ayuda">Corre <code>ejecutar.py</code> para cada servicio elegido, uno tras otro. Cada caso combina las listas del servicio (alcance, periodicidad…) hasta el límite indicado.</p>
+      <div class="fila">
+        <label>Lote <input name="lote" required list="lista-lotes" placeholder="p. ej. PRUEBA3"></label>
+        <label>Casos por servicio <input name="limite" type="number" min="1" value="1"></label>
+        <label class="check"><input type="checkbox" name="diagnostico" checked> Diagnóstico</label>
+      </div>
+      <fieldset>
+        <legend>Servicios <button type="button" class="enlace" data-marcar="servicios">todos</button> · <button type="button" class="enlace" data-desmarcar="servicios">ninguno</button></legend>
+        <div class="rejilla" data-servicios="servicios"></div>
+      </fieldset>
+      <div class="acciones-form">
+        <button class="primario" type="submit">Registrar tarifas establecidas</button>
+      </div>
+    </form>
+
+    <!-- ===================== DEFINITIVO ===================== -->
+    <form class="vista" id="vista-definitivo" data-tarea="definitivo">
+      <h2>Registro definitivo</h2>
+      <p class="ayuda">Pasa a definitivo las tarifas temporales de un lote (con disponibilidad comercial cuando el servicio la pide; en paquetes, la intersección de sus tarifas). Sin servicios ni nombres: todo el lote.</p>
+      <div class="fila">
+        <label>Lote <input name="lote" required list="lista-lotes"></label>
+        <label>Límite <input name="limite" type="number" min="0" value="0" title="0 = sin límite"></label>
+        <label>Ubigeos <input name="ubigeos" placeholder="(por defecto Amazonas)"></label>
+        <label class="check"><input type="checkbox" name="diagnostico" checked> Diagnóstico</label>
+      </div>
+      <fieldset>
+        <legend>Solo estos servicios (opcional)</legend>
+        <div class="rejilla" data-servicios="servicios" data-sin-marcar></div>
+      </fieldset>
+      <label class="bloque">Solo estas tarifas (opcional, una por línea)
+        <textarea name="nombres" rows="3" placeholder="TE-EMP-MUESTRA-007"></textarea></label>
+      <div class="acciones-form"><button class="primario" type="submit">Registrar en definitivo</button></div>
+    </form>
+
+    <!-- ===================== EMPAQUETAR ===================== -->
+    <form class="vista" id="vista-empaquetar" data-tarea="empaquetar">
+      <h2>Empaquetar</h2>
+      <p class="ayuda">Crea una tarifa empaquetada con las tarifas elegidas (deben tener registro definitivo). Valor de cada servicio por defecto: su tarifa base − 1.</p>
+      <div class="fila">
+        <label>Lote <input name="lote" required list="lista-lotes"></label>
+        <label>Nombre (opcional) <input name="nombre" placeholder="automático: TE-EMP-&lt;lote&gt;-NNN"></label>
+        <label>Valores (opcional) <input name="valores" placeholder="29, 99"></label>
+        <label class="check"><input type="checkbox" name="diagnostico" checked> Diagnóstico</label>
+      </div>
+      <div class="selector" data-selector="tarifas" data-origen="establecida" data-definitivas></div>
+      <div class="acciones-form"><button class="primario" type="submit">Empaquetar</button></div>
+    </form>
+
+    <!-- ===================== PROMOCIONAR ===================== -->
+    <form class="vista" id="vista-promocionar" data-tarea="promocionar">
+      <h2>Promocionar</h2>
+      <p class="ayuda">Crea promociones (TP-…) sobre monoproductos o empaquetados con registro definitivo.</p>
+      <div class="fila">
+        <label>Lote <input name="lote" required list="lista-lotes"></label>
+        <label>Atributos
+          <select name="atributos_modo">
+            <option value="probados">Probados (por defecto)</option>
+            <option value="todos">Todos los del catálogo</option>
+            <option value="lista">Lista propia…</option>
+          </select></label>
+        <label class="oculto" data-si="atributos_modo=lista">Lista (separada por ;)
+          <input name="atributos_lista" placeholder="Datos para tethering;Traslada datos"></label>
+      </div>
+      <div class="fila">
+        <label>Variación % <input name="variacion_porcentual" value="10"></label>
+        <label>Variación cantidad <input name="variacion_cantidad" value="1"></label>
+        <label>Duración (días, ≤180) <input name="duracion" value="30"></label>
+        <label>Días de comercialización <input name="dias_comercializacion" type="number" value="60"></label>
+      </div>
+      <div class="fila">
+        <label class="check"><input type="checkbox" name="una_por_tarifa" checked> Una promoción por tarifa</label>
+        <label class="check"><input type="checkbox" name="sin_valor_plan"> Sin valor del plan</label>
+        <label class="check"><input type="checkbox" name="sin_instalacion"> Sin tarifa de instalación</label>
+        <label class="check"><input type="checkbox" name="diagnostico" checked> Diagnóstico</label>
+      </div>
+      <div class="selector" data-selector="tarifas" data-origen="establecida,empaquetado" data-definitivas></div>
+      <div class="acciones-form"><button class="primario" type="submit">Promocionar</button></div>
+    </form>
+
+    <!-- ===================== ACCIONES ===================== -->
+    <form class="vista" id="vista-acciones" data-tarea="accion">
+      <h2>Acciones sobre tarifas registradas</h2>
+      <div class="fila">
+        <label>Acción
+          <select name="accion">
+            <option value="buscar">Buscar (solo consulta)</option>
+            <option value="renombre">Renombrar</option>
+            <option value="cese">Cese de comercialización</option>
+            <option value="fe_erratas">Fe de erratas</option>
+            <option value="rectificar">Rectificar</option>
+            <option value="cambio">Cambio de tarifa</option>
+          </select></label>
+        <label class="oculto" data-si="accion=renombre">Sufijo <input name="sufijo" value="_REN"></label>
+        <label class="oculto" data-si="accion=renombre">Nombre exacto (1 tarifa) <input name="nuevo_nombre"></label>
+        <label class="oculto" data-si="accion=cese,cambio">Fecha <input name="fecha" type="date"></label>
+        <label class="oculto" data-si="accion=rectificar,cambio">Delta <input name="delta" placeholder="rectificar 1 · cambio -1"></label>
+        <label class="oculto" data-si="accion=fe_erratas,rectificar,cambio">Texto del sello <input name="texto" placeholder="(por defecto el de la acción)"></label>
+      </div>
+      <div class="fila">
+        <label class="check oculto" data-si="accion=fe_erratas,rectificar,cambio"><input type="checkbox" name="hasta_resumen" checked> Solo hasta el resumen (no guarda)</label>
+        <label class="check oculto" data-si="accion=renombre,cese,fe_erratas,rectificar,cambio"><input type="checkbox" name="repetir"> Repetir aunque ya esté EXITOSO</label>
+        <label class="check oculto" data-si="accion=cese,fe_erratas,rectificar,cambio"><input type="checkbox" name="sin_validar"> Sin validar estado</label>
+        <label class="check"><input type="checkbox" name="diagnostico" checked> Diagnóstico</label>
+      </div>
+      <p class="nota oculto" data-si="accion=cambio">Fecha por defecto: si baja precios, mañana; si sube (delta positivo), hoy + 2 días.</p>
+
+      <div class="selector" data-selector="tarifas" data-origen="establecida,empaquetado,promoción"></div>
+
+      <fieldset class="oculto" data-si="accion=fe_erratas,rectificar,cambio">
+        <legend>Campos a modificar</legend>
+        <div class="modos">
+          <label class="check"><input type="radio" name="modo" value="defecto" checked> <span><b>Por defecto</b> — textos, valor del servicio y tarifa de instalación</span></label>
+          <label class="check"><input type="radio" name="modo" value="todos"> <span><b>Todos los campos</b> — además todos los números del paso 2 (datos, velocidades, minutos…)</span></label>
+          <label class="check"><input type="radio" name="modo" value="elegir"> <span><b>Elegir campos</b> — marca solo los que quieras</span></label>
+        </div>
+        <div id="arbol-campos" class="arbol oculto"></div>
+      </fieldset>
+      <div class="acciones-form"><button class="primario" type="submit">Ejecutar acción</button></div>
+    </form>
+
+    <!-- ===================== RESULTADOS ===================== -->
+    <div class="vista" id="vista-resultados">
+      <h2>Resultados</h2>
+      <div class="fila">
+        <label class="ancho">Archivo
+          <select id="sel-resultado"></select></label>
+        <label>Filtrar <input id="filtro-resultado" placeholder="texto…"></label>
+        <button type="button" id="btn-recargar" class="secundario">Recargar</button>
+      </div>
+      <p class="ayuda" id="info-resultado"></p>
+      <div class="tabla-envoltura"><table id="tabla-resultado"></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONSOLA ===================== -->
+  <aside class="panel-der">
+    <div class="consola-cabecera">
+      <h3 id="titulo-consola">Consola</h3>
+      <button type="button" id="btn-cancelar" class="peligro" disabled>Cancelar</button>
+    </div>
+    <pre id="consola" class="consola">Aquí verás la salida de cada tarea en vivo.</pre>
+    <h3>Historial</h3>
+    <ul id="historial" class="historial"></ul>
+  </aside>
+</main>
+
+<datalist id="lista-lotes"></datalist>
+<div id="aviso" class="aviso oculto"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

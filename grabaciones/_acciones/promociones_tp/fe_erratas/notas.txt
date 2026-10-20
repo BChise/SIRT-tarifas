@@ -1,0 +1,22 @@
+FE DE ERRATAS - TARIFAS PROMOCIONALES (TP-…)
+
+OJO: la carpeta _acciones/promocional/ tiene en realidad las grabaciones de EMPAQUETADOS.
+Esta es para las promociones (TP-…, creadas con promocionar.py).
+
+Archivos:
+- grabacion.py   la grabación (codegen): PEGAR AQUÍ.
+- *.png          capturas: paso 1, paso 2 (cada pestaña si hay varias), resumen y confirmaciones.
+
+Qué grabar (UNA promoción ya en comercialización; ideal sobre un empaquetado, p. ej. la de
+TE-EMP-MUESTRA-005 = TP-EMP-PRUEBA-002, y si se puede otra sobre un monoproducto):
+  buscar la promoción → menú de acciones → Fe de erratas → paso 1: cambiar los textos
+  permitidos → guardar/continuar → paso 2: cambiar lo editable (si hay una pestaña por
+  servicio, recorrerlas todas y guardar cada una) → paso 3 → guardar y confirmar hasta el último «Aceptar».
+
+Completar:
+- Promoción usada (y sobre qué tarifa base):
+- ¿Qué campos se pueden editar en el paso 1?:
+- ¿Qué campos se pueden editar en el paso 2 (atributos promocionados, variación, textos)?:
+- ¿Una pestaña por servicio? ¿Botón «Guardar» o «Guardar e ir al siguiente»?:
+- ¿Mensajes / ventanas al guardar (en orden)?:
+- Otras observaciones:

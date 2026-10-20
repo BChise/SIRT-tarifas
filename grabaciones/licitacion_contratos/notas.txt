@@ -1,0 +1,41 @@
+LICITACIÓN Y CONTRATOS - grabación de referencia
+
+Archivos:
+- servicios.json  lista de servicios que ofrece SIRT para este tipo (GET del paso 1).
+- paso2.json      apartados del paso 2 (GET del paso 2).
+- grabacion.py    la grabación completa (codegen): PEGAR AQUÍ.
+- *.png           capturas: paso 1 con los servicios agregados, paso 2 (cada pestaña si
+                  hay varias), resumen y cada ventana de confirmación.
+
+Lo que ya sabemos (de los JSON y capturas del 16/10):
+- Paso 1: Tipo de Tarifa = «Licitación y Contratos», Condición, «Seleccionar servicios»
+  (buscador + botón «Agregar»; se repite por cada servicio), Inicio/Fin de vigencia, …
+- 6 servicios elegibles: Arrendamiento de circuitos, Otros servicios, Televisión de paga,
+  Internet Fijo, Servicio Móvil, Telefonía Fija. Solo AC y OS tienen flagEmpaquetado;
+  solo OS registra tarifa de instalación.
+- Paso 2 (paso2.json):
+    Datos generales:            Ámbito (Público / Privado)
+    Características específicas: Valor de contrato (hasta 4 decimales), Moneda (Soles/Dolares/Euro)
+    Características adicionales: Documento de Empresa (solo dígitos, máx. 15),
+                                 Nombre de empresa (máx. 200), Descripción del Servicio,
+                                 Atributos de la tarifa, Ámbito geográfico (textos, máx. 4000)
+    Documentos anexados:        adjunto (opcional)
+
+Plan de pruebas (por ahora): tarifas con 1, 3 y 6 servicios (luego se agregan 2, 4, 5).
+  Propuesta inicial: 1 servicio → Internet Fijo · 3 → Telefonía Fija + Internet Fijo + Servicio Móvil
+                    6 → los seis.
+
+Qué grabar: UNA tarifa con 3 servicios, de principio a fin, guardando hasta el último «Aceptar».
+  Nueva Tarifa → Tipo «Licitación y Contratos» → Condición → agregar los 3 servicios (buscar + Agregar,
+  uno por uno) → fechas y demás datos del paso 1 → Guardar y continuar → paso 2 (si hay una pestaña
+  por servicio, llenarlas todas) → paso 3 → confirmar.
+
+Completar:
+- Tarifa usada (nombre):
+- Condición elegida (¿qué opciones hay?):
+- ¿Qué otros campos tiene el paso 1 además de los servicios y la vigencia?:
+- ¿El paso 2 es UNO para toda la tarifa o una pestaña «Servicio N» por servicio?:
+- ¿Algún campo distinto según el servicio (p. ej. instalación en Otros servicios)?:
+- ¿Mensajes / ventanas al guardar (en orden)?:
+- ¿Necesita registro definitivo / disponibilidad comercial después?:
+- Otras observaciones:

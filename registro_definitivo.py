@@ -70,6 +70,8 @@ REQUIERE_DISPONIBILIDAD = {
     "SMO": False,   # Servicio móvil otros
     "AC": False,    # Arrendamiento de circuitos
     "OS": False,    # Otros servicios
+    "LYC": False,   # Licitación y contratos (flagDispComercial false en sus 6 servicios)
+    "PRM": False,   # Tarifas promocionales (TP-…): registro definitivo sin disponibilidad
 }
 
 # Empaquetadas (EMP): lo deciden sus tarifas. Confirmado el 14/10: TFP + SMP
@@ -437,8 +439,10 @@ def main() -> None:
     if args.nombre:
         faltan = [n for n in args.nombre if n not in {t["nombre"] for t in tarifas}]
         if faltan:
-            print(f"No están entre las tarifas EXITOSAS del lote: {', '.join(faltan)}")
-            sys.exit(1)
+            # Pasa, p. ej., si su registro falló justo antes: se avisa y se sigue con el resto.
+            print(f"AVISO: no están entre las tarifas EXITOSAS del lote (se omiten): {', '.join(faltan)}")
+            if len(faltan) == len(args.nombre):
+                sys.exit(1)
         pendientes = [t for t in pendientes if t["nombre"] in args.nombre]
 
     # Ubicaciones de cada tarifa: las pedidas (o Amazonas); en paquetes, según sus tarifas.

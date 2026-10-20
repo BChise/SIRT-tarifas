@@ -1,0 +1,19 @@
+RENOVACIÓN - TARIFAS PROMOCIONALES (TP-…)
+
+Archivos:
+- grabacion.py   la grabación (codegen): PEGAR AQUÍ.
+- renovar.json   (opcional) el JSON que SIRT pide al abrir «Renovar» (como el de TP-TF-PROMO-017).
+- *.png          capturas: paso 1, paso 2 (cada pestaña), resumen y ventanas de confirmación.
+
+Ya implementado (acciones.py renovar, 19/10, sin grabación):
+- Paso 1: Fecha inicio de la comercialización = mañana; fin = inicio + 60 días (máx. 180);
+  «Duración» del valor del plan (y de tarifa de instalación si aparece): 25, o 31 si ya era 25.
+- Paso 2: cada pestaña «Servicio N»: todas las «Duración» editables con la misma regla;
+  se comparan con los atributos promocionados del JSON.
+- Paso 3: botón final «Guardar cambios» / «Renovar» / «Guardar» → Aceptar.
+
+Completar:
+- Promoción usada:
+- Botón final del paso 3 y ventanas (en orden):
+- ¿Alguna regla de fechas (inicio mínimo, fin máximo)?:
+- Otras observaciones:

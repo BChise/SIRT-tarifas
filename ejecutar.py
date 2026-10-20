@@ -76,6 +76,8 @@ def leer_argumentos():
     parser.add_argument("--trace", action="store_true")
     parser.add_argument("--si", action="store_true")
     parser.add_argument("--al-frente", action="store_true")
+    parser.add_argument("--nombre", help="registra UNA tarifa con este nombre exacto (p. ej. desde el Excel de pruebas)")
+    parser.add_argument("--alcance", help="con --nombre: 'Residencial', 'Comercial' o 'Residencial + Comercial'")
     args = parser.parse_args()
 
     if args.trace:
@@ -236,6 +238,24 @@ def ejecutar_caso(page, servicio, caso: dict, paso1: dict, estado: dict, diag: D
     etapa("confirmada", lambda: comun.confirmar_tarifa(page))
 
 
+def nombres_exitosos(ruta: Path) -> set[str]:
+    if not ruta.exists():
+        return set()
+    import csv
+    with ruta.open("r", newline="", encoding="utf-8-sig") as entrada:
+        return {f["nombre"] for f in csv.DictReader(entrada, delimiter=";") if f.get("resultado") == "EXITOSO"}
+
+
+def siguiente_correlativo(ruta: Path) -> int:
+    if not ruta.exists():
+        return 1
+    import csv
+    with ruta.open("r", newline="", encoding="utf-8-sig") as entrada:
+        usados = [int(f["correlativo"]) for f in csv.DictReader(entrada, delimiter=";")
+                  if (f.get("correlativo") or "").isdigit()]
+    return max(usados, default=0) + 1
+
+
 def main() -> None:
     args = leer_argumentos()
     disponibles = servicios_disponibles()
@@ -270,6 +290,20 @@ def main() -> None:
 
     exitosas_previas = comun.leer_claves_exitosas(rutas["resultados"])
     pendientes = [caso for caso in casos if caso["clave"] not in exitosas_previas]
+
+    if args.nombre:
+        # Una sola tarifa con nombre propio: la primera combinación con ese alcance.
+        candidatos = casos
+        if args.alcance:
+            buscado = {a.strip().lower() for a in args.alcance.split("+")}
+            candidatos = [c for c in casos if {a.strip().lower() for a in
+                          comun.texto_valor(c["valores"].get("alcance", "")).split("+")} == buscado] or casos
+        elegido = {**candidatos[0], "nombre": args.nombre}
+        ya = nombres_exitosos(rutas["resultados"])
+        elegido["correlativo"] = siguiente_correlativo(rutas["resultados"])
+        pendientes = [] if args.nombre in ya else [elegido]
+        if args.nombre in ya:
+            print(f"\n'{args.nombre}' ya está registrada (EXITOSO) en este lote: no se repite.")
 
     if args.limite > 0:
         pendientes = pendientes[: args.limite]

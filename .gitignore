@@ -18,3 +18,7 @@ grabaciones/_registro_definitivo/Pasted image*.png
 # Credenciales
 .env
 *.secret
+
+# Bloqueos de Excel / LibreOffice
+.~lock.*
+~$*

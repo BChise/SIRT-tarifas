@@ -107,6 +107,22 @@ VALORES = {
             "carga_contratada": "20",
             "carga_garantizada": "15",
         },
+        # 19/10: una fila por tecnología (antes solo 5G). Si SIRT nombra distinto las
+        # opciones de «Tecnología» (p. ej. «4.5G», «LTE»), ajustar aquí.
+        {
+            "tecnologia": "4G",
+            "descarga_contratada": "30",
+            "descarga_garantizada": "20",
+            "carga_contratada": "10",
+            "carga_garantizada": "8",
+        },
+        {
+            "tecnologia": "3G",
+            "descarga_contratada": "5",
+            "descarga_garantizada": "3",
+            "carga_contratada": "2",
+            "carga_garantizada": "1",
+        },
     ],
 
     # Velocidades con degradación (obligatorias; Mbps, hasta 4 decimales).

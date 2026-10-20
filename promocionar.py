@@ -340,22 +340,29 @@ def completar_paso_1(page, nombre: str, tarifas: list[str], args, con_instalacio
     for numero, tarifa in enumerate(tarifas, start=1):
         agregar_tarifa_al_paquete(page, tarifa, numero)
 
+    cfg = CONFIG
     hoy = date.today()
+    inicio = date.fromisoformat(cfg["inicio_comercializacion"]) if cfg.get("inicio_comercializacion") else hoy
     page.get_by_role("textbox", name="Nombre de la tarifa").fill(nombre)
-    comun.elegir_fecha(page, "Inicio comercialización", hoy)
-    elegir_fecha_futura(page, "Fin comercialización", hoy + timedelta(days=args.dias_comercializacion))
-    page.get_by_role("textbox", name="Condiciones generales").fill("Promoción de prueba automatizada")
+    if inicio == hoy:
+        comun.elegir_fecha(page, "Inicio comercialización", hoy)
+    else:
+        elegir_fecha_futura(page, "Inicio comercialización", inicio)
+    elegir_fecha_futura(page, "Fin comercialización", inicio + timedelta(days=args.dias_comercializacion))
+    page.get_by_role("textbox", name="Condiciones generales").fill(
+        cfg.get("condiciones") or "Promoción de prueba automatizada")
     otras = page.get_by_role("textbox", name="Otras condiciones tarifa")
     if otras.count():
-        otras.fill("Otras condiciones de prueba")
+        otras.fill(cfg.get("otras_condiciones") or "Otras condiciones de prueba")
 
     hechos = []
     base = {"porcentual": args.variacion_porcentual, "cantidad": args.variacion_cantidad, "duracion": args.duracion}
     if not args.sin_valor_plan:
-        hechos.append(promocionar_fila(page, "Valor del plan", base))
+        hechos.append(promocionar_fila(page, "Valor del plan", {**base, **config_propia(cfg.get("valor_plan"))}))
     if con_instalacion and not args.sin_instalacion:
         if casilla_visible(page, "Tarifa instalación") is not None:
-            hechos.append(promocionar_fila(page, "Tarifa instalación", base, con_duracion=False))
+            hechos.append(promocionar_fila(page, "Tarifa instalación", {**base, **config_propia(cfg.get("instalacion"))},
+                                           con_duracion=False))
         else:
             hechos.append("Tarifa instalación: no aparece (se omite)")
 
@@ -418,6 +425,27 @@ def completar_paso_2(page, servicios: list[dict], args) -> list[str]:
 
 # --- Preparación ---------------------------------------------------------------
 
+# Configuración opcional (--config archivo.json; la arma promociones_excel.py):
+#   inicio_comercializacion "AAAA-MM-DD", condiciones, otras_condiciones,
+#   valor_plan / instalacion {tipo, variacion, duracion},
+#   atributos_por_servicio {"TF": [{nombre, tipo, variacion, duracion}, ...]}
+CONFIG: dict = {}
+
+
+def config_propia(datos: dict | None) -> dict:
+    """{tipo, variacion, duracion} del Excel → claves de promocionar_fila (lo vacío no cambia nada)."""
+    if not datos:
+        return {}
+    salida = {}
+    if datos.get("tipo"):
+        salida["tipo"] = datos["tipo"]
+    if datos.get("variacion") not in (None, ""):
+        salida["porcentual"] = salida["cantidad"] = str(datos["variacion"])
+    if datos.get("duracion") not in (None, ""):
+        salida["duracion"] = str(datos["duracion"])
+    return salida
+
+
 def config_atributo(atributo: dict, args) -> dict:
     base = {"porcentual": args.variacion_porcentual, "cantidad": args.variacion_cantidad,
             "duracion": args.duracion, "tipo": None}
@@ -456,7 +484,12 @@ def servicios_de_las_tarifas(tarifas: list[str], args) -> tuple[list[dict], list
         carpeta = Path(modulo.__file__).stem
         catalogo = catalogo_atributos(carpeta)
 
-        if args.atributos == "probados":
+        detalle = (CONFIG.get("atributos_por_servicio") or {})
+        propios = {}
+        if detalle:
+            propios = {a["nombre"]: a for a in detalle.get(codigo, [])}
+            nombres = list(propios)
+        elif args.atributos == "probados":
             nombres = ATRIBUTOS_PROBADOS.get(codigo, [])
         elif args.atributos == "todos":
             if catalogo is None:
@@ -466,6 +499,15 @@ def servicios_de_las_tarifas(tarifas: list[str], args) -> tuple[list[dict], list
             nombres = [a["nombre"] for a in catalogo]
         else:
             nombres = [n.strip() for n in args.atributos.split(";") if n.strip()]
+            if len(set(codigos)) > 1:
+                # Varios servicios: a cada pestaña solo los atributos de su catálogo; un servicio
+                # sin catálogo (TF) recibe los que no son de ningún otro.
+                if catalogo is not None:
+                    nombres = [n for n in nombres if n in {a["nombre"] for a in catalogo}]
+                else:
+                    otros = {a["nombre"] for c2 in set(codigos) if c2 != codigo and c2 in modulos
+                             for a in (catalogo_atributos(Path(modulos[c2].__file__).stem) or [])}
+                    nombres = [n for n in nombres if n not in otros]
 
         por_nombre = {a["nombre"]: a for a in catalogo or []}
         atributos = []
@@ -473,7 +515,7 @@ def servicios_de_las_tarifas(tarifas: list[str], args) -> tuple[list[dict], list
             info = por_nombre.get(n, {"nombre": n, "tipo": "PROMOCIONAL", "opciones": [], "unidad": ""})
             if catalogo is not None and n not in por_nombre:
                 print(f"  Aviso: '{n}' no está en el catálogo de {codigo}; se intentará igual.")
-            atributos.append({**info, "config": config_atributo(info, args)})
+            atributos.append({**info, "config": {**config_atributo(info, args), **config_propia(propios.get(n))}})
 
         servicios.append({"codigo": codigo, "nombre_sirt": modulo.SERVICIO, "atributos": atributos})
 
@@ -501,6 +543,7 @@ def leer_argumentos():
     parser.add_argument("--dias-comercializacion", type=int, default=60)
     parser.add_argument("--sin-valor-plan", action="store_true")
     parser.add_argument("--sin-instalacion", action="store_true")
+    parser.add_argument("--config", help="JSON con datos de la promoción (lo arma promociones_excel.py)")
     parser.add_argument("--solo-listar", action="store_true")
     parser.add_argument("--diagnostico", action="store_true")
     parser.add_argument("--al-frente", action="store_true")
@@ -509,6 +552,8 @@ def leer_argumentos():
 
 def main() -> None:
     args = leer_argumentos()
+    if args.config:
+        CONFIG.update(json.loads(Path(args.config).read_text(encoding="utf-8")))
     if int(args.duracion) > DURACION_MAXIMA:
         sys.exit(f"La duración no puede superar {DURACION_MAXIMA} días.")
 

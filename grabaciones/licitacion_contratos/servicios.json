@@ -1,0 +1,139 @@
+{
+    "data": [
+        {
+            "idModalidad": 10,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": false,
+            "flagEmpaquetado": true,
+            "flagVelocidades": false,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 3,
+            "codigo": "010",
+            "nombre": "Arrendamiento de circuitos",
+            "flagEliminado": false
+        },
+        {
+            "idModalidad": 11,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": true,
+            "flagEmpaquetado": true,
+            "flagVelocidades": true,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 6,
+            "codigo": "011",
+            "nombre": "Otros servicios",
+            "flagEliminado": false
+        },
+        {
+            "idModalidad": 302,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": false,
+            "flagEmpaquetado": false,
+            "flagVelocidades": false,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 4,
+            "codigo": "039",
+            "nombre": "Televisión de paga",
+            "flagEliminado": false
+        },
+        {
+            "idModalidad": 303,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": false,
+            "flagEmpaquetado": false,
+            "flagVelocidades": false,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 5,
+            "codigo": "040",
+            "nombre": "Internet Fijo",
+            "flagEliminado": false
+        },
+        {
+            "idModalidad": 305,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": false,
+            "flagEmpaquetado": false,
+            "flagVelocidades": false,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 1,
+            "codigo": "042",
+            "nombre": "Servicio Móvil",
+            "flagEliminado": false
+        },
+        {
+            "idModalidad": 306,
+            "estado": {
+                "nombre": "Activo",
+                "codigo": "24"
+            },
+            "servicio": null,
+            "tarifa_Instalacion": null,
+            "empaquetado": null,
+            "velocidades": null,
+            "periocidad": null,
+            "disp_Comercial": null,
+            "registraTarifaInstalacion": false,
+            "flagEmpaquetado": false,
+            "flagVelocidades": false,
+            "flagPeriocidad": null,
+            "flagDispComercial": false,
+            "idServicio": 2,
+            "codigo": "043",
+            "nombre": "Telefonía Fija",
+            "flagEliminado": false
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

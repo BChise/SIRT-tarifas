@@ -348,7 +348,7 @@ avanzado", menú `get_by_label("Acciones")` → `menuitem`, paginador a 100
 filas (`listar_tarifas.py`), versión más alta, doble "Aceptar".
 
 **Acciones en EMPAQUETADOS** (16/10; grabaciones con TE-EMP-MUESTRA-006 en
-`grabaciones/_acciones/promocional/` — la carpeta dice "promocional" pero es empaquetado):
+`grabaciones/_acciones/empaquetado/`, antes llamada `promocional/`; las promociones TP van en `_acciones/promociones_tp/`):
 fe de erratas / rectificar / cambio = mismo flujo de 3 pasos; paso 1 con Tarifa de
 instalación (+ Fecha de ejecución en cambio, + Alcance en rectificar), paso 2 con pestañas
 "Servicio N" y "Valor del servicio" (spinbutton) en cada una. `editar_tres_pasos` ya
@@ -405,3 +405,29 @@ de las tarifas base → no se toca. Cambio: alza → hoy + 2 días (igual que mo
 - Seguridad: los archivos de grabación del proyecto anterior
   (`grabacion_renomb.py`, `grabacion_renombrar.py`) contienen una contraseña en
   texto plano; cambiarla y borrarla de esos archivos.
+
+## Comandos que leen los Excel de automatizacion/ (19/10/2026, sin probar en SIRT)
+
+La web quedó congelada; ahora cada Excel de `automatizacion/` tiene su comando. Todos aceptan
+`--solo-listar` (valida y muestra, sin tocar SIRT ni el Excel), `--nombres`, `--limite`, `--si`,
+`--diagnostico`; escriben Estado / Código SIRT / Fecha / Detalle en la fila y dejan una copia en
+`resultados/<X>_EXCEL/`. Lo registrado va al lote **EXCEL** (`resultados/<código>/resultados_EXCEL.csv`);
+una fila ya registrada no se repite («Ya registrada»; `--repetir` para forzar). Piezas comunes en
+`excel_comun.py`. Si Edge no responde (9222) se detienen sin marcar errores.
+
+| Excel | Comando | Usa |
+|---|---|---|
+| registro_tarifas_establecidas.xlsx | `registro_excel.py` (+ `--hojas IF`, `--sin-definitivo`) | código de `servicios/` con los valores de la fila; tablas de las hojas «Tablas – …» |
+| empaquetados.xlsx | `empaquetados_excel.py` | `empaquetar.py` (nuevas opciones: --alcance, fechas, --instalacion, --otros-datos, contacto) |
+| registro_licitaciones.xlsx | `licitaciones_excel.py` | `licitacion.py` (lee también el formato nuevo: incluir/detalle por servicio, inicio, instalación) |
+| promociones.xlsx | `promociones_excel.py` | `promocionar.py --config <json>` (fechas, textos, valor del plan, instalación, atributos por servicio) |
+| modificaciones.xlsx | `modificaciones_excel.py` (+ `--hasta-resumen`) | `acciones.py rectificar|cambio` (nueva opción `--sin-canales`) |
+| acciones_basicas.xlsx | `acciones_excel.py` | `acciones.py fe_erratas|renovar|cese|renombre` |
+
+Registro definitivo: si la fila dice Sí, después de registrar se llama a `registro_definitivo.py
+--lote EXCEL --nombre N --ubigeos <Disponibilidad comercial>` (vacío = Lima; paquetes: la intersección).
+`registro_excel.py` anota el valor del servicio en `resultados/valores_tarifas.csv`, y `empaquetar.py`
+lo usa para las reglas de precio (antes tomaba el valor fijo del código).
+En registro: Enlace/Fono/Email se reemplazan solo si la fila los trae (SIRT los precarga); listas
+vacías → primera opción del código (aviso); países y bolsas = solo las filas del Excel; velocidades
+móviles sin filas → las del código. `comun.elegir_fecha` ahora avanza mes a mes para fechas futuras.

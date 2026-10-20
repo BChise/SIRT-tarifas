@@ -1,0 +1,28 @@
+RECTIFICACIÓN - LICITACIÓN Y CONTRATOS (tarifas TL-LYC-…)
+
+Archivos:
+- grabacion.py   la grabación (codegen): PEGAR AQUÍ.
+- *.png          capturas: paso 1 (todo lo editable), paso 2 (cada pestaña Servicio N),
+                 resumen y cada ventana de confirmación.
+
+Qué se sabe por la fe de erratas (19/10):
+- Comercialización «No aplica» es normal en licitación; basta que esté vigente.
+- Paso 1: Características adicionales (Documento y Nombre de empresa, Descripción del
+  Servicio, Atributos de la tarifa, Ámbito geográfico).
+- Paso 2: una pestaña por servicio con «Detalle del servicio» (no hace falta guardar cada una).
+- Paso 3: «Guardar cambios» → Aceptar → Aceptar.
+
+Qué grabar (UNA tarifa con 3 servicios, p. ej. TL-LYC-DEMO-025):
+  buscar la tarifa → Acciones → Rectificar → paso 1: cambiar TODO lo que se deje editar
+  (en especial lo numérico y las listas: Valor de contrato, Moneda, Ámbito, Duración del
+  contrato, fechas, Identificador de contrato…) → Continuar → paso 2: cada pestaña Servicio
+  1, 2, 3 → Continuar con el paso 3 → Guardar cambios → Aceptar hasta el final.
+
+Completar:
+- Tarifa usada:
+- ¿Qué campos del paso 1 se pueden editar en rectificación (y cuáles quedan bloqueados)?:
+- ¿Valor de contrato tiene alguna regla (solo subir / bajar, máximo)?:
+- ¿Se pueden cambiar las fechas / duración? ¿Siguen teniendo que cuadrar?:
+- ¿El paso 2 tiene algo más que «Detalle del servicio»?:
+- ¿Mensajes / ventanas al guardar (en orden)?:
+- Otras observaciones:

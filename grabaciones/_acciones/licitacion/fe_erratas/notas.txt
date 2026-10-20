@@ -1,0 +1,26 @@
+FE DE ERRATAS - LICITACIÓN Y CONTRATOS (tarifas TL-LYC-…)
+
+Archivos:
+- grabacion.py   la grabación (codegen): PEGAR AQUÍ.
+- *.png          capturas (ya hay dos: características adicionales del paso 1 y detalle del paso 2).
+
+Lo que ya sabemos (19/10):
+- Paso 1, bloque «Datos a actualizar de la tarifa» → «Características adicionales»:
+  Documento de Empresa, Nombre de empresa, Descripción del Servicio, Atributos de la tarifa,
+  Ámbito geográfico (se pueden cambiar).
+- Paso 2: una pestaña «Servicio N» por servicio, cada una con «Detalle del servicio».
+  Hay que recorrerlas todas. Botones al pie: «Ir al paso 1» y «Continuar con el paso 3».
+- Paso 3: igual que en las demás tarifas (resumen → guardar y confirmar).
+
+Qué grabar (UNA tarifa con 3 servicios, p. ej. TL-LYC-DEMO-025, ya en comercialización):
+  buscar la tarifa → menú de acciones → Fe de erratas → paso 1: cambiar los textos de
+  Características adicionales → guardar/continuar → paso 2: en CADA pestaña Servicio 1, 2, 3
+  cambiar «Detalle del servicio» y guardar (anotar si el botón es «Guardar» o
+  «Guardar e ir al siguiente») → Continuar con el paso 3 → guardar y confirmar hasta el último «Aceptar».
+
+Completar:
+- Tarifa usada:
+- ¿Qué otros campos del paso 1 se pueden editar (Valor de contrato, Moneda, Ámbito, fechas…)?:
+- ¿En el paso 2 hay que guardar cada pestaña o basta «Continuar con el paso 3»?:
+- ¿Mensajes / ventanas al guardar (en orden)?:
+- Otras observaciones:

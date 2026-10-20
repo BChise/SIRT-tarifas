@@ -15,7 +15,7 @@ Si una corrección sirve para todos los servicios, se hace aquí una sola vez.
 
 import csv
 import re
-from datetime import date
+from datetime import date, datetime
 from itertools import combinations, product
 from pathlib import Path
 
@@ -140,7 +140,19 @@ def elegir_fecha(page, etiqueta: str, fecha: date) -> None:
         boton.click()
         return
 
-    # La fecha no está en el mes que muestra el calendario: se escribe directo.
+    # Fecha de otro mes (p. ej. desde los Excel): se avanza mes a mes, como en la grabación.
+    if fecha > date.today():
+        siguiente = page.get_by_role("button", name="Next month")
+        for _ in range(36):
+            if siguiente.count() == 0:
+                break
+            siguiente.first.click()
+            page.wait_for_timeout(150)
+            if boton.count() > 0:
+                boton.click()
+                return
+
+    # Último recurso: se escribe directo.
     page.keyboard.press("Escape")
     campo = page.get_by_role("textbox", name=etiqueta)
     campo.fill(fecha.strftime("%d/%m/%Y"))
@@ -577,3 +589,52 @@ def registrar_resultado(ruta: Path, fila: dict) -> None:
             escritor.writeheader()
 
         escritor.writerow(fila)
+
+
+# =============================================================================
+# DATOS DE TARIFAS REGISTRADAS DESDE LOS EXCEL
+# =============================================================================
+
+VALORES_REGISTRADOS = DIRECTORIO_RESULTADOS / "valores_tarifas.csv"
+
+
+def guardar_valor_tarifa(nombre: str, valor: str) -> None:
+    """Anota el «Valor del servicio» con que se registró una tarifa (lo usan los
+    empaquetados para revisar las reglas de precio)."""
+    VALORES_REGISTRADOS.parent.mkdir(parents=True, exist_ok=True)
+    nuevo = not VALORES_REGISTRADOS.exists()
+    with VALORES_REGISTRADOS.open("a", newline="", encoding="utf-8-sig") as salida:
+        escritor = csv.writer(salida, delimiter=";")
+        if nuevo:
+            escritor.writerow(["nombre", "valor_servicio", "fecha_hora"])
+        escritor.writerow([nombre, valor, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
+
+def valor_tarifa_registrado(nombre: str) -> str | None:
+    if not VALORES_REGISTRADOS.exists():
+        return None
+    with VALORES_REGISTRADOS.open("r", newline="", encoding="utf-8-sig") as entrada:
+        valores = [f["valor_servicio"] for f in csv.DictReader(entrada, delimiter=";") if f.get("nombre") == nombre]
+    return valores[-1] if valores else None
+
+
+CAMPOS_CONTACTO = {   # SIRT los precarga con los datos del operador; se reemplazan solo si se piden
+    "enlace": r"[Ee]nlace",
+    "fono": r"[Ff]ono|[Tt]el[eé]fono",
+    "email": r"[Ee]-?mail|[Cc]orreo",
+}
+
+
+def llenar_contacto(page, contacto: dict) -> list[str]:
+    """contacto = {"enlace": ..., "fono": ..., "email": ...} (solo los que se quieran cambiar).
+    Devuelve avisos de los campos que no se encontraron."""
+    avisos = []
+    for clave, valor in contacto.items():
+        if not valor:
+            continue
+        campo = page.get_by_role("textbox", name=re.compile(CAMPOS_CONTACTO[clave]))
+        if campo.count() == 0:
+            avisos.append(f"no se encontró el campo «{clave}» (quedó el de SIRT)")
+            continue
+        campo.first.fill(valor)
+    return avisos

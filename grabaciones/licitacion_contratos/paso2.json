@@ -1,0 +1,373 @@
+{
+    "data": [
+        {
+            "codigoSeccion": "003001",
+            "seccion": "Datos generales",
+            "tieneCabecera": false,
+            "idModalidad": null,
+            "nombreModalidad": "",
+            "apartados": [
+                {
+                    "idApartado": 362,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Categorica Excluyente",
+                        "codigo": "009007"
+                    },
+                    "listado": {
+                        "nombre": "Ambito",
+                        "codigo": "041000"
+                    },
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [
+                        {
+                            "nombre": "Público",
+                            "codigo": "041001"
+                        },
+                        {
+                            "nombre": "Privado",
+                            "codigo": "041002"
+                        }
+                    ],
+                    "operador": null,
+                    "codigo": "060",
+                    "dependencia": null,
+                    "nombre": "Ámbito",
+                    "nombreLargo": "Ámbito",
+                    "apartadoCondicion": null,
+                    "caracteres": null,
+                    "comentario": "Ámbito",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                }
+            ],
+            "flagVelocidades": null
+        },
+        {
+            "codigoSeccion": "003002",
+            "seccion": "Características específicas",
+            "tieneCabecera": true,
+            "idModalidad": null,
+            "nombreModalidad": "",
+            "apartados": [
+                {
+                    "idApartado": 6,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Numérica (Decimales)",
+                        "codigo": "009004"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "001",
+                    "dependencia": null,
+                    "nombre": "Valor de contrato",
+                    "nombreLargo": "Valor de contrato",
+                    "apartadoCondicion": null,
+                    "caracteres": null,
+                    "comentario": "Valor de contrato",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": {
+                        "valor": "^\\d+(\\.\\d{1,4})?$",
+                        "mensaje": "Valores positivos, con máximo\u00A04\u00A0decimales",
+                        "codigo": "036008",
+                        "nombre": "Númerico (Cuatro decimales)"
+                    }
+                },
+                {
+                    "idApartado": 1138,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Categorica Excluyente",
+                        "codigo": "009007"
+                    },
+                    "listado": {
+                        "nombre": "Tipo de moneda",
+                        "codigo": "071000"
+                    },
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [
+                        {
+                            "nombre": "Soles",
+                            "codigo": "071001"
+                        },
+                        {
+                            "nombre": "Dolares",
+                            "codigo": "071002"
+                        },
+                        {
+                            "nombre": "Euro",
+                            "codigo": "071003"
+                        }
+                    ],
+                    "operador": null,
+                    "codigo": "0199",
+                    "dependencia": null,
+                    "nombre": "Moneda",
+                    "nombreLargo": "Tipo de moneda",
+                    "apartadoCondicion": null,
+                    "caracteres": null,
+                    "comentario": "Moneda al cual es ofertada",
+                    "descripcion": "Hace referencia al tipo de moneda",
+                    "unidadMedida": null,
+                    "validarPatron": null
+                }
+            ],
+            "flagVelocidades": null
+        },
+        {
+            "codigoSeccion": "003003",
+            "seccion": "Características adicionales",
+            "tieneCabecera": true,
+            "idModalidad": null,
+            "nombreModalidad": "",
+            "apartados": [
+                {
+                    "idApartado": 7,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Texto",
+                        "codigo": "009001"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "002",
+                    "dependencia": null,
+                    "nombre": "Documento de Empresa",
+                    "nombreLargo": "Número de documento de Empresa",
+                    "apartadoCondicion": null,
+                    "caracteres": 15,
+                    "comentario": "Número de documento de Empresa ",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": {
+                        "valor": "^\\d+$",
+                        "mensaje": "Ingrese un valor entero positivo.",
+                        "codigo": "036001",
+                        "nombre": "Númerico (Entero)"
+                    }
+                },
+                {
+                    "idApartado": 8,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Texto",
+                        "codigo": "009001"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "005",
+                    "dependencia": null,
+                    "nombre": "Nombre de empresa",
+                    "nombreLargo": "Nombre de empresa",
+                    "apartadoCondicion": null,
+                    "caracteres": 200,
+                    "comentario": "Nombre de empresa",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                },
+                {
+                    "idApartado": 9,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Texto área",
+                        "codigo": "009009"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "006",
+                    "dependencia": null,
+                    "nombre": "Descripción del Servicio",
+                    "nombreLargo": "Descripción del Servicio",
+                    "apartadoCondicion": null,
+                    "caracteres": 4000,
+                    "comentario": "Descripción del Servicio",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                },
+                {
+                    "idApartado": 10,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Texto área",
+                        "codigo": "009009"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "007",
+                    "dependencia": null,
+                    "nombre": "Atributos de la tarifa",
+                    "nombreLargo": "Atributos de la tarifa",
+                    "apartadoCondicion": null,
+                    "caracteres": 4000,
+                    "comentario": "Atributos de la tarifa",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                },
+                {
+                    "idApartado": 12,
+                    "esObligatorio": true,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "DETALLE",
+                    "tipoDato": {
+                        "nombre": "Texto área",
+                        "codigo": "009009"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "057",
+                    "dependencia": null,
+                    "nombre": "Ámbito geográfico",
+                    "nombreLargo": "Ambito geográfico",
+                    "apartadoCondicion": null,
+                    "caracteres": 4000,
+                    "comentario": "Ambito geográfico",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                }
+            ],
+            "flagVelocidades": null
+        },
+        {
+            "codigoSeccion": "003005",
+            "seccion": "Documentos anexados",
+            "tieneCabecera": true,
+            "idModalidad": null,
+            "nombreModalidad": "",
+            "apartados": [
+                {
+                    "idApartado": 347,
+                    "esObligatorio": false,
+                    "apartadoValor": null,
+                    "etiquetaValor1": null,
+                    "etiquetaValor2": null,
+                    "subApartados": null,
+                    "flagActivo": false,
+                    "registraCambio": false,
+                    "tipo": "ADJUNTO",
+                    "tipoDato": {
+                        "nombre": "Adjunto",
+                        "codigo": "009008"
+                    },
+                    "listado": null,
+                    "tipoApartado": {
+                        "nombre": "Transversal",
+                        "codigo": "006001"
+                    },
+                    "lista": [],
+                    "operador": null,
+                    "codigo": "058",
+                    "dependencia": null,
+                    "nombre": "Documentos anexados",
+                    "nombreLargo": "Documentos anexados",
+                    "apartadoCondicion": null,
+                    "caracteres": null,
+                    "comentario": "Documentos anexados",
+                    "descripcion": null,
+                    "unidadMedida": null,
+                    "validarPatron": null
+                }
+            ],
+            "flagVelocidades": null
+        }
+    ],
+    "isValid": true,
+    "messages": [],
+    "validaciones": []
+}

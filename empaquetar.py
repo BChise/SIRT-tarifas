@@ -210,6 +210,9 @@ def agregar_tarifa_al_paquete(page, nombre: str, numero: int) -> None:
     page.get_by_text(re.compile(rf"Listado de tarifas.*Total\s*{numero}\b")).first.wait_for(state="visible")
 
 
+PASO1_EXTRA: dict = {}   # fechas, instalación, otros datos y contacto pedidos por línea de comandos
+
+
 def completar_paso_1(page, nombre_paquete: str, componentes: list[dict], alcance: tuple) -> str:
     comun.elegir_opcion(page, "Tipo de Tarifa", comun.TIPO_TARIFA)
     comun.elegir_opcion(page, "Condición", CONDICION_EMPAQUETADA)
@@ -218,7 +221,7 @@ def completar_paso_1(page, nombre_paquete: str, componentes: list[dict], alcance
     for numero, componente in enumerate(componentes, start=1):
         agregar_tarifa_al_paquete(page, componente["nombre"], numero)
 
-    paso1 = comun.PASO1_POR_DEFECTO
+    paso1 = {**comun.PASO1_POR_DEFECTO, **{k: v for k, v in PASO1_EXTRA.items() if k != "contacto"}}
     hoy = date.today()
 
     page.get_by_role("textbox", name="Nombre de la tarifa").fill(nombre_paquete)
@@ -227,6 +230,8 @@ def completar_paso_1(page, nombre_paquete: str, componentes: list[dict], alcance
     comun.elegir_fecha(page, "Inicio comercialización", paso1["fecha_inicio_comercializacion"] or hoy)
     comun.llenar_si_editable(page.get_by_role("spinbutton", name="Tarifa Instalación"), paso1["tarifa_instalacion"])
     page.get_by_role("textbox", name="Otros datos generales").fill(paso1["otros_datos"])
+    for aviso in comun.llenar_contacto(page, PASO1_EXTRA.get("contacto", {})):
+        print(f"  Aviso: {aviso}")
 
     return comun.guardar_paso_1(page)
 
@@ -310,6 +315,14 @@ def leer_argumentos():
     parser.add_argument("--lote", required=True)
     parser.add_argument("--nombre")
     parser.add_argument("--valores", nargs="+")
+    parser.add_argument("--alcance", help="alcance pedido (se comprueba que coincida con el de las tarifas)")
+    parser.add_argument("--inicio-vigencia", help="AAAA-MM-DD (por defecto hoy)")
+    parser.add_argument("--inicio-comercializacion", help="AAAA-MM-DD (por defecto hoy)")
+    parser.add_argument("--instalacion", help="tarifa de instalación")
+    parser.add_argument("--otros-datos", help="texto de «Otros datos generales»")
+    parser.add_argument("--enlace")
+    parser.add_argument("--fono")
+    parser.add_argument("--email")
     parser.add_argument("--solo-listar", action="store_true")
     parser.add_argument("--diagnostico", action="store_true")
     parser.add_argument("--al-frente", action="store_true")
@@ -339,7 +352,8 @@ def preparar_componentes(args) -> tuple[list[dict], tuple]:
             continue
 
         base["servicio"] = modulo.SERVICIO
-        base["valor_tarifa"] = modulo.VALORES.get("valor_servicio", "")
+        # Valor con que se registró (Excel) o, si no se anotó, el valor fijo del código.
+        base["valor_tarifa"] = comun.valor_tarifa_registrado(nombre) or modulo.VALORES.get("valor_servicio", "")
         if args.valores:
             base["valor"] = args.valores[indice]
         else:
@@ -353,6 +367,12 @@ def preparar_componentes(args) -> tuple[list[dict], tuple]:
     if len(alcances) != 1:
         sys.exit("Las tarifas tienen alcances distintos (SIRT lo rechaza): "
                  + "; ".join(f"{c['nombre']}: {' + '.join(c['alcance'])}" for c in componentes))
+    if args.alcance:
+        pedido = {a.strip().lower() for a in args.alcance.split("+")}
+        propio = {a.lower() for a in next(iter(alcances))}
+        if pedido != propio:
+            sys.exit(f"El alcance pedido ({args.alcance}) no coincide con el de las tarifas "
+                     f"({' + '.join(next(iter(alcances)))}): SIRT lo rechaza.")
 
     servicios = [c["servicio"] for c in componentes]
     if len(set(servicios)) != len(servicios):
@@ -372,6 +392,15 @@ def preparar_componentes(args) -> tuple[list[dict], tuple]:
 
 def main() -> None:
     args = leer_argumentos()
+    if args.inicio_vigencia:
+        PASO1_EXTRA["fecha_inicio_vigencia"] = date.fromisoformat(args.inicio_vigencia)
+    if args.inicio_comercializacion:
+        PASO1_EXTRA["fecha_inicio_comercializacion"] = date.fromisoformat(args.inicio_comercializacion)
+    if args.instalacion:
+        PASO1_EXTRA["tarifa_instalacion"] = args.instalacion
+    if args.otros_datos:
+        PASO1_EXTRA["otros_datos"] = args.otros_datos
+    PASO1_EXTRA["contacto"] = {"enlace": args.enlace, "fono": args.fono, "email": args.email}
     componentes, alcance = preparar_componentes(args)
 
     rutas = comun.rutas_lote(CODIGO_PAQUETE, args.lote)
