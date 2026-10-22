@@ -1,0 +1,16 @@
+Quitar tarifas que quedaron en el listado de un empaquetado (20/10/2026)
+
+Contexto: si un empaquetado falla después de agregar tarifas (p. ej. TE-EMP-CM-165), SIRT las
+recuerda: al volver a «Nueva tarifa» > Tarifa establecida > Empaquetada siguen en el listado
+(más abajo en la página). empaquetar.py las quita antes de empezar con el botón «Quitar Tarifa».
+
+Qué grabar (python grabar_sirt.py > Record):
+1. Desde «Tarifas registradas»: Nueva Tarifa > Tipo de Tarifa «Tarifa establecida» >
+   Condición «Empaquetada».
+2. Baja hasta el listado y pulsa el botón (−) de la columna «Quitar» de una tarifa.
+3. Si aparece una ventana de confirmación, acéptala.
+4. Repite con las demás hasta que el listado quede vacío.
+
+Dejar en esta carpeta:
+- grabacion.py: el código del Inspector.
+- Capturas: el listado antes de quitar, la ventana de confirmación (si sale) y el listado vacío.

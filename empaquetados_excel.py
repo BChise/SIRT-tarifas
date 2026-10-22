@@ -28,6 +28,7 @@ from excel_comun import DatoInvalido, texto
 EXCEL = xc.AUTOMATIZACION / "empaquetados.xlsx"
 HOJA = "Empaquetados"
 MAX_TARIFAS = 6
+ERRORES_SEGUIDOS_MAX = 3       # tras 3 errores seguidos en la misma etapa, se detiene
 
 
 def leer_argumentos():
@@ -37,6 +38,9 @@ def leer_argumentos():
     p.add_argument("--limite", type=int, default=0)
     p.add_argument("--repetir", action="store_true")
     p.add_argument("--sin-definitivo", action="store_true")
+    p.add_argument("--definitivo-en-bloque", action="store_true",
+                   help="registro definitivo de varias tarifas a la vez (lo que falle sigue una por una)")
+    p.add_argument("--tamano-bloque", type=int, default=10)
     p.add_argument("--solo-listar", action="store_true")
     p.add_argument("--si", action="store_true")
     p.add_argument("--diagnostico", action="store_true")
@@ -98,6 +102,8 @@ def construir(f: dict) -> dict:
             extra += [opcion, fecha.isoformat()]
     if texto(f.get("Tarifa instalación")):
         extra += ["--instalacion", xc.numero(f["Tarifa instalación"], "Tarifa instalación", minimo=0)]
+    else:
+        extra.append("--sin-instalacion")         # vacío = el paquete no lleva tarifa de instalación
     for columna, opcion in (("Otros datos generales", "--otros-datos"), ("Enlace Web", "--enlace"),
                             ("Fono Atención al cliente", "--fono"), ("Email de atención al cliente", "--email")):
         if texto(f.get(columna)):
@@ -176,7 +182,15 @@ def main() -> None:
         return
 
     resumen = {}
+    etapas_con_error = []          # para detenerse si SIRT deja de responder (p. ej. sesión vencida)
     for k, d in enumerate(trabajos, start=1):
+        if len(etapas_con_error) >= ERRORES_SEGUIDOS_MAX and len(set(etapas_con_error[-ERRORES_SEGUIDOS_MAX:])) == 1:
+            print("\n" + "!" * 70)
+            print(f"Se detiene: {ERRORES_SEGUIDOS_MAX} paquetes seguidos fallaron en la misma etapa "
+                  f"({etapas_con_error[-1]}). Revisa en Edge que la sesión de SIRT siga activa (recarga con F5"
+                  " o vuelve a iniciar sesión) y corre de nuevo el comando: continúa con lo pendiente.")
+            print("!" * 70)
+            break
         print("\n" + "=" * 70)
         print(f"[{k}/{len(trabajos)}] fila {d['fila']}: {d['nombre']}")
         desde = xc.marca_tiempo()
@@ -188,16 +202,22 @@ def main() -> None:
                           (detalle + " | " if detalle else "") + "paquete confirmado")
             d["registrado"] = True
             estado = "Registrada"
+            etapas_con_error = []
         else:
             motivo = fila.get("detalle", "") if fila else xc.resumen_salida(salida)
             hoja.escribir(d["fila"], "Error", fila.get("id_registro", "") if fila else "", fila.get("fecha_hora", "") if fila else "",
                           (detalle + " | " if detalle else "") + motivo)
             estado = "Error"
+            etapas_con_error.append(motivo.split("]")[0] + "]" if motivo.startswith("[") else "sin etapa")
         resumen[estado] = resumen.get(estado, 0) + 1
         xc.guardar(libro, ruta)
 
     if not args.sin_definitivo:
-        for d in [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def:
+        para_definitivo = [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def
+        if args.definitivo_en_bloque:
+            xc.precargar_definitivos([(d["nombre"], d["disponibilidad"]) for d in para_definitivo],
+                                     xc.LOTE_EXCEL, args.tamano_bloque, args.diagnostico)
+        for d in para_definitivo:
             ok, det = xc.hacer_registro_definitivo(d["nombre"], xc.LOTE_EXCEL, d["disponibilidad"], args.diagnostico)
             codigo = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_codigo).value) or d.get("previo", {}).get("id_registro", "")
             actual = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_detalle).value)
@@ -210,6 +230,7 @@ def main() -> None:
     copia = xc.guardar_con_copia(libro, ruta, "EMPAQUETADOS_EXCEL", "empaquetados_excel")
     print("\n" + "=" * 70)
     print("Resumen: " + (" · ".join(f"{k}: {v}" for k, v in resumen.items()) or "sin cambios"))
+    print(f"Tiempo total: {xc.tiempo_total(len(trabajos))}")
     print(f"Excel actualizado: {ruta}\nCopia de esta corrida: {copia}")
 
 

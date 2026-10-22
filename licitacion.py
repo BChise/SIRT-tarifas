@@ -150,13 +150,23 @@ def leer_excel(ruta: Path) -> list[dict]:
 
 def elegir(page, combobox, opcion) -> None:
     """Lista de selección única; combobox y opción pueden ser texto exacto o regex."""
-    cerrar_calendario(page)
-    page.get_by_role("combobox", name=combobox).first.click()
     overlay = page.locator(".cdk-overlay-container")
-    if isinstance(opcion, str):
-        overlay.get_by_role("option", name=opcion, exact=True).click()
-    else:
-        overlay.get_by_role("option", name=opcion).first.click()
+    buscada = overlay.get_by_role("option", name=opcion, exact=True) if isinstance(opcion, str) \
+        else overlay.get_by_role("option", name=opcion).first
+    # SIRT a veces abre la lista antes de cargar sus opciones (visto el 21/10 con TL-LYC-FA-103:
+    # «Tipo de Tarifa» vacío): se cierra y se vuelve a abrir, hasta 3 veces.
+    for intento in range(3):
+        cerrar_calendario(page)
+        page.get_by_role("combobox", name=combobox).first.click()
+        try:
+            buscada.wait_for(state="visible", timeout=8_000)
+            buscada.click()
+            return
+        except Exception:
+            if intento == 2:
+                raise
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(1_500)
 
 
 def cerrar_calendario(page) -> None:
@@ -269,6 +279,12 @@ def completar_paso_2(page, fila: dict) -> None:
     total = len(fila["servicios"])
     for numero in range(1, total + 1):
         pestana = page.get_by_role("tab", name=f"Servicio {numero}", exact=True)
+        # Tras guardar el paso 1, SIRT puede tardar en pintar las pestañas (20/10: 8 de 48
+        # fallaron por mirar antes de tiempo): se espera hasta ~20 s.
+        try:
+            pestana.wait_for(state="visible", timeout=20_000)
+        except Exception:
+            pass
         if pestana.count():
             pestana.click()
             page.wait_for_timeout(500)
@@ -281,7 +297,8 @@ def completar_paso_2(page, fila: dict) -> None:
         detalle.wait_for(state="visible")
         if fila.get("detalles"):
             # Formato nuevo: un detalle por servicio; la pestaña se reconoce por el servicio que muestra.
-            texto_pestana = zona.inner_text().lower()
+            # Con un solo servicio no hay pestañas: se lee la página entera.
+            texto_pestana = (activa.first if activa.count() else page.locator("body")).inner_text().lower()
             servicio = next((s for s in fila["servicios"] if s.lower() in texto_pestana), fila["servicios"][numero - 1])
             detalle.fill(fila["detalles"][servicio])
         else:

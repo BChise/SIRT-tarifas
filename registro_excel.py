@@ -89,7 +89,8 @@ CONTACTO = {  # se llenan solo si la fila los trae (SIRT los precarga con los da
     "Enlace Web": "enlace", "Fono Atención al cliente": "fono", "Email de atención al cliente": "email",
 }
 META = {"N°", "Ejecutar", "Nombre de la tarifa", "Registro definitivo", "Disponibilidad comercial",
-        "Estado", "Código SIRT", "Fecha de registro", "Detalle"}
+        "Estado", "Código SIRT", "Fecha de registro", "Detalle", "ID de registro",
+        "Qué se prueba", "Resultado esperado"}           # las dos últimas: Excel de prueba funcional
 VELOCIDAD_IF = {"Tecnología": "tecnologia",
                 "Descarga contratada (Mbps)": "descarga_contratada",
                 "Descarga garantizada (Mbps)": "descarga_garantizada",
@@ -111,6 +112,9 @@ def leer_argumentos():
     p.add_argument("--limite", type=int, default=0, help="como máximo N tarifas en esta corrida")
     p.add_argument("--repetir", action="store_true", help="registra aunque ya figure como registrada")
     p.add_argument("--sin-definitivo", action="store_true", help="no hace el registro definitivo")
+    p.add_argument("--definitivo-en-bloque", action="store_true",
+                   help="registro definitivo de varias tarifas a la vez (lo que falle sigue una por una)")
+    p.add_argument("--tamano-bloque", type=int, default=10)
     p.add_argument("--solo-listar", action="store_true")
     p.add_argument("--si", action="store_true")
     p.add_argument("--diagnostico", action="store_true")
@@ -182,6 +186,15 @@ def construir(servicio, f: dict, tablas: dict) -> dict:
             continue
         if clave == "internet_ilimitado":
             partes = ["Si" if p.lower() in xc.SI else p for p in partes]
+        # Alcance: en el código están TODAS sus opciones (en otras listas, solo las de por defecto).
+        opciones = {xc.texto(o).lower(): o for o in servicio.DIMENSIONES[clave].get("opciones") or []} \
+            if clave == "alcance" else {}
+        if opciones:
+            malas = [p for p in partes if xc.texto(p).lower() not in opciones]
+            if malas:
+                raise DatoInvalido(f"«{columna}»: «{', '.join(malas)}» no es una opción válida "
+                                   f"({' / '.join(opciones.values())})")
+            partes = [opciones[xc.texto(p).lower()] for p in partes]
         if servicio.DIMENSIONES[clave]["multiple"]:
             dims[clave] = tuple(partes)
         elif len(partes) > 1:
@@ -599,6 +612,9 @@ def main() -> None:
     # Registro definitivo (después, en su propio proceso)
     if not args.sin_definitivo:
         para_definitivo = [t for t in trabajos if t.get("registrada") and t["datos"]["definitivo"]] + definitivos_pendientes
+        if args.definitivo_en_bloque:
+            xc.precargar_definitivos([(i["nombre"], i["datos"]["disponibilidad"]) for i in para_definitivo],
+                                     xc.LOTE_EXCEL, args.tamano_bloque, args.diagnostico)
         for item in para_definitivo:
             hoja = lectores[item["codigo"]]
             ubigeos = item["datos"]["disponibilidad"]
@@ -617,6 +633,7 @@ def main() -> None:
     copia = xc.guardar_con_copia(libro, ruta, "REGISTRO_EXCEL", "registro_excel")
     print("\n" + "=" * 70)
     print("Resumen: " + (" · ".join(f"{k}: {v}" for k, v in resumen.items()) or "sin cambios"))
+    print(f"Tiempo total: {xc.tiempo_total(len(trabajos))}")
     print(f"Excel actualizado: {ruta}")
     print(f"Copia de esta corrida: {copia}")
 

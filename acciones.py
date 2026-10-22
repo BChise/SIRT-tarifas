@@ -78,6 +78,72 @@ def normalizar(texto: str) -> str:
     return re.sub(r"\s+", " ", texto).strip().lower()
 
 
+# --- Sentido del cambio y detalle por campo (modificaciones.xlsx, 20/10) -------------
+# SENTIDO = "beneficioso": los PRECIOS bajan y los BENEFICIOS (minutos, datos, velocidades…)
+# suben; "perjudicial": al revés. None: el delta se aplica igual a todo (como antes).
+# DETALLE: [(partes de la ruta normalizadas, regla)], regla = {"valor": X} o {"delta": N}.
+#   Ruta («›»):  campo  ·  bloque › campo  ·  tabla  ·  tabla › fila  ·  tabla › fila › campo
+#   (fila = el texto de una celda: 4G, ALEMANIA, Bolsa…; campo = etiqueta del número o de la lista).
+#   Con DETALLE solo cambia lo que coincide con alguna ruta; el resto queda igual.
+SENTIDO: str | None = None
+DETALLE: list = []
+SEPARADOR_RUTA = re.compile(r"\s*[›>]\s*")
+PRECIO = re.compile(r"\b(valor|tarifa|precio|costo|cargo|instalacion|periodo de contrato)", re.I)
+
+
+def es_precio(etiqueta: str) -> bool:
+    return bool(PRECIO.search(normalizar(etiqueta)))
+
+
+def cargar_detalle(crudo: dict) -> None:
+    for ruta, regla in crudo.items():
+        partes = [normalizar(p) for p in SEPARADOR_RUTA.split(ruta) if p.strip()]
+        if partes:
+            DETALLE.append((partes, regla))
+
+
+def _empieza(texto: str, parte: str) -> bool:
+    n = normalizar(texto)
+    return bool(n) and n.startswith(parte)
+
+
+def regla_detalle(etiqueta: str, contexto=(), tabla: str | None = None, celdas=()) -> dict | None:
+    """La regla del DETALLE que corresponde a un campo, o None si ninguna ruta lo nombra."""
+    for partes, regla in DETALLE:
+        if tabla is not None:                            # número / lista dentro de una fila de tabla
+            if not _empieza(tabla, partes[0]):
+                continue
+            resto = partes[1:]
+            if not resto:
+                return regla
+            if len(resto) == 1:
+                if any(normalizar(c) == resto[0] for c in celdas) or _empieza(etiqueta, resto[0]):
+                    return regla
+                continue
+            if any(normalizar(c) == resto[0] for c in celdas) and _empieza(etiqueta, resto[1]):
+                return regla
+            continue
+        if len(partes) == 1 and (_empieza(etiqueta, partes[0]) or any(_empieza(c, partes[0]) for c in contexto)):
+            return regla
+        if len(partes) == 2 and any(_empieza(c, partes[0]) for c in contexto) and _empieza(etiqueta, partes[1]):
+            return regla
+    return None
+
+
+def ajuste(etiqueta: str, delta: Decimal, contexto=(), tabla: str | None = None, celdas=()):
+    """Qué hacer con un campo: ('valor', '25'), ('delta', Decimal) o None (no tocarlo)."""
+    if DETALLE:
+        regla = regla_detalle(etiqueta, contexto, tabla, celdas)
+        if regla is None:
+            return None
+        return ("valor", str(regla["valor"])) if "valor" in regla else ("delta", Decimal(str(regla["delta"])))
+    if SENTIDO:
+        magnitud = abs(delta)
+        sube = (not es_precio(etiqueta)) if SENTIDO == "beneficioso" else es_precio(etiqueta)
+        return "delta", magnitud if sube else -magnitud
+    return "delta", delta
+
+
 def campo_elegido(*etiquetas: str) -> bool:
     if FILTRO_CAMPOS is None:
         return True
@@ -146,6 +212,31 @@ def buscar_tarifa(page, nombre: str) -> dict | None:
     """Busca por nombre y devuelve la última versión con ese nombre EXACTO:
     {id, codigo, version, nombre, comercializacion, vigencia, condicion} o None.
     Los datos salen de la respuesta del filtro (la tabla no muestra la vigencia)."""
+    items = items_del_filtro(page, nombre)
+    exactos = [i for i in items if _sin_espacios(i.get("nombre")) == _sin_espacios(nombre)]
+    if not exactos:
+        return None
+    ultimo = max(exactos, key=lambda i: (bool(i.get("esUltimaVersion")), i.get("version") or 0))
+    page.wait_for_timeout(300)        # que la tabla termine de pintarse
+    return datos_de_item(ultimo)
+
+
+def datos_de_item(ultimo: dict) -> dict:
+    return {
+        "id": ultimo.get("idTarifa"),
+        "codigo": ultimo.get("codigoSIRT", ""),
+        "version": str(ultimo.get("version", "")),
+        "nombre": ultimo.get("nombre", ""),
+        "comercializacion": (ultimo.get("comercializacion") or {}).get("nombre", ""),
+        "vigencia": (ultimo.get("vigencia") or {}).get("nombre", ""),
+        "condicion": (ultimo.get("condicion") or {}).get("nombre", ""),
+        "tipo": ((ultimo.get("tipoTarifa") or {}).get("nombre", "")),
+    }
+
+
+def items_del_filtro(page, nombre: str, con_total: bool = False):
+    """Filtra «Tarifas registradas» por nombre y devuelve los items del JSON de la respuesta
+    (con_total=True → (items, total que dice SIRT))."""
     respuestas = []
 
     def capturar(respuesta):
@@ -181,6 +272,7 @@ def buscar_tarifa(page, nombre: str) -> dict | None:
                     continue
                 if isinstance(datos, dict) and isinstance(datos.get("items"), list):
                     items = datos["items"]
+                    total = datos.get("total") or len(items)
                     break
                 respuestas.remove(respuesta)
             if items is not None:
@@ -191,22 +283,7 @@ def buscar_tarifa(page, nombre: str) -> dict | None:
 
     if items is None:
         raise RuntimeError(f"No llegó la respuesta del filtro al buscar '{nombre}'.")
-
-    exactos = [i for i in items if _sin_espacios(i.get("nombre")) == _sin_espacios(nombre)]
-    if not exactos:
-        return None
-    ultimo = max(exactos, key=lambda i: (bool(i.get("esUltimaVersion")), i.get("version") or 0))
-    page.wait_for_timeout(300)        # que la tabla termine de pintarse
-    return {
-        "id": ultimo.get("idTarifa"),
-        "codigo": ultimo.get("codigoSIRT", ""),
-        "version": str(ultimo.get("version", "")),
-        "nombre": ultimo.get("nombre", ""),
-        "comercializacion": (ultimo.get("comercializacion") or {}).get("nombre", ""),
-        "vigencia": (ultimo.get("vigencia") or {}).get("nombre", ""),
-        "condicion": (ultimo.get("condicion") or {}).get("nombre", ""),
-        "tipo": ((ultimo.get("tipoTarifa") or {}).get("nombre", "")),
-    }
+    return (items, total) if con_total else items
 
 
 def fila_en_tabla(page, tarifa: dict):
@@ -286,6 +363,24 @@ def renombrar(page, tarifa: dict, nombre_nuevo: str) -> str:
 
 
 # --- Cese de comercialización ------------------------------------------------------
+
+def _renovacion_ya_guardada(nombre: str, tarifa: dict) -> bool:
+    """¿Una renovación anterior que quedó en ERROR sí se guardó? Se reconoce porque la promoción
+    tiene una versión > 1 «Por iniciar comercialización» (la que crea la renovación)."""
+    try:
+        version = int(tarifa.get("version") or 1)
+    except ValueError:
+        return False
+    if version < 2 or "por iniciar comercializ" not in tarifa.get("comercializacion", "").lower():
+        return False
+    if not RUTA_RESULTADOS.exists():
+        return False
+    with RUTA_RESULTADOS.open("r", newline="", encoding="utf-8-sig") as entrada:
+        previas = [f for f in csv.DictReader(entrada, delimiter=";")
+                   if f.get("accion") == "renovar" and f.get("nombre") == nombre]
+    resultados = [f.get("resultado") for f in previas]
+    return "ERROR" in resultados and "EXITOSO" not in resultados
+
 
 class NoAplica(Exception):
     """La tarifa no está en el estado que exige la acción: no se tocó SIRT."""
@@ -491,6 +586,20 @@ def _numero_nuevo(actual: str, delta: Decimal) -> str:
     return f"{valor + delta:.{decimales}f}"
 
 
+def _releer(page, campo) -> str:
+    """Valor que quedó en el campo tras salir de él (Tab)."""
+    campo.press("Tab")
+    page.wait_for_timeout(250)
+    return (campo.input_value() or "").strip().replace(",", "")
+
+
+def _mismo_numero(a: str, b: str) -> bool:
+    try:
+        return Decimal(a) == Decimal(b)
+    except Exception:
+        return a == b
+
+
 def cambiar_numero(page, etiqueta: re.Pattern, nombre: str, delta: Decimal,
                    si_vacio: Decimal | None = None) -> str | None:
     """Cambia el campo numérico visible y habilitado cuya etiqueta coincide:
@@ -500,6 +609,10 @@ def cambiar_numero(page, etiqueta: re.Pattern, nombre: str, delta: Decimal,
     Devuelve 'Etiqueta: antes → después' o None si el campo no existe o está bloqueado."""
     if not campo_elegido(nombre):
         return None
+    resultado = ajuste(nombre, delta)
+    if resultado is None:
+        return None
+    tipo, regla = resultado
     for rol in ("textbox", "spinbutton"):
         for campo in page.get_by_role(rol, name=etiqueta).all():
             if not (campo.is_visible() and campo.is_editable()):
@@ -510,18 +623,38 @@ def cambiar_numero(page, etiqueta: re.Pattern, nombre: str, delta: Decimal,
                     break
                 page.wait_for_timeout(500)
                 antes = campo.input_value()
-            if antes.strip():
-                despues = _numero_nuevo(antes, delta)
+            if tipo == "valor":
+                despues = regla                          # valor pedido en la hoja «Campos»
+            elif antes.strip():
+                despues = _numero_nuevo(antes, regla)
                 if Decimal(despues) < 0:
                     return None                          # no se puede bajar de 0
             elif si_vacio is not None:
                 despues = str(si_vacio)
-            elif delta > 0:
-                despues = str(delta)
+            elif regla > 0:
+                despues = str(regla)
             else:
                 return None                              # vacío y se quería bajar: no se toca
             campo.fill(despues)
-            return f"{nombre}: {antes.strip() or '(vacío)'} → {despues}"
+            # Lo que el campo REALMENTE guardó (algunos tienen máscara y reescriben el número: visto
+            # el 22/10 con «Valor de contrato» de TL-LYC-CM-123, escrito 1773.00 y mostrado 1773.03).
+            # El resumen se compara con este valor.
+            nota = ""
+            try:
+                quedo = _releer(page, campo)
+                if quedo and not _mismo_numero(quedo, despues):
+                    # 2.º intento: borrar todo y escribir tecla por tecla (la máscara lo acepta mejor).
+                    campo.click()
+                    campo.press("Control+A")
+                    campo.press("Delete")
+                    campo.press_sequentially(despues, delay=40)
+                    quedo = _releer(page, campo)
+                if quedo and not _mismo_numero(quedo, despues):
+                    nota = f" (se pidió {despues}; la máscara de SIRT dejó otro valor)"
+                    despues = quedo                      # el resumen se compara con lo que quedó
+            except Exception:
+                pass
+            return f"{nombre}: {antes.strip() or '(vacío)'}{nota} → {despues}"
     return None
 
 
@@ -547,6 +680,11 @@ MARCAR_NUMEROS = """() => {
     for (let a = i.parentElement; a && ok; a = a.parentElement) {
       if (a.tagName === 'MAT-TAB-BODY' && !a.classList.contains('mat-mdc-tab-body-active')) ok = false;
       if (a.getAttribute('aria-hidden') === 'true') ok = false;
+      // Paneles de OTROS pasos que SIRT deja en la página (22/10: «Valor de contrato» del
+      // paso 1 subía 0.01 en cada pestaña del paso 2 → 1773.00 quedó 1773.03 con 3 servicios).
+      if (a.getAttribute('aria-expanded') === 'false') ok = false;
+      const s = getComputedStyle(a);
+      if (s.display === 'none' || s.visibility === 'hidden') ok = false;
     }
     if (!ok) continue;
     const v = (i.value || '').trim().replace(/,/g, '');
@@ -564,6 +702,9 @@ MARCAR_NUMEROS = """() => {
   }
   return out;
 }"""
+# Campos del paso 1 que «--todo» (paso 2) nunca debe tocar aunque SIRT los deje en la página.
+NUNCA_EN_TODO = [re.compile(r"^Valor de contrato", re.I), re.compile(r"^Duraci[oó]n de contrato", re.I),
+                 re.compile(r"^Documento de Empresa", re.I)]
 # Topes de los que dependen otros campos (tethering, traslada datos y datos roaming
 # incluidos deben ser <= "Datos tope descarga"): al SUBIR se cambian primero, al BAJAR al final.
 TOPES = re.compile(r"tope", re.I)
@@ -579,14 +720,23 @@ def cambiar_todos_los_numeros(page, delta: Decimal, excluir: list[re.Pattern]) -
     campos = page.evaluate(MARCAR_NUMEROS)
     campos = [c for c in campos if not any(e.search(c["lab"]) for e in excluir)
               and campo_elegido(c["lab"], *c.get("ctx", []))]
-    campos.sort(key=lambda c: (not TOPES.search(c["lab"])) if delta > 0 else bool(TOPES.search(c["lab"])))
+    for c in campos:
+        c["regla"] = ajuste(c["lab"], delta, c.get("ctx", []))
+    campos = [c for c in campos if c["regla"] is not None]
+    # Topes: si suben, primero; si bajan, al final (los que dependen de ellos deben ser <= tope).
+    campos.sort(key=lambda c: 0 if TOPES.search(c["lab"]) and c["regla"][0] == "delta" and c["regla"][1] > 0
+                else 2 if TOPES.search(c["lab"]) else 1)
     hechos = []
     for c in campos:
-        if Decimal(c["v"]) == 0:
-            continue                                     # 0 suele ser "no aplica": no se toca
-        decimales = len(c["v"].split(".")[1]) if "." in c["v"] else 0
-        paso = delta * (Decimal(1).scaleb(-decimales))   # 0.10 → 0.11 (no 1.10); 12 → 13
-        nuevo = _numero_nuevo(c["v"], paso)
+        tipo, regla = c["regla"]
+        if tipo == "valor":
+            nuevo = regla
+        else:
+            if Decimal(c["v"]) == 0:
+                continue                                 # 0 suele ser "no aplica": no se toca
+            decimales = len(c["v"].split(".")[1]) if "." in c["v"] else 0
+            paso = regla * (Decimal(1).scaleb(-decimales))   # 0.10 → 0.11 (no 1.10); 12 → 13
+            nuevo = _numero_nuevo(c["v"], paso)
         if Decimal(nuevo) <= 0 or (PORCENTAJE.search(c["lab"]) and Decimal(nuevo) > 100):
             continue
         campo = page.locator(f'input[data-num="{c["n"]}"]')
@@ -944,9 +1094,12 @@ def renovar(page, tarifa: dict, hasta_resumen: bool, inicio: date | None) -> tup
             pendientes.remove(del_json)
         hechos = cambiar_duraciones(page, f"Servicio {i + 1}")
         nombre = del_json[0] if del_json else f"Servicio {i + 1}"
-        if del_json and len(hechos) != len(del_json[1]):
+        # Un atributo con subapartados (p. ej. velocidades de Internet fijo) muestra una duración por
+        # subapartado, así que en pantalla puede haber MÁS duraciones que atributos en el JSON. Solo es
+        # error si hay MENOS (quedaría algún atributo promocionado sin renovar).
+        if del_json and len(hechos) < len(del_json[1]):
             raise RuntimeError(f"Servicio {i + 1} ({nombre}): el JSON tiene {len(del_json[1])} atributo(s) "
-                               f"promocionado(s) y en pantalla hay {len(hechos)} duración(es) editables.")
+                               f"promocionado(s) y en pantalla solo hay {len(hechos)} duración(es) editables.")
         detalle = ", ".join(f"{a} {c}" for a, c in zip(del_json[1], hechos)) if del_json else ", ".join(hechos)
         cambios.append(f"Servicio {i + 1} – {nombre}: {detalle or 'sin atributos'}")
 
@@ -1079,6 +1232,36 @@ def _boton_editar(page, t: int, i: int):
     return filas.nth(i).locator("td").last.locator("button").first
 
 
+def cambiar_listas_de_fila(page, dialogo, tabla: str, celdas: list) -> list[tuple[str, str]]:
+    """Detalle con «Valor nuevo» para una lista de la fila (p. ej. «Tecnologías y velocidades › 4G ›
+    Tecnología» = 4.5G): elige esa opción. SIRT rechaza repetir tecnología / país en la tabla."""
+    hechos = []
+    for lista in dialogo.get_by_role("combobox").all():
+        if not lista.is_visible():
+            continue
+        etiqueta = lista.evaluate("""e => { const f = e.closest('mat-form-field');
+            const l = f && f.querySelector('mat-label, label');
+            return ((l && l.innerText) || e.getAttribute('aria-label') || '').trim(); }""")
+        # Solo rutas que terminan en el nombre de ESTA lista: «tabla › lista» o «tabla › fila › lista».
+        regla = next((r for partes, r in DETALLE if "valor" in r and len(partes) >= 2
+                      and _empieza(tabla, partes[0]) and _empieza(etiqueta, partes[-1])
+                      and (len(partes) == 2 or any(normalizar(c) == partes[1] for c in celdas))), None)
+        if regla is None:
+            continue
+        antes = (lista.inner_text() or "").strip()
+        lista.click()
+        opcion = page.locator(".cdk-overlay-container").get_by_role("option", name=str(regla["valor"]), exact=True)
+        if opcion.count() == 0:
+            page.keyboard.press("Escape")
+            raise RuntimeError(f"{tabla}: «{etiqueta}» no tiene la opción «{regla['valor']}».")
+        opcion.first.click()
+        fondo = page.locator(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")
+        if fondo.count():                                # lista múltiple: se cierra sin cerrar la ventana
+            fondo.last.click(position={"x": 5, "y": 5})
+        hechos.append((f"{etiqueta}: {antes}", str(regla["valor"])))
+    return hechos
+
+
 def editar_filas_de_tablas(page, delta: Decimal) -> list[str]:
     """Edita todas las filas de las tablas visibles del paso/pestaña activa."""
     cambios = []
@@ -1088,6 +1271,12 @@ def editar_filas_de_tablas(page, delta: Decimal) -> list[str]:
             continue
         for i in range(tabla["filas"]):
             page.evaluate(MARCAR_FILAS)                      # la tabla se vuelve a pintar tras guardar
+            celdas = [x.strip() for x in page.locator(f'table[data-tabla="{tabla["t"]}"] tbody tr').filter(
+                has=page.locator("td:last-child button")).nth(i).locator("td").all_inner_texts()]
+            if DETALLE and not any(_empieza(tabla["titulo"], partes[0]) and
+                                   (len(partes) == 1 or any(normalizar(c) == partes[1] for c in celdas)
+                                    or len(partes) == 2) for partes, _ in DETALLE):
+                continue                                     # fila no nombrada en el detalle
             _boton_editar(page, tabla["t"], i).click()
             dialogo = page.locator("mat-dialog-container").last
             dialogo.wait_for(state="visible")
@@ -1098,21 +1287,32 @@ def editar_filas_de_tablas(page, delta: Decimal) -> list[str]:
                 antes = (campo.input_value() or "").strip()
                 if not antes:
                     continue
-                despues = _numero_nuevo(antes, delta)
+                etiqueta = campo.evaluate("""e => { const f = e.closest('mat-form-field');
+                    const l = f && f.querySelector('mat-label, label');
+                    return ((l && l.innerText) || e.getAttribute('aria-label') || e.placeholder || '').trim(); }""")
+                resultado = ajuste(etiqueta, delta, tabla=tabla["titulo"], celdas=celdas)
+                if resultado is None:
+                    continue
+                tipo, regla = resultado
+                despues = regla if tipo == "valor" else _numero_nuevo(antes, regla)
                 nuevos.append((campo, antes, despues))
-            if not nuevos or any(Decimal(d) < 0 for _, _, d in nuevos):
+            listas = cambiar_listas_de_fila(page, dialogo, tabla["titulo"], celdas) if DETALLE else []
+            if (not nuevos and not listas) or any(Decimal(d) < 0 for _, _, d in nuevos):
                 motivo = "sin números" if not nuevos else "quedaría por debajo de 0"
+                silencioso = DETALLE and not nuevos and not listas    # fila abierta, pero sin nada pedido
                 cerrar = dialogo.get_by_role("button", name=re.compile(r"Cancelar|Cerrar|close", re.I))
                 if cerrar.count():
                     cerrar.first.click()
                 else:
                     page.keyboard.press("Escape")
                 dialogo.wait_for(state="hidden")
-                cambios.append(f"{tabla['titulo']} fila {i + 1}: no se cambió ({motivo})")
+                if not silencioso:
+                    cambios.append(f"{tabla['titulo']} fila {i + 1}: no se cambió ({motivo})")
                 continue
             for campo, _, despues in nuevos:
                 campo.fill(despues)
             dialogo.get_by_role("button", name="Guardar", exact=True).click()
+            nuevos = nuevos + [(None, a, d) for a, d in listas]
             try:
                 dialogo.wait_for(state="hidden", timeout=10_000)
             except Exception:
@@ -1380,7 +1580,8 @@ def editar_tres_pasos(page, tarifa: dict, opcion_menu: str, sello: str, prefijo:
                     cambios.append(hecho)
                     numeros.append(hecho.split("→")[-1].strip())
             if todo and listas:                          # solo en el paso 2
-                otros = cambiar_todos_los_numeros(page, delta, [e for e, _ in NUMERICOS_PASO_2 + NUMERICOS_PASO_1])
+                otros = cambiar_todos_los_numeros(page, delta, [e for e, _ in NUMERICOS_PASO_2 + NUMERICOS_PASO_1]
+                                                  + NUNCA_EN_TODO)
                 cambios.append(f"--todo: {len(otros)} campo(s) numérico(s)")
                 cambios.extend(otros)
         if delta is not None and listas and todo:        # filas de tablas (con --todo / --campos)
@@ -1435,14 +1636,16 @@ def editar_tres_pasos(page, tarifa: dict, opcion_menu: str, sello: str, prefijo:
             pestanas.nth(i).click()
             page.wait_for_timeout(500)
         numericos = NUMERICOS_PASO_2
-        if total > 1 and delta is not None and delta > 0 and i == total - 1 \
-                and "empaquet" in tarifa.get("condicion", "").lower():
-            # Empaquetado: el valor del plan (suma de los servicios) debe ser MENOR a la suma
-            # de las tarifas base, y cada servicio <= su tarifa base. Como el paquete se creó
-            # con base - 1, subir todos daría suma = suma de bases → SIRT lo rechaza (16/10).
-            # Se deja el último servicio sin subir.
+        if total > 1 and delta is not None and ajuste("Valor del servicio", delta) == ("delta", abs(delta)) \
+                and abs(delta) > 0 and "empaquet" in tarifa.get("condicion", "").lower():
+            # Empaquetado: cada servicio debe ser <= el valor de SU tarifa base y el plan (suma)
+            # MENOR a la suma de las bases. Un paquete creado con «base − 1» (o con una base que
+            # vale 0) no admite subidas: SIRT lo rechazó el 16/10 (suma) y el 22/10 con
+            # TE-EMP-CM-113 / 126 (servicio > su base). Por eso en empaquetados el valor de los
+            # servicios NO sube (sí se cambian textos, instalación y lo demás).
             numericos = []
-            cambios.append(f"Servicio {i + 1}: valor sin subir (regla del empaquetado: plan < suma de bases)")
+            cambios.append(f"Servicio {i + 1}: valor sin subir (regla del empaquetado: cada servicio ≤ su "
+                           "tarifa base y plan < suma de bases)")
         corregir_pantalla(numericos, LISTAS_PASO_2)
     if not textos and not numeros and not any("→" in c for c in cambios):
         raise RuntimeError("No se encontró ningún campo para modificar"
@@ -1501,6 +1704,11 @@ def leer_argumentos():
     parser.add_argument("--quitar-ilimitado", action="store_true",
                         help="rectificar / cambio: desmarca «ilimitado» en los condicionales y llena "
                              "cantidad y tarifa adicional (10 y 15)")
+    parser.add_argument("--sentido", choices=["beneficioso", "perjudicial"], default=None,
+                        help="cambio: beneficioso = precios bajan y beneficios suben; perjudicial = al revés "
+                             "(usa el valor absoluto de --delta)")
+    parser.add_argument("--detalle", default=None,
+                        help="JSON {campo: {\"valor\": X} o {\"delta\": N}}: solo esos campos, con su valor o delta")
     parser.add_argument("--sin-canales", action="store_true",
                         help="rectificar / cambio (TV): no cambiar los Excel de canales")
     parser.add_argument("--campos", default=None,
@@ -1542,6 +1750,13 @@ def main() -> None:
     EXTRAS["agregar_filas"] = args.agregar_filas
     EXTRAS["quitar_ilimitado"] = args.quitar_ilimitado
     EXTRAS["canales"] = not args.sin_canales
+    global SENTIDO
+    SENTIDO = args.sentido
+    if args.detalle:
+        crudo = json.loads(Path(args.detalle).read_text(encoding="utf-8"))
+        cargar_detalle(crudo)
+        if not args.campos:                              # se recorren los bloques / tablas nombrados
+            args.campos = ";".join(dict.fromkeys(SEPARADOR_RUTA.split(k)[0].strip() for k in crudo))
     if args.campos:
         NOMBRES_CAMPOS = [c.strip() for c in args.campos.split(";") if c.strip()]
         FILTRO_CAMPOS = [normalizar(c) for c in NOMBRES_CAMPOS]
@@ -1578,7 +1793,11 @@ def main() -> None:
     if args.accion in ("fe_erratas", "rectificar", "cambio"):
         prefijo = args.texto or PREFIJOS[args.accion]
         extra = "" if args.accion == "fe_erratas" else \
-            f"; valor del servicio y tarifa de instalación {Decimal(args.delta):+}"
+            (f"; {SENTIDO}: precios {'−' if SENTIDO == 'beneficioso' else '+'}{abs(Decimal(args.delta))}, "
+             f"beneficios {'+' if SENTIDO == 'beneficioso' else '−'}{abs(Decimal(args.delta))}" if SENTIDO else
+             f"; valor del servicio y tarifa de instalación {Decimal(args.delta):+}")
+        if DETALLE:   # en modo detalle solo cambia lo de la hoja «Campos»
+            extra = f"; detalle: solo {len(DETALLE)} campo(s), cada uno con su valor/delta"
         if fecha_ejecucion:
             extra += f"; fecha de ejecución {fecha_ejecucion:%d/%m/%Y}"
         for t in pendientes:
@@ -1680,6 +1899,13 @@ def main() -> None:
                     for c in cambios:
                         print(f"  {c}")
                     print("  Detenido en el paso 3 SIN guardar." if args.hasta_resumen else "  Guardado.")
+                elif args.accion == "renovar" and _renovacion_ya_guardada(nombre, tarifa):
+                    # La corrida anterior falló JUSTO después de guardar (p. ej. sesión vencida,
+                    # 22/10 TP-PIF-P5-106): la renovación ya creó su versión «Por iniciar».
+                    fila["resultado"] = "EXITOSO"
+                    fila["detalle"] = (f"renovación ya registrada: SIRT tiene la versión {tarifa['version']} "
+                                       "«Por iniciar comercialización» (el intento anterior se cortó después de guardar)")
+                    print("  " + fila["detalle"])
                 elif args.accion == "renovar":
                     validar_para_cese(tarifa, args.sin_validar, "la renovación")
                     cambios, mensaje = etapa("renovar", lambda: renovar(

@@ -26,6 +26,8 @@ Opciones:
     --diagnostico      capturas por paso y mapa de la página si falla
     --si               no pide confirmación
     --al-frente        trae la ventana de Edge al frente al empezar
+    --en-bloque        disponibilidad y registro definitivo de varias a la vez (bloques de 10;
+                       --tamano-bloque N); lo que falle o no se vea sigue una por una
 
 Es reanudable: lo ya registrado (EXITOSO en resultados/registro_definitivo_<lote>.csv)
 se omite en la siguiente ejecución.
@@ -212,9 +214,25 @@ def recargar_temporales(page) -> None:
     page.get_by_role("button", name="Registro definitivo").wait_for(state="visible")
 
 
+def limpiar_filtro(page) -> None:
+    """«Limpiar filtro»: SIRT a veces conserva filtros de una búsqueda anterior (tipo, condición…)."""
+    boton = page.get_by_role("button", name="Limpiar filtro")
+    if boton.count() and boton.first.is_visible():
+        boton.first.click()
+        try:
+            page.wait_for_load_state("networkidle", timeout=5_000)
+        except Exception:
+            pass
+        page.wait_for_timeout(500)
+
+
 def abrir_tarifas_temporales(page) -> None:
     campo_nombre = page.get_by_role("textbox", name="Ingresa nombre de tarifa")
     if campo_nombre.count() > 0 and campo_nombre.is_visible():
+        limpiar_filtro(page)
+        if not campo_nombre.is_visible():
+            page.get_by_role("button", name="Filtro avanzado").click()
+            campo_nombre.wait_for(state="visible")
         return
 
     if "tarifa-temporal" not in page.url:
@@ -224,6 +242,7 @@ def abrir_tarifas_temporales(page) -> None:
 
     # El filtro por nombre está en "Filtro avanzado" (abierto, el botón pasa
     # a llamarse "Filtro principal").
+    limpiar_filtro(page)
     if not campo_nombre.is_visible():
         page.get_by_role("button", name="Filtro avanzado").click()
         campo_nombre.wait_for(state="visible")
@@ -249,12 +268,51 @@ def fila_de_tarifa(page, nombre: str):
     return None if indice < 0 else page.locator("tbody tr").nth(indice)
 
 
+CODIGOS_LEIDOS: dict[str, tuple[str, str]] = {}     # nombre → (Código SIRT, ID) leídos del JSON del filtro
+
+
+def _leer_codigo_del_json(respuestas, nombre: str) -> None:
+    """Del JSON del filtro (POST …/filtrar-temporal) toma el codigoSIRT y el idTarifa de la tarifa."""
+    objetivo = re.sub(r"\s+", "", nombre)
+    for respuesta in respuestas:
+        try:
+            datos = respuesta.json().get("data")
+        except Exception:
+            continue
+        items = datos.get("items") if isinstance(datos, dict) else None
+        for item in items or []:
+            if re.sub(r"\s+", "", item.get("nombre") or "") == objetivo and item.get("codigoSIRT"):
+                CODIGOS_LEIDOS[nombre] = (item["codigoSIRT"], str(item.get("idTarifa") or ""))
+
+
 def buscar_tarifa(page, nombre: str):
     abrir_tarifas_temporales(page)
 
     page.get_by_role("textbox", name="Ingresa nombre de tarifa").fill(nombre)
-    page.get_by_role("button", name="Buscar", exact=True).click()
+    respuestas = []
 
+    def capturar(respuesta):
+        if respuesta.request.method == "POST" and respuesta.request.resource_type in ("xhr", "fetch"):
+            respuestas.append(respuesta)
+
+    page.on("response", capturar)
+    try:
+        page.get_by_role("button", name="Buscar", exact=True).click()
+        _esperar_fila(page, nombre)
+    finally:
+        page.remove_listener("response", capturar)
+    _leer_codigo_del_json(respuestas, nombre)       # no detiene nada si no lo encuentra
+
+    page.wait_for_timeout(500)
+    fila = fila_de_tarifa(page, nombre)
+
+    if fila is None:
+        raise RuntimeError(f"'{nombre}' aparece, pero no en estado confirmado (¿borrador?).")
+
+    return fila
+
+
+def _esperar_fila(page, nombre: str) -> None:
     try:
         page.wait_for_function(
             """
@@ -270,14 +328,6 @@ def buscar_tarifa(page, nombre: str):
             f"'{nombre}' no aparece en Tarifas temporales "
             "(¿ya registrada, o el filtro no la encuentra?)."
         )
-
-    page.wait_for_timeout(500)
-    fila = fila_de_tarifa(page, nombre)
-
-    if fila is None:
-        raise RuntimeError(f"'{nombre}' aparece, pero no en estado confirmado (¿borrador?).")
-
-    return fila
 
 
 def aceptar_dialogos(page, maximo: int = 2) -> list[str]:
@@ -387,7 +437,22 @@ def procesar_tarifa(page, tarifa: dict, ubigeos: list[str], estado: dict, diag: 
     estado["etapa"] = "recargar"
     recargar_temporales(page)
 
-    fila = etapa("buscar", lambda: buscar_tarifa(page, nombre))
+    try:
+        fila = etapa("buscar", lambda: buscar_tarifa(page, nombre))
+    except RuntimeError as error:
+        if "no aparece en Tarifas temporales" not in str(error):
+            raise
+        # Puede que ya tenga registro definitivo (p. ej. una corrida cortada justo después de
+        # hacerlo, sin alcanzar a anotarlo): se busca en «Tarifas registradas».
+        estado["etapa"] = "buscar_en_registradas"
+        import acciones
+        acciones.abrir_tarifas_registradas(page)
+        registrada = acciones.buscar_tarifa(page, nombre)
+        if registrada is None:
+            raise
+        comun.guardar_codigo_sirt(nombre, registrada["codigo"], registrada.get("id") or "")
+        return (f"ya tenía registro definitivo: está en Tarifas registradas "
+                f"(código {registrada['codigo']}, versión {registrada['version']})")
 
     if tarifa["requiere_disponibilidad"]:
         textos = etapa("disponibilidad", lambda: asignar_disponibilidad(page, fila, ubigeos))
@@ -401,10 +466,193 @@ def procesar_tarifa(page, tarifa: dict, ubigeos: list[str], estado: dict, diag: 
     if etapa("verificacion", lambda: sigue_en_temporales(page, nombre)):
         detalles.append("AVISO: sigue figurando en Tarifas temporales")
 
+    codigo, id_tarifa = CODIGOS_LEIDOS.get(nombre, ("", ""))
+    if not codigo:                       # no vino en el JSON de temporales: se lee de «Tarifas registradas»
+        try:
+            import acciones
+            acciones.abrir_tarifas_registradas(page)
+            registrada = acciones.buscar_tarifa(page, nombre)
+            if registrada:
+                codigo, id_tarifa = registrada["codigo"], str(registrada.get("id") or "")
+        except Exception as error:       # el registro definitivo ya está hecho: solo se avisa
+            detalles.append(f"AVISO: no se pudo leer el Código SIRT ({str(error)[:80]})")
+    if codigo:
+        comun.guardar_codigo_sirt(nombre, codigo, id_tarifa)
+        detalles.append(f"código SIRT {codigo}")
+
     return " | ".join(detalles)
 
 
 # --- Principal ----------------------------------------------------------------
+
+# --- Modo EN BLOQUE (--en-bloque, grabación _registro_definitivo_bloque 21/10) -----------
+# Por bloque (10 por defecto, mismas ubicaciones): filtra temporales por la parte común de los
+# nombres, marca SOLO las filas con el nombre exacto, (1) disponibilidad para todas («Registro de
+# Disponibilidad comercial» → «Selector geográfico» → Continuar → ubicaciones → Guardar) y
+# (2) registro definitivo de todas. Antes de confirmar: marcadas = las del bloque, y SIRT debe
+# decir «Tarifas seleccionadas: N» igual. SIRT registra las demás aunque alguna falle: al final
+# se ve cuáles siguen en temporales y esas se reintentan una por una (modo normal).
+TAMANO_BLOQUE_MAX = 50
+
+
+def _numero(texto: str, etiqueta: str) -> int | None:
+    coincidencia = re.search(etiqueta + r"\s*:?\s*(\d+)", texto, re.IGNORECASE)
+    return int(coincidencia.group(1)) if coincidencia else None
+
+
+def _filtrar_bloque(page, nombres: list[str]) -> dict:
+    """Temporales filtradas por la parte común de los nombres. Devuelve {nombre: fila} de las
+    que se ven en estado confirmado (las demás quedan para el modo una por una)."""
+    import os
+    recargar_temporales(page)
+    abrir_tarifas_temporales(page)
+    comun_nombres = os.path.commonprefix(nombres) if len(nombres) > 1 else nombres[0]
+    texto = comun_nombres if len(comun_nombres) >= 4 else ""
+    respuestas = []
+
+    def capturar(respuesta):
+        if respuesta.request.method == "POST" and respuesta.request.resource_type in ("xhr", "fetch"):
+            respuestas.append(respuesta)
+
+    page.get_by_role("textbox", name="Ingresa nombre de tarifa").fill(texto)
+    page.on("response", capturar)
+    try:
+        page.get_by_role("button", name="Buscar", exact=True).click()
+        try:
+            page.wait_for_load_state("networkidle", timeout=10_000)
+        except Exception:
+            pass
+        page.wait_for_timeout(1_500)
+    finally:
+        page.remove_listener("response", capturar)
+    for nombre in nombres:
+        _leer_codigo_del_json(respuestas, nombre)
+    return {n: f for n in nombres if (f := fila_de_tarifa(page, n)) is not None}
+
+
+def _marcar(page, filas: dict) -> None:
+    for fila in filas.values():
+        fila.get_by_role("checkbox").check()
+    marcadas = page.locator("tbody tr").get_by_role("checkbox", checked=True).count()
+    if marcadas != len(filas):
+        raise RuntimeError(f"Hay {marcadas} filas marcadas y el bloque tiene {len(filas)}. No se continúa.")
+
+
+def _revisar_resumen(textos: list[str], esperadas: int, operacion: str) -> str:
+    texto = " ".join(textos)
+    seleccionadas = _numero(texto, "Tarifas seleccionadas")
+    if seleccionadas is not None and seleccionadas != esperadas:
+        raise RuntimeError(f"{operacion}: SIRT dice {seleccionadas} tarifas seleccionadas y eran {esperadas}.")
+    guardados = _numero(texto, "(?:Guardados|Registrados|Exitosos|Procesados)")
+    fallidos = _numero(texto, "Fallidos")
+    return f"{operacion}: seleccionadas {seleccionadas}, guardados {guardados}, fallidos {fallidos}"
+
+
+def disponibilidad_en_bloque(page, filas: dict, ubigeos: list[str]) -> str:
+    _marcar(page, filas)
+    page.get_by_role("button", name="Registro de Disponibilidad").click()
+    page.get_by_role("radio", name="Selector geográfico").check()
+    page.get_by_role("button", name="Continuar").click()
+    page.get_by_role("checkbox", name=ubigeos[0], exact=True).wait_for(state="visible")
+    for ubigeo in ubigeos:
+        page.get_by_role("checkbox", name=ubigeo, exact=True).check()
+    page.get_by_role("button", name="Guardar", exact=True).click()
+    return _revisar_resumen(aceptar_dialogos(page, maximo=2), len(filas), "disponibilidad")
+
+
+def definitivo_en_bloque(page, filas: dict) -> str:
+    _marcar(page, filas)
+    page.get_by_role("button", name="Registro definitivo").click()
+    boton_registrar = page.get_by_role("button", name="Registrar tarifa")
+    boton_registrar.wait_for(state="visible")
+    dialogo = page.locator("mat-dialog-container, [role='dialog']")
+    confirmacion = dialogo.last.inner_text().replace("\n", " ") if dialogo.count() else ""
+    cantidad = cantidad_seleccionada(confirmacion)
+    if cantidad is not None and cantidad != len(filas):
+        page.keyboard.press("Escape")
+        raise RuntimeError(f"La confirmación indica {cantidad} tarifas y el bloque tiene {len(filas)}. Cancelado.")
+    boton_registrar.click()
+    return _revisar_resumen(aceptar_dialogos(page, maximo=2), len(filas), "registro definitivo")
+
+
+def _codigos_desde_registradas(page, nombres: list[str]) -> None:
+    """Los códigos que no vinieron en el JSON de temporales: una búsqueda en «Tarifas registradas»."""
+    import os
+    faltan = [n for n in nombres if n not in CODIGOS_LEIDOS]
+    if not faltan:
+        return
+    try:
+        import acciones
+        acciones.abrir_tarifas_registradas(page)
+        prefijo = os.path.commonprefix(faltan) if len(faltan) > 1 else faltan[0]
+        busquedas = [prefijo] if len(prefijo) >= 4 else faltan
+        for texto in busquedas:
+            for item in acciones.items_del_filtro(page, texto):
+                nombre = re.sub(r"\s+", "", item.get("nombre") or "")
+                if nombre in faltan and item.get("codigoSIRT"):
+                    CODIGOS_LEIDOS[nombre] = (item["codigoSIRT"], str(item.get("idTarifa") or ""))
+    except Exception as error:
+        print(f"   Aviso: no se pudieron leer los códigos SIRT ({str(error)[:100]})")
+
+
+def procesar_en_bloque(page, pendientes: list[dict], tamano: int, ruta_registro: Path) -> list[dict]:
+    """Registra en bloques. Devuelve las tarifas que quedan para el modo una por una."""
+    restantes = []
+    grupos = {}
+    for tarifa in sorted(pendientes, key=lambda t: t["nombre"]):
+        grupos.setdefault(tuple(tarifa["ubigeos"]), []).append(tarifa)
+    bloques = [(clave, grupo[i:i + tamano]) for clave, grupo in grupos.items() for i in range(0, len(grupo), tamano)]
+    for numero, (ubigeos, bloque) in enumerate(bloques, start=1):
+        nombres = [t["nombre"] for t in bloque]
+        print("\n" + "=" * 70)
+        print(f"BLOQUE {numero}/{len(bloques)}: {len(bloque)} tarifa(s)"
+              + (f" · disponibilidad: {', '.join(ubigeos)}" if ubigeos else " · sin disponibilidad"))
+        etapa, detalles = "filtrar", []
+        try:
+            filas = _filtrar_bloque(page, nombres)
+            no_vistas = [n for n in nombres if n not in filas]
+            if no_vistas:
+                print(f"   No se ven en el filtro (irán una por una): {', '.join(no_vistas)}")
+            if not filas:
+                restantes += bloque
+                continue
+            if ubigeos:
+                etapa = "disponibilidad"
+                detalles.append(disponibilidad_en_bloque(page, filas, list(ubigeos)))
+                print("   " + detalles[-1])
+                filas = _filtrar_bloque(page, list(filas))
+            etapa = "registro_definitivo"
+            detalles.append(definitivo_en_bloque(page, filas))
+            print("   " + detalles[-1])
+            etapa = "verificacion"
+            siguen = set(_filtrar_bloque(page, list(filas)))
+        except Exception as error:
+            print(f"   ERROR en '{etapa}': {str(error)[:300]}  → el bloque va una por una")
+            for _ in range(3):
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(300)
+            restantes += bloque
+            continue
+        registradas = [n for n in filas if n not in siguen]
+        _codigos_desde_registradas(page, registradas)
+        for tarifa in bloque:
+            n = tarifa["nombre"]
+            if n not in registradas:
+                restantes.append(tarifa)
+                continue
+            codigo, id_tarifa = CODIGOS_LEIDOS.get(n, ("", ""))
+            if codigo:
+                comun.guardar_codigo_sirt(n, codigo, id_tarifa)
+            registrar(ruta_registro, {
+                "nombre": n, "codigo_servicio": tarifa["codigo_servicio"], "id_registro": tarifa["id_registro"],
+                "disponibilidad": ",".join(tarifa["ubigeos"]), "resultado": "EXITOSO",
+                "detalle": f"en bloque de {len(filas)} | " + " | ".join(detalles) + (f" | código SIRT {codigo}" if codigo else ""),
+                "fecha_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+            print(f"   OK {n}" + (f" ({codigo})" if codigo else ""))
+        if siguen:
+            print(f"   Siguen en temporales (irán una por una): {', '.join(sorted(siguen))}")
+    return restantes
+
 
 def leer_argumentos():
     parser = argparse.ArgumentParser(description="Registro definitivo de tarifas de un lote.")
@@ -417,6 +665,9 @@ def leer_argumentos():
     parser.add_argument("--diagnostico", action="store_true")
     parser.add_argument("--si", action="store_true")
     parser.add_argument("--al-frente", action="store_true")
+    parser.add_argument("--en-bloque", action="store_true",
+                        help="disponibilidad y registro definitivo de varias tarifas a la vez")
+    parser.add_argument("--tamano-bloque", type=int, default=10, help="tarifas por bloque (por defecto 10, máx. 50)")
     return parser.parse_args()
 
 
@@ -501,6 +752,14 @@ def main() -> None:
 
         if args.al_frente:
             page.bring_to_front()
+
+        if args.en_bloque:
+            tamano = max(1, min(args.tamano_bloque, TAMANO_BLOQUE_MAX))
+            antes = len(pendientes)
+            pendientes = procesar_en_bloque(page, pendientes, tamano, ruta_registro)
+            exitosas += antes - len(pendientes)
+            if pendientes:
+                print(f"\nQuedan {len(pendientes)} para el modo una por una.")
 
         for numero, tarifa in enumerate(pendientes, start=1):
             print("\n" + "=" * 70)

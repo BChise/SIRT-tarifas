@@ -1,0 +1,39 @@
+Registro definitivo EN BLOQUE (disponibilidad con «Agregar» + registro definitivo con varios check)
+Carpeta creada el 21/10/2026. Se usará para la opción --en-bloque de registro_definitivo.py
+(el modo actual, una por una, se mantiene como está y sigue siendo el de por defecto).
+
+Antes de grabar: ten 3 tarifas de prueba en «Tarifas temporales» en «Ingreso confirmado», de un
+servicio que PIDE disponibilidad (p. ej. móvil). Ideal: una de ellas que vaya a FALLAR a propósito
+(p. ej. sin disponibilidad), para ver el resumen parcial.
+
+Grabar (python grabar_sirt.py > Record). Haz el flujo despacio:
+
+A) DISPONIBILIDAD COMERCIAL EN BLOQUE
+1. En «Tarifas temporales», abre la opción de disponibilidad comercial que permite AGREGAR tarifas.
+2. Busca la 1.ª tarifa por nombre, márcala y pulsa «Agregar».
+3. Repite con la 2.ª (prueba también buscar por una parte del nombre, p. ej. «TE-SMP-CM», para ver si
+   permite agregar varias de una vez).
+4. Elige la disponibilidad (p. ej. Lima) y registra. Acepta los mensajes.
+
+B) REGISTRO DEFINITIVO CON VARIOS CHECK
+5. En «Tarifas temporales» pon el paginador en 100 (si existe esa opción).
+6. Marca las 3 tarifas con su check.
+7. PRUEBA IMPORTANTE: tras marcar 2, haz una búsqueda o cambia de página y vuelve: ¿siguen marcadas?
+   ¿qué dice «Tarifas seleccionadas»?
+8. Pulsa «Registro definitivo», confirma y acepta. Fíjate en el resumen (Exitosos / Fallidos) y si
+   ofrece descargar el Excel de validaciones (descárgalo y déjalo en esta carpeta).
+
+Dejar en esta carpeta:
+- grabacion.py: el código del Inspector.
+- capturas/: una captura de cada pantalla nueva:
+    · el diálogo de disponibilidad con la lista de tarifas agregadas
+    · el listado de temporales con varias filas marcadas y el contador «Tarifas seleccionadas»
+    · la confirmación del registro definitivo y el resumen final (Exitosos / Fallidos)
+- El Excel de validaciones, si SIRT lo genera.
+- En este archivo, abajo, anota lo que observes (p. ej. si las marcas se pierden al buscar).
+
+CUIDADO: no hagas capturas de las herramientas de desarrollador (F12 / Red): muestran el token de la
+sesión. Solo capturas de la pantalla de SIRT.
+
+Observaciones:
+- 

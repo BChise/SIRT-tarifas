@@ -14,6 +14,7 @@ Uso:
 """
 
 import argparse
+import json
 from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -23,6 +24,9 @@ from excel_comun import DatoInvalido, texto
 
 EXCEL = xc.AUTOMATIZACION / "modificaciones.xlsx"
 HOJA = "Modificaciones"
+HOJA_CAMPOS = "Campos"
+SENTIDOS = {"beneficioso": "beneficioso", "perjudicial": "perjudicial"}
+CARPETA_DETALLE = xc.RESULTADOS / "ACCIONES" / "detalle_excel"
 CSV_ACCIONES = xc.RESULTADOS / "ACCIONES" / "acciones.csv"
 ACCIONES = {"rectificación": "rectificar", "rectificacion": "rectificar", "cambio": "cambio"}
 ESTADOS = {"EXITOSO": "Aplicada", "ERROR": "Error", "NO_APLICA": "No aplica", "EN_RESUMEN": "Hasta resumen"}
@@ -30,6 +34,7 @@ C = {"accion": "Acción", "delta": "Delta (vacío: +1 rectificación, −1 cambi
      "lista": "Lista de campos (separados por ;)", "filas": "Agregar una fila a cada tabla",
      "ilimitado": "Pasar «ilimitado» a limitado", "canales": "Cambiar canales (TV de paga)",
      "fecha": "Cambio: fecha de ejecución", "sello": "Texto del sello (vacío: «Rectificación» / «Cambio»)"}
+C_SENTIDO = "Cambio: sentido (Beneficioso / Perjudicial)"     # opcional (columna agregada el 20/10)
 
 
 def leer_argumentos():
@@ -45,13 +50,47 @@ def leer_argumentos():
     return p.parse_args()
 
 
-def construir(f: dict) -> dict:
+def leer_campos(libro) -> dict:
+    """{tarifa: {campo: {"valor": X} o {"delta": N}}} de la hoja «Campos» (modo «Detalle en hoja Campos»)."""
+    if HOJA_CAMPOS not in libro.sheetnames:
+        return {}
+    hoja = xc.Hoja(libro[HOJA_CAMPOS], obligatorias=("Nombre de la tarifa",))
+    titulo_campo = next((t for t in hoja.col if t.startswith("Campo")), None)
+    if titulo_campo is None:
+        raise DatoInvalido("la hoja «Campos» no tiene la columna «Campo»")
+    salida = {}
+    for r, f in hoja.filas("Nombre de la tarifa"):
+        campo = texto(f.get(titulo_campo))
+        if not campo:
+            raise DatoInvalido(f"hoja «Campos», fila {r}: falta el nombre del campo")
+        valor, delta = texto(f.get("Valor nuevo")), texto(f.get("Delta"))
+        if valor and delta:
+            raise DatoInvalido(f"hoja «Campos», fila {r} ({campo}): pon «Valor nuevo» o «Delta», no los dos")
+        if not valor and not delta:
+            raise DatoInvalido(f"hoja «Campos», fila {r} ({campo}): falta «Valor nuevo» o «Delta»")
+        if valor:
+            try:                                      # número (valor de un campo) …
+                regla = {"valor": xc.numero(valor, f"{campo}: valor nuevo", minimo=0)}
+            except DatoInvalido:                      # … o texto: opción de una lista (p. ej. Tecnología = 4.5G)
+                regla = {"valor": valor}
+        else:
+            regla = {"delta": texto(delta).replace(",", ".").replace("−", "-")}
+        if delta:
+            try:
+                Decimal(regla["delta"])
+            except InvalidOperation:
+                raise DatoInvalido(f"hoja «Campos», fila {r} ({campo}): el delta debe ser un número")
+        salida.setdefault(texto(f["Nombre de la tarifa"]), {})[campo] = regla
+    return salida
+
+
+def construir(f: dict, campos_detalle: dict | None = None) -> dict:
     nombre = texto(f["Nombre de la tarifa"])
     accion = ACCIONES.get(texto(f.get(C["accion"])).lower())
     if not accion:
         raise DatoInvalido(f"acción «{texto(f.get(C['accion']))}» no válida (Rectificación o Cambio)")
     if nombre.upper().startswith("TP-"):
-        raise DatoInvalido("la rectificación / cambio de promociones aún no está grabada")
+        raise DatoInvalido("SIRT no permite rectificar ni cambiar promociones")
     if nombre.upper().startswith("TL-") and accion == "cambio":
         raise DatoInvalido("las licitaciones solo admiten rectificación")
     extra, avisos = [], []
@@ -70,10 +109,34 @@ def construir(f: dict) -> dict:
         if not lista:
             raise DatoInvalido("«Solo la lista» sin «Lista de campos»")
         extra += ["--campos", lista]
+    elif campos == "detalle en hoja campos":
+        propios = (campos_detalle or {}).get(nombre)
+        if not propios:
+            raise DatoInvalido("«Detalle en hoja Campos» pero la hoja «Campos» no tiene filas de esta tarifa")
+        CARPETA_DETALLE.mkdir(parents=True, exist_ok=True)
+        archivo = CARPETA_DETALLE / f"{nombre}_{accion}.json"
+        archivo.write_text(json.dumps(propios, ensure_ascii=False, indent=2), encoding="utf-8")
+        extra += ["--detalle", str(archivo)]
     elif campos != "por defecto":
         raise DatoInvalido(f"«Campos a modificar» «{texto(f.get(C['campos']))}» no válido")
     if campos != "solo la lista" and texto(f.get(C["lista"])):
         avisos.append("se ignoró la lista de campos (solo aplica con «Solo la lista»)")
+    sentido = texto(f.get(C_SENTIDO)).lower()
+    if not delta and campos != "detalle en hoja campos":
+        if accion == "rectificar":
+            avisos.append("Delta vacío: se aplicó +1")
+        elif not sentido:
+            avisos.append("Delta y sentido vacíos: se aplicó −1 a todos los campos elegidos "
+                          "(escenario mixto: bajan los precios y también los beneficios)")
+    if sentido:
+        if sentido not in SENTIDOS:
+            raise DatoInvalido(f"«{C_SENTIDO}» debe ser Beneficioso o Perjudicial (tiene «{texto(f.get(C_SENTIDO))}»)")
+        if accion != "cambio":
+            avisos.append("se ignoró el sentido (solo aplica al cambio)")
+        else:
+            extra += ["--sentido", SENTIDOS[sentido]]
+            if sentido == "beneficioso" and xc.es_si(f.get(C["ilimitado"])):
+                avisos.append("«ilimitado → limitado» perjudica al usuario aunque el cambio sea beneficioso")
     if xc.es_si(f.get(C["filas"])):
         extra.append("--agregar-filas")
     if xc.es_si(f.get(C["ilimitado"])):
@@ -100,6 +163,10 @@ def main() -> None:
     libro = xc.abrir_libro(ruta, args.solo_listar)
     hoja = xc.Hoja(libro[HOJA], obligatorias=["Nombre de la tarifa", *C.values()])
 
+    try:
+        campos_detalle, error_campos = leer_campos(libro), ""
+    except DatoInvalido as problema:
+        campos_detalle, error_campos = {}, str(problema)
     trabajos, errores, omitidas = [], [], []
     for r, f in hoja.filas("Nombre de la tarifa"):
         nombre = texto(f["Nombre de la tarifa"])
@@ -113,7 +180,9 @@ def main() -> None:
             errores.append((r, nombre, f"«Ejecutar» debe ser Sí o No (tiene «{ej}»)"))
             continue
         try:
-            d = construir(f)
+            if error_campos and "detalle" in texto(f.get(C["campos"])).lower():
+                raise DatoInvalido(error_campos)
+            d = construir(f, campos_detalle)
         except DatoInvalido as problema:
             errores.append((r, nombre, str(problema)))
             continue
@@ -182,6 +251,7 @@ def main() -> None:
     copia = xc.guardar_con_copia(libro, ruta, "MODIFICACIONES_EXCEL", "modificaciones_excel")
     print("\n" + "=" * 70)
     print("Resumen: " + " · ".join(f"{k}: {v}" for k, v in resumen.items()))
+    print(f"Tiempo total: {xc.tiempo_total(len(trabajos))}")
     print(f"Excel actualizado: {ruta}\nCopia de esta corrida: {copia}")
 
 

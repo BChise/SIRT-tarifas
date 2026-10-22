@@ -390,11 +390,41 @@ def guardar_pestana(page) -> None:
     raise RuntimeError(f"SIRT no aceptó la pestaña: {mensaje[:400]}")
 
 
+SIN_APARTADOS = re.compile(r"no tiene apartados en com[uú]n", re.I)
+
+
 def completar_paso_2(page, servicios: list[dict], args) -> list[str]:
     hechos = []
     pendientes = list(servicios)
 
-    for numero in range(1, len(servicios) + 1):
+    # Con tarifas de servicios distintos, SIRT puede no mostrar pestañas: «Esta sección no tiene
+    # apartados en común entre las tarifas seleccionadas para realizar alguna promoción» (visto el
+    # 20/10 con TP-MIX-CM-146..149). Entonces solo se promociona el paso 1 y se pasa al paso 3.
+    for _ in range(40):                                   # hasta ~20 s a que cargue el paso 2
+        if page.get_by_role("tab", name="Servicio 1", exact=True).count():
+            break
+        if page.get_by_text(SIN_APARTADOS).count():
+            hechos.append("Paso 2: SIRT indica que las tarifas no tienen apartados en común "
+                          "(solo se promocionó el valor del plan / instalación)")
+            pendientes = []
+            break
+        page.wait_for_timeout(500)
+    if not pendientes:
+        page.get_by_role("button", name=re.compile(r"^Continuar con el paso")).first.click()
+        confirmar = page.get_by_role("button", name="Confirmar Tarifa", exact=True)
+        try:
+            confirmar.wait_for(state="visible", timeout=15_000)
+        except Exception:
+            raise RuntimeError(f"No pasó al resumen. Mensaje de SIRT: {texto_dialogo(page)[:300]}")
+        return hechos
+
+    # Con tarifas mezcladas (p. ej. un empaquetado + un monoproducto) SIRT muestra solo los
+    # servicios EN COMÚN (visto el 21/10 con TP-MIX-FA-110: 5 servicios, 1 pestaña). Se recorren
+    # las pestañas que hay; los servicios sin pestaña se informan en el detalle.
+    page.wait_for_timeout(1_000)
+    total = page.get_by_role("tab", name=re.compile(r"^Servicio \d+$")).count() or len(servicios)
+    total = min(total, len(servicios))
+    for numero in range(1, total + 1):
         pestana = page.get_by_role("tab", name=f"Servicio {numero}", exact=True)
         pestana.wait_for(state="visible")
         pestana.click()
@@ -414,6 +444,9 @@ def completar_paso_2(page, servicios: list[dict], args) -> list[str]:
             guardar_pestana(page)
             page.wait_for_timeout(800)
 
+    if pendientes:
+        hechos.append("Paso 2: SIRT solo muestra los servicios en común; sin pestaña: "
+                      + ", ".join(s["codigo"] for s in pendientes))
     page.get_by_role("button", name="Continuar con el paso").click()
     confirmar = page.get_by_role("button", name="Confirmar Tarifa", exact=True)
     try:
@@ -448,7 +481,7 @@ def config_propia(datos: dict | None) -> dict:
 
 def config_atributo(atributo: dict, args) -> dict:
     base = {"porcentual": args.variacion_porcentual, "cantidad": args.variacion_cantidad,
-            "duracion": args.duracion, "tipo": None}
+            "duracion": args.duracion, "tipo": args.tipo_preferido}
     if atributo["tipo"] == "PROMOCIONAL_ADJUNTO":
         return {**base, "archivo": ARCHIVO_CANALES}
     if atributo["tipo"] == "PROMOCIONAL_APP":
@@ -493,10 +526,12 @@ def servicios_de_las_tarifas(tarifas: list[str], args) -> tuple[list[dict], list
             nombres = ATRIBUTOS_PROBADOS.get(codigo, [])
         elif args.atributos == "todos":
             if catalogo is None:
-                problemas.append(f"{codigo}: no hay catálogo en grabaciones/_promocional/{carpeta}/paso2.json "
-                                 "(falta el 2.º JSON); usa --atributos probados")
-                continue
-            nombres = [a["nombre"] for a in catalogo]
+                # Telefonía fija no tiene el 2.º JSON: se usan los atributos probados.
+                print(f"  Aviso: {codigo} no tiene catálogo (grabaciones/_promocional/{carpeta}/paso2.json); "
+                      "se promocionan sus atributos probados.")
+                nombres = ATRIBUTOS_PROBADOS.get(codigo, [])
+            else:
+                nombres = [a["nombre"] for a in catalogo]
         else:
             nombres = [n.strip() for n in args.atributos.split(";") if n.strip()]
             if len(set(codigos)) > 1:
@@ -540,6 +575,9 @@ def leer_argumentos():
     parser.add_argument("--variacion-porcentual", default="10")
     parser.add_argument("--variacion-cantidad", default="1")
     parser.add_argument("--duracion", default="30", help="días (máximo 180)")
+    parser.add_argument("--tipo-preferido", choices=["Porcentual", "Cantidad", "Ilimitado"], default=None,
+                        help="tipo de variación de los atributos cuando SIRT lo permite (si no, el orden "
+                             "normal: Porcentual → Cantidad → Ilimitado)")
     parser.add_argument("--dias-comercializacion", type=int, default=60)
     parser.add_argument("--sin-valor-plan", action="store_true")
     parser.add_argument("--sin-instalacion", action="store_true")
@@ -582,7 +620,8 @@ def main() -> None:
                 "/".join(a["opciones"]) or "tipo en pantalla"
             print(f"    - {a['nombre']:<50} {extra} {a['unidad']}")
     print(f"Valores: Porcentual {args.variacion_porcentual} | Cantidad {args.variacion_cantidad}"
-          f" | Duración {args.duracion} días")
+          f" | Duración {args.duracion} días"
+          + (f" | Tipo preferido de los atributos: {args.tipo_preferido}" if args.tipo_preferido else ""))
 
     if args.solo_listar:
         print("\n--solo-listar: no se tocó SIRT.")

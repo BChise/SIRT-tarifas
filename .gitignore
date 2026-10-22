@@ -22,3 +22,6 @@ grabaciones/_registro_definitivo/Pasted image*.png
 # Bloqueos de Excel / LibreOffice
 .~lock.*
 ~$*
+
+# Paquetes de entrega
+*.zip

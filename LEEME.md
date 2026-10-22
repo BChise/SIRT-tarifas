@@ -1,3 +1,5 @@
+> **Documento histórico** (etapa de desarrollo en Linux, 13–15/10/2026). La documentación vigente está en `README.md` y en la carpeta `docs/`.
+
 # Combinaciones de tarifas SIRT
 
 Tarifa establecida / Monoproducto. Crea una tarifa confirmada por cada

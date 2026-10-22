@@ -24,6 +24,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -32,6 +33,7 @@ EXCEL = PROYECTO / "automatizacion" / "acciones_basicas.xlsx"
 HOJA = "Acciones"
 FILA_CABECERA = 5
 CSV_ACCIONES = PROYECTO / "resultados" / "ACCIONES" / "acciones.csv"
+INICIO = time.monotonic()
 
 ACCIONES = {"fe de erratas": "fe_erratas", "renovación": "renovar", "renovacion": "renovar",
             "cese": "cese", "renombre": "renombre"}
@@ -47,6 +49,8 @@ def leer_argumentos():
     p = argparse.ArgumentParser(description="Cese, renombre y fe de erratas desde un Excel.")
     p.add_argument("--excel", default=str(EXCEL))
     p.add_argument("--solo-listar", action="store_true", help="muestra lo que haría, sin tocar SIRT")
+    p.add_argument("--limite", type=int, default=0, help="como máximo N acciones en esta corrida")
+    p.add_argument("--nombres", nargs="+", help="solo las filas de estas tarifas")
     p.add_argument("--si", action="store_true", help="no pedir confirmación")
     p.add_argument("--diagnostico", action="store_true", help="capturas por paso (como en acciones.py)")
     return p.parse_args()
@@ -165,13 +169,34 @@ def es_promocion(nombre: str) -> bool:
     return False
 
 
-def resultado_en_csv(accion: str, nombre: str, desde: str) -> dict | None:
+def resultado_en_csv(accion: str, nombre: str, desde: str, resultado: str = "") -> dict | None:
     if not CSV_ACCIONES.exists():
         return None
     with CSV_ACCIONES.open("r", newline="", encoding="utf-8-sig") as entrada:
         filas = [f for f in csv.DictReader(entrada, delimiter=";")
-                 if f.get("accion") == accion and f.get("nombre") == nombre and (f.get("fecha_hora") or "") >= desde]
+                 if f.get("accion") == accion and f.get("nombre") == nombre and (f.get("fecha_hora") or "") >= desde
+                 and (not resultado or f.get("resultado") == resultado)]
     return filas[-1] if filas else None
+
+
+def nombres_renombrados() -> dict:
+    """{nombre anterior: nombre nuevo} de los renombres EXITOSOS ya registrados en acciones.csv."""
+    salida = {}
+    if CSV_ACCIONES.exists():
+        with CSV_ACCIONES.open("r", newline="", encoding="utf-8-sig") as entrada:
+            for f in csv.DictReader(entrada, delimiter=";"):
+                if f.get("accion") == "renombre" and f.get("resultado") == "EXITOSO" and f.get("nombre_nuevo"):
+                    salida[f["nombre"]] = f["nombre_nuevo"]
+    return salida
+
+
+def nombre_actual(nombre: str, renombrados: dict) -> str:
+    """Si la tarifa ya fue renombrada (incluso en cadena), su nombre actual en SIRT."""
+    vistos = set()
+    while nombre in renombrados and nombre not in vistos:
+        vistos.add(nombre)
+        nombre = renombrados[nombre]
+    return nombre
 
 
 def describir(f: dict) -> str:
@@ -197,7 +222,12 @@ def main() -> None:
 
     if not args.solo_listar and excel_esta_abierto(ruta):
         sys.exit(f"El Excel está abierto: ciérralo y vuelve a correr el comando.\n  {ruta}")
-    wb = load_workbook(ruta)
+    import warnings
+    from excel_comun import restaurar_validaciones
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        wb = load_workbook(ruta)
+    restaurar_validaciones(wb, ruta)
     if HOJA not in wb.sheetnames:
         sys.exit(f"El Excel no tiene la hoja «{HOJA}».")
     hoja = wb[HOJA]
@@ -221,6 +251,15 @@ def main() -> None:
         else:
             a_correr.append(f)
     a_correr.sort(key=lambda f: (ORDEN[f["accion"]], f["fila"]))
+    renombrados = nombres_renombrados()
+    for f in a_correr:
+        f["en_sirt"] = f["nombre"] if f["accion"] == "renombre" else nombre_actual(f["nombre"], renombrados)
+        if f["en_sirt"] != f["nombre"]:
+            f.setdefault("avisos", []).append(f"ya renombrada: se aplicó sobre «{f['en_sirt']}»")
+    if args.nombres:
+        a_correr = [f for f in a_correr if f["nombre"] in args.nombres]
+    if args.limite:
+        a_correr = a_correr[: args.limite]
 
     print(f"Excel: {ruta}")
     print(f"Filas: {len(filas)} · a ejecutar: {len(a_correr)} · con errores de datos: {len(con_error)}")
@@ -250,14 +289,15 @@ def main() -> None:
         print(f"[{k}/{len(a_correr)}] fila {f['fila']}: {f['nombre']} → {describir(f)}")
         desde = (datetime.now() - timedelta(seconds=2)).strftime("%Y-%m-%d %H:%M:%S")
         comando = [sys.executable, "-u", str(PROYECTO / "acciones.py"), f["accion"],
-                   "--tarifas", f["nombre"], "--si", *f["extra"]] + (["--diagnostico"] if args.diagnostico else [])
+                   "--tarifas", f["en_sirt"], "--si", *f["extra"]] + (["--diagnostico"] if args.diagnostico else [])
         proceso = subprocess.run(comando, cwd=PROYECTO, capture_output=True, text=True,
+                                 env={**__import__("os").environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"},
                                  encoding="utf-8", errors="replace")
         salida = (proceso.stdout or "") + (proceso.stderr or "")
         for linea in salida.splitlines():
             if linea.strip() and not linea.startswith("=" * 20):
                 print("   " + linea)
-        registro = resultado_en_csv(f["accion"], f["nombre"], desde)
+        registro = resultado_en_csv(f["accion"], f["en_sirt"], desde)
         if registro:
             estado = ESTADOS.get(registro.get("resultado", ""), registro.get("resultado", "Error"))
             detalle = registro.get("detalle", "")
@@ -267,7 +307,11 @@ def main() -> None:
                 detalle = " | ".join(f["avisos"]) + " | " + detalle
             escribir(f, estado, registro.get("codigo_sirt", ""), registro.get("fecha_hora", ""), detalle[:1000])
         elif "se omite" in salida:
-            escribir(f, "Ya aplicada", detalle="Esta acción ya figura como EXITOSA para la tarifa (no se repitió).")
+            previa = resultado_en_csv(f["accion"], f["en_sirt"], "", "EXITOSO") or {}
+            fecha_previa = previa.get("fecha_hora", "")
+            escribir(f, "Ya aplicada", previa.get("codigo_sirt", ""), fecha_previa,
+                     "Esta acción ya figura como EXITOSA para la tarifa (no se repitió)"
+                     + (f"; se aplicó el {fecha_previa}." if fecha_previa else "."))
             estado = "Ya aplicada"
         else:
             ultimas = " | ".join(l.strip() for l in salida.splitlines() if l.strip())[-500:]
@@ -282,14 +326,13 @@ def main() -> None:
     marca = datetime.now().strftime("%Y%m%d_%H%M")
     copia = PROYECTO / "resultados" / "ACCIONES" / f"acciones_excel_{marca}.xlsx"
     copia.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        wb.save(ruta)
-        shutil.copyfile(ruta, copia)
-    except PermissionError:
-        wb.save(copia)
-        print(f"No se pudo escribir en {ruta}; los resultados quedaron solo en la copia.")
+    wb.save(copia)                                            # primero la copia
+    from excel_comun import guardar_final
+    guardar_final(wb, ruta, copia)                            # si el Excel está abierto, pide cerrarlo
     print("\n" + "=" * 70)
     print("Resumen: " + " · ".join(f"{k}: {v}" for k, v in resumen.items()))
+    segundos = int(time.monotonic() - INICIO)
+    print(f"Tiempo total: {segundos // 60} min {segundos % 60} s · promedio por acción: {segundos / len(a_correr):.0f} s")
     print(f"Excel actualizado: {ruta}")
     print(f"Copia de esta corrida: {copia}")
 

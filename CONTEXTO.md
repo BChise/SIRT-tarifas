@@ -431,3 +431,77 @@ lo usa para las reglas de precio (antes tomaba el valor fijo del código).
 En registro: Enlace/Fono/Email se reemplazan solo si la fila los trae (SIRT los precarga); listas
 vacías → primera opción del código (aviso); países y bolsas = solo las filas del Excel; velocidades
 móviles sin filas → las del código. `comun.elegir_fecha` ahora avanza mes a mes para fechas futuras.
+
+## Pendientes anotados el 20/10/2026
+
+- Fechas pasadas: hoy los Excel rechazan «Inicio de vigencia» / «Inicio comercialización» anteriores a hoy
+  (registro_excel, empaquetados_excel, promociones_excel, licitaciones_excel). Revisar si SIRT las permite y quitar el bloqueo.
+- Windows: Edge minimizado detiene el proceso (las opciones --disable-backgrounding... no bastan). Regla de uso: no minimizar; taparlo u otro escritorio.
+- Empaquetados de prueba (automatizacion/empaquetados.xlsx, TE-EMP-CM-101..201): 96 de 4 (TF×TV×IF×SM), 1 de 6, 4 de una sola familia.
+  IF + PIF queda en Ejecutar = No: PIF vale 0 y la regla de precios no se puede cumplir. 6 paquetes con OTF/PTF + PIF + SMO usan alcance
+  Residencial + Comercial (SMO-005 vale 10).
+
+- Registro definitivo EN BLOQUE (mapeado 20/10, sin implementar): tandas de 10-20. Filtro avanzado por la parte común
+  del nombre (p. ej. TE-EMP-CM-1; confirmar si SIRT busca por «contiene»), paginador a 100 filas, leer el JSON de
+  POST /api/tarifa/filtrar-temporal (nombre, estado, paso, disponibilidad) para saber qué hay y en qué página;
+  marcar solo nombres de la lista con «Ingreso confirmado»; antes de confirmar exigir «Tarifas seleccionadas» = marcadas
+  (si no, cancelar); disponibilidad en bloque (botón superior: FALTA GRABARLO); al final un filtro para ver cuáles
+  siguen en temporales → esas se reintentan 1x1. Estimado ~1,5 s/tarifa (hoy 15-20 s). Medio día + pruebas.
+- Registro definitivo 1x1: se puede quitar la recarga cuando SIRT ya volvió solo al listado (comprobando que no quede
+  ninguna fila marcada): ~3 s menos por tarifa. Mantener la verificación final (que ya no esté en temporales).
+- Si una tarifa no aparece en temporales, buscarla en «Tarifas registradas» y marcarla «ya tenía registro definitivo»
+  (caso TE-EMP-CM-106, cortado a mitad del registro). Empaquetados: «Código SIRT» vacío (no se lee el n.º del borrador)
+  y avisos del resumen («no muestra el bloque de …»): revisar con una captura del resumen de un paquete.
+- Paralelo (mapeado): elegir puerto por variable (SIRT_PUERTO), un perfil de Edge por proceso, resultados por proceso
+  y luego juntarlos en el Excel. Antes probar si SIRT permite dos sesiones del mismo usuario.
+
+## Cantidades de prueba acordadas (20/10/2026) — base para la guía de uso
+
+- Registro de establecidas (registro_tarifas_establecidas.xlsx): 149 = 9–10 por servicio (móviles 10).
+- Empaquetados (empaquetados.xlsx, TE-EMP-CM-101..201): 96 de 4 (TF×TV×IF×SM), 1 de 6, 4 de una familia (IF+PIF en No).
+- Licitaciones (registro_licitaciones.xlsx, TL-LYC-CM-101..148): 48 = 6 de 1 + 20 de 3 + 15 de 4 + 6 de 5 + 1 de 6.
+- Promociones (promociones.xlsx, TP-…-CM-101..155): 55 = 15 servicios × 3 (preferido Porcentual / Cantidad / Ilimitado)
+  + 2 de 15 monoproductos + 2 de 3 mono + 3 empaquetados + 6 de un empaquetado. Todas con «Todos» los atributos.
+- Acciones básicas (acciones_basicas.xlsx, automatizacion/generar_acciones_prueba.py): 81.
+  · Monoproductos (15 servicios): 1.ª sin acción, 2.ª renombre, 3.ª cese, 4.ª fe de erratas (renombre y cese saltan
+    a otra tarifa si es base de un paquete o promoción).
+  · Empaquetados: 1 renombre, 1 cese, 4 fe de erratas (4 serv., 6 serv., solo TF, solo móvil).
+  · Promociones: fe de erratas 6, renovación 6, renombre 6 (2 de monoproducto, 2 de empaquetado, 2 mixtas cada una).
+  · Licitaciones: fe de erratas 12 (las 6 de un servicio + 6 de varios).
+  · Correr el día siguiente al registro definitivo (fe de erratas / cese / renovación exigen «En comercialización»).
+- Pendiente después: guía de uso para quienes van a usar el proyecto (con estas cantidades y tiempos medidos).
+
+## Trabajo en paralelo (mapeado, no se usa por ahora)
+- Decisión 21/10/2026: se trabaja con UNA sola pestaña de SIRT; el paralelo queda disponible.
+- Otro navegador/perfil (puerto 9223, perfil sirt2) pide iniciar sesión de nuevo: no sirve.
+- Pestañas duplicadas del mismo Edge comparten la sesión: SÍ sirve.
+- Cómo: duplicar la pestaña de SIRT en su propia ventana (ambas visibles, sin minimizar);
+  en el segundo cmd `set SIRT_PESTANA=2` (comun.obtener_pagina_sirt). Sin la variable = pestaña 1.
+- Pendiente: probarlo con --limite 1 y que cada proceso trabaje tarifas distintas.
+- iniciar_paralelo.bat / SIRT_PUERTO=9223 quedan obsoletos para este fin.
+
+## Registro definitivo en bloque (decidido 21/10, pendiente de grabación)
+- Flag `--en-bloque` en registro_definitivo.py; por defecto sigue el modo 1x1 actual (respaldo).
+- Disponibilidad: diálogo con «Agregar» (buscar → check → Agregar, ~3-4 s c/u) y un solo registro
+  para todas; contar que la lista agregada = las del Excel. Un grupo por disponibilidad distinta.
+- Definitivo: recorrer temporales (paginador 100, posiciones desde el JSON) y marcar solo nombres
+  exactos del Excel; «Tarifas seleccionadas» = marcadas o cancelar; página por página.
+- SIRT registra las demás aunque una falle: leer resumen Exitosos/Fallidos, re-filtrar temporales,
+  las que sigan ahí → reintento 1x1. Códigos SIRT desde el JSON del listado.
+- El filtro por nombre de SIRT busca por «contiene» (confirmado por el usuario).
+- Grabación: grabaciones/_registro_definitivo_bloque/ (notas.txt con lo que hay que grabar).
+
+## Entregables para los analistas (acordado 21/10; hacer AL TERMINAR la prueba funcional)
+- Claude: requirements.txt, guía de instalación (Windows/cmd/Edge), manual de usuario, hoja de referencia
+  rápida, preguntas frecuentes y errores comunes, limitaciones conocidas, nota de mantenimiento,
+  documentación técnica, CHANGELOG + tag v1.0, plantillas vacías + Excel de ejemplo, diapositivas,
+  matriz de cobertura (de verificar_funcional.py), guion de cada video (3-5 min por módulo).
+- Usuario: grabar los videos y la sesión de entrega en vivo.
+- Usar tiempos reales medidos (p. ej. registro definitivo en bloque vs 1x1).
+
+## Entregables v1.0 (hechos 22/10/2026)
+- README.md (índice), CHANGELOG.md, requirements.txt fijado (playwright 1.64.0, openpyxl 3.1.5).
+- docs/01..09: instalación, manual, referencia rápida, FAQ, limitaciones, mantenimiento, técnica, pruebas, guiones de video.
+- entrega/: plantillas vacías (6), ejemplos (serie EJ, 6), matriz_de_cobertura.xlsx (P4 + P5: 268/268).
+- Diapositivas: artifact «Automatización de tarifas SIRT v1.0» (12 diapositivas).
+- Pendiente del usuario: videos, sesión de entrega, tag v1.0 en git, reintento de 3 filas de Prueba3.

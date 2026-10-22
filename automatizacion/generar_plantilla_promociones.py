@@ -1,6 +1,6 @@
 """
-Genera automatizacion/promociones.xlsx (BORRADOR, sin conectar con los scripts): el
-Excel para registrar TARIFAS PROMOCIONALES de monoproductos y/o empaquetados.
+Genera automatizacion/promociones.xlsx: el Excel para registrar TARIFAS PROMOCIONALES de
+monoproductos y/o empaquetados (lo lee promociones_excel.py). Hasta 15 tarifas por promoción.
 
 Hojas:
 - Promociones: una fila por promoción (tarifas base, comercialización, valor del plan,
@@ -22,7 +22,7 @@ sys.path.insert(0, str(PROYECTO))
 
 SALIDA = PROYECTO / "automatizacion" / "promociones.xlsx"
 FILAS_CON_LISTAS = 1000
-MAX_TARIFAS = 4
+MAX_TARIFAS = 15
 MODOS = ["Los de siempre", "Todos", "Lista", "Detalle en hoja Atributos"]
 TIPOS_VARIACION = ["Porcentual", "Cantidad", "Ilimitado"]
 
@@ -45,6 +45,7 @@ COLUMNAS = [
     ("Tarifa instalación: variación", "opcional", None, 10, "Tarifa de instalación (si el servicio la tiene)"),
     ("Atributos a promocionar", "obligatorio", "Modo", 18, "Atributos del servicio (paso 2)"),
     ("Lista de atributos (separados por ;)", "opcional", None, 32, "Atributos del servicio (paso 2)"),
+    ("Tipo de variación preferido", "opcional", "Tipo", 13, "Atributos del servicio (paso 2)"),
     ("Variación % por defecto", "opcional", None, 10, "Atributos del servicio (paso 2)"),
     ("Variación en cantidad por defecto", "opcional", None, 11, "Atributos del servicio (paso 2)"),
     ("Duración por defecto (días)", "opcional", None, 10, "Atributos del servicio (paso 2)"),
@@ -59,7 +60,7 @@ MUESTRAS = [
     {"nombre": "TP-SMP-CM-001", "tarifas": ["TE-SMP-CM-001", "TE-SMP-CM-002"], "modo": "Todos",
      "condiciones": "Promoción de datos para dos planes", "plan": ("Sí", "Porcentual", "10", "30"),
      "instalacion": ("", "", "")},
-    {"nombre": "TP-EMP-CM-001", "tarifas": ["TE-EMP-CM-001"], "modo": "Lista",
+    {"nombre": "TP-EMP-CM-001", "tarifas": ["TE-EMP-CM-101"], "modo": "Lista",
      "lista": "Minutos todo destino nacional; Datos para tethering",
      "condiciones": "Promoción del dúo fijo + móvil", "plan": ("No", "", "", ""), "instalacion": ("", "", "")},
     {"nombre": "TP-TF-CM-001", "tarifas": ["TE-TF-CM-001"], "modo": "Detalle en hoja Atributos",
@@ -239,12 +240,12 @@ def generar() -> None:
     hoja_cat.auto_filter.ref = f"A4:D{4 + len(cat)}"
 
     textos = [
-        ("Registro de tarifas promocionales (BORRADOR)", True, 14),
+        ("Registro de tarifas promocionales", True, 14),
         ("Ubicación: automatizacion/promociones.xlsx. Sirve para monoproductos y empaquetados.", False, 9),
         ("", False, 10),
         ("Cómo se usa", True, 11),
         ("1. Hoja «Promociones»: una fila por promoción. «Ejecutar» = No: la fila se deja sin tocar.", False, 10),
-        ("2. Tarifas base: de 1 a 4, con nombre exacto y registro definitivo. Pueden ser monoproductos o empaquetados;", False, 10),
+        ("2. Tarifas base: de 1 a 15, con nombre exacto y registro definitivo. Pueden ser monoproductos o empaquetados;", False, 10),
         ("   varias del mismo servicio también se pueden (p. ej. dos planes móviles en una sola promoción).", False, 10),
         ("3. Comercialización: «Inicio» vacío = día del registro; fin = inicio + «Días de comercialización».", False, 10),
         ("4. Valor del plan y tarifa de instalación: «promocionar» Sí/No, tipo de variación, variación y duración.", False, 10),
@@ -256,7 +257,10 @@ def generar() -> None:
         ("   • Detalle en hoja Atributos: cada atributo con su tipo, variación y duración propios (hoja «Atributos»).", False, 10),
         ("   En los tres primeros casos cada atributo usa los valores por defecto de la fila: variación % (si es", False, 10),
         ("   Porcentual), variación en cantidad (si es Cantidad) y duración. Si solo admite Ilimitado, no lleva variación.", False, 10),
-        ("6. Guarda, cierra el Excel y corre el script. Las columnas grises mostrarán el resultado de cada promoción.", False, 10),
+        ("   «Tipo de variación preferido» (opcional): Porcentual, Cantidad o Ilimitado. Cada atributo usa ese tipo si", False, 10),
+        ("   SIRT lo permite; si no, el orden normal Porcentual → Cantidad → Ilimitado. Vacío = orden normal.", False, 10),
+        ("6. Guarda, cierra el Excel y corre: python promociones_excel.py (--solo-listar para revisar antes).", False, 10),
+        ("   Las columnas grises mostrarán el resultado de cada promoción.", False, 10),
         ("", False, 10),
         ("Reglas de SIRT", True, 11),
         ("• Duraciones: de 1 a 180 días. • Las tarifas base deben tener registro definitivo.", False, 10),

@@ -38,6 +38,9 @@ def leer_argumentos():
     p.add_argument("--limite", type=int, default=0)
     p.add_argument("--repetir", action="store_true")
     p.add_argument("--sin-definitivo", action="store_true")
+    p.add_argument("--definitivo-en-bloque", action="store_true",
+                   help="registro definitivo de varias tarifas a la vez (lo que falle sigue una por una)")
+    p.add_argument("--tamano-bloque", type=int, default=10)
     p.add_argument("--solo-listar", action="store_true")
     p.add_argument("--si", action="store_true")
     p.add_argument("--diagnostico", action="store_true")
@@ -78,7 +81,8 @@ def leer_atributos(libro) -> dict:
 
 def construir(f: dict, atributos: dict) -> dict:
     nombre = texto(f["Nombre de la promoción"])
-    tarifas = [texto(f.get(f"Tarifa base {n}")) for n in range(1, 5) if texto(f.get(f"Tarifa base {n}"))]
+    columnas = sorted((c for c in f if c.startswith("Tarifa base ") and c[12:].isdigit()), key=lambda c: int(c[12:]))
+    tarifas = [texto(f.get(c)) for c in columnas if texto(f.get(c))]
     if not tarifas:
         raise DatoInvalido("falta al menos «Tarifa base 1»")
     if len(set(tarifas)) != len(tarifas):
@@ -121,6 +125,13 @@ def construir(f: dict, atributos: dict) -> dict:
             extra += [opcion, xc.numero(f[columna], columna, minimo=0 if opcion != "--duracion" else 1,
                                         maximo=maximo, entero=opcion == "--duracion")]
 
+    preferido = texto(f.get("Tipo de variación preferido"))
+    if preferido:
+        tipo = TIPOS.get(preferido.lower())
+        if not tipo:
+            raise DatoInvalido(f"«Tipo de variación preferido» «{preferido}» no válido (Porcentual, Cantidad o Ilimitado)")
+        extra += ["--tipo-preferido", tipo]
+
     modo_texto = texto(f.get("Atributos a promocionar")) or "Los de siempre"
     modo = MODOS.get(modo_texto.lower())
     if not modo:
@@ -140,6 +151,8 @@ def construir(f: dict, atributos: dict) -> dict:
             raise DatoInvalido("modo «Detalle en hoja Atributos» pero la hoja «Atributos» no tiene filas de esta promoción")
         config["atributos_por_servicio"] = propios
         descripcion = "; ".join(f"{s}: {', '.join(a['nombre'] for a in lista)}" for s, lista in propios.items())
+    if preferido and modo != "detalle":
+        descripcion += f" (preferido: {TIPOS[preferido.lower()]})"
     return {"nombre": nombre, "tarifas": tarifas, "config": config, "extra": extra, "descripcion": descripcion,
             "definitivo": xc.es_si(f.get("Registro definitivo"))}
 
@@ -244,7 +257,11 @@ def main() -> None:
         xc.guardar(libro, ruta)
 
     if not args.sin_definitivo:
-        for d in [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def:
+        para_definitivo = [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def
+        if args.definitivo_en_bloque:
+            xc.precargar_definitivos([(d["nombre"], "") for d in para_definitivo],
+                                     xc.LOTE_EXCEL, args.tamano_bloque, args.diagnostico)
+        for d in para_definitivo:
             ok, det = xc.hacer_registro_definitivo(d["nombre"], xc.LOTE_EXCEL, "", args.diagnostico)
             codigo = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_codigo).value) or d.get("previo", {}).get("id_registro", "")
             actual = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_detalle).value)
@@ -257,6 +274,7 @@ def main() -> None:
     copia = xc.guardar_con_copia(libro, ruta, "PROMOCIONES_EXCEL", "promociones_excel")
     print("\n" + "=" * 70)
     print("Resumen: " + (" · ".join(f"{k}: {v}" for k, v in resumen.items()) or "sin cambios"))
+    print(f"Tiempo total: {xc.tiempo_total(len(trabajos))}")
     print(f"Excel actualizado: {ruta}\nCopia de esta corrida: {copia}")
 
 

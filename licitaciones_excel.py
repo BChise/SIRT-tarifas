@@ -36,6 +36,9 @@ def leer_argumentos():
     p.add_argument("--limite", type=int, default=0)
     p.add_argument("--repetir", action="store_true")
     p.add_argument("--sin-definitivo", action="store_true")
+    p.add_argument("--definitivo-en-bloque", action="store_true",
+                   help="registro definitivo de varias tarifas a la vez (lo que falle sigue una por una)")
+    p.add_argument("--tamano-bloque", type=int, default=10)
     p.add_argument("--solo-listar", action="store_true")
     p.add_argument("--si", action="store_true")
     p.add_argument("--diagnostico", action="store_true")
@@ -156,7 +159,11 @@ def main() -> None:
         xc.guardar(libro, ruta)
 
     if not args.sin_definitivo:
-        for d in [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def:
+        para_definitivo = [t for t in trabajos if t.get("registrado") and t["definitivo"]] + pend_def
+        if args.definitivo_en_bloque:
+            xc.precargar_definitivos([(d["nombre"], "") for d in para_definitivo],
+                                     xc.LOTE_EXCEL, args.tamano_bloque, args.diagnostico)
+        for d in para_definitivo:
             ok, det = xc.hacer_registro_definitivo(d["nombre"], xc.LOTE_EXCEL, "", args.diagnostico)
             codigo = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_codigo).value) or d.get("previo", {}).get("id_registro", "")
             actual = xc.texto(hoja.hoja.cell(d["fila"], hoja.c_detalle).value)
@@ -169,6 +176,7 @@ def main() -> None:
     copia = xc.guardar_con_copia(libro, ruta, "LICITACIONES_EXCEL", "licitaciones_excel")
     print("\n" + "=" * 70)
     print("Resumen: " + (" · ".join(f"{k}: {v}" for k, v in resumen.items()) or "sin cambios"))
+    print(f"Tiempo total: {xc.tiempo_total(len(trabajos))}")
     print(f"Excel actualizado: {ruta}\nCopia de esta corrida: {copia}")
 
 

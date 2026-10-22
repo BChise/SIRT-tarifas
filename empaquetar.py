@@ -158,7 +158,9 @@ def limpiar_listado(page) -> int:
         quitar = page.get_by_role("button", name="Quitar Tarifa")
         if quitar.count() == 0:
             return quitadas
-        antes = total_listado(page)
+        # Se cuentan los botones «Quitar» (no el texto «Listado de tarifas: Total N», que no
+        # siempre aparece: el 20/10 eso hizo fallar todos los paquetes tras un intento cortado).
+        antes = quitar.count()
         quitar.first.click()
         for _ in range(40):                     # hasta ~10 s
             page.wait_for_timeout(250)
@@ -169,7 +171,7 @@ def limpiar_listado(page) -> int:
                     if boton.count():
                         boton.click()
                         break
-            if total_listado(page) < antes:
+            if page.get_by_role("button", name="Quitar Tarifa").count() < antes:
                 break
         else:
             raise RuntimeError("No se pudo quitar una tarifa que quedó de un intento anterior.")
@@ -206,8 +208,12 @@ def agregar_tarifa_al_paquete(page, nombre: str, numero: int) -> None:
     page.get_by_role("button", name="Agregar", exact=True).click()
     campo.wait_for(state="hidden")
 
-    # El listado del paquete debe mostrar ya `numero` tarifas.
-    page.get_by_text(re.compile(rf"Listado de tarifas.*Total\s*{numero}\b")).first.wait_for(state="visible")
+    # El listado del paquete debe mostrar ya `numero` tarifas (cada una con su botón «Quitar»).
+    for _ in range(80):                                   # hasta ~20 s
+        if page.get_by_role("button", name="Quitar Tarifa").count() >= numero:
+            return
+        page.wait_for_timeout(250)
+    raise RuntimeError(f"Tras agregar '{nombre}', el listado del paquete no muestra {numero} tarifa(s).")
 
 
 PASO1_EXTRA: dict = {}   # fechas, instalación, otros datos y contacto pedidos por línea de comandos
@@ -233,7 +239,19 @@ def completar_paso_1(page, nombre_paquete: str, componentes: list[dict], alcance
     for aviso in comun.llenar_contacto(page, PASO1_EXTRA.get("contacto", {})):
         print(f"  Aviso: {aviso}")
 
+    cerrar_calendarios(page)
     return comun.guardar_paso_1(page)
+
+
+def cerrar_calendarios(page) -> None:
+    """Si un calendario quedó abierto (SIRT a veces tarda en cerrarlo), su fondo tapa el
+    botón «Guardar y continuar»: se cierra con Escape (visto el 20/10 con TE-EMP-CM-165)."""
+    for _ in range(3):
+        fondo = page.locator(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")
+        if fondo.count() == 0:
+            return
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
 
 
 def completar_paso_2(page, componentes: list[dict]) -> None:
@@ -247,7 +265,16 @@ def completar_paso_2(page, componentes: list[dict]) -> None:
         pestana.click()
         page.wait_for_timeout(500)
 
-        componente = next((c for c in pendientes if texto_visible(page, c["servicio"])), None)
+        # SIRT puede tardar en pintar la pestaña: se espera hasta ~15 s a que muestre su servicio
+        # (TE-EMP-CM-194 falló el 20/10 por mirar antes de que cargara la 3.ª pestaña).
+        componente = None
+        for intento in range(30):
+            componente = next((c for c in pendientes if texto_visible(page, c["servicio"])), None)
+            if componente is not None:
+                break
+            if intento == 10:                     # a los ~5 s, se vuelve a pulsar la pestaña
+                pestana.click()
+            page.wait_for_timeout(500)
         if componente is None:
             raise RuntimeError(
                 f"La pestaña 'Servicio {numero}' no muestra ninguno de los servicios esperados: "
@@ -319,6 +346,7 @@ def leer_argumentos():
     parser.add_argument("--inicio-vigencia", help="AAAA-MM-DD (por defecto hoy)")
     parser.add_argument("--inicio-comercializacion", help="AAAA-MM-DD (por defecto hoy)")
     parser.add_argument("--instalacion", help="tarifa de instalación")
+    parser.add_argument("--sin-instalacion", action="store_true", help="deja vacía la tarifa de instalación")
     parser.add_argument("--otros-datos", help="texto de «Otros datos generales»")
     parser.add_argument("--enlace")
     parser.add_argument("--fono")
@@ -398,6 +426,8 @@ def main() -> None:
         PASO1_EXTRA["fecha_inicio_comercializacion"] = date.fromisoformat(args.inicio_comercializacion)
     if args.instalacion:
         PASO1_EXTRA["tarifa_instalacion"] = args.instalacion
+    if args.sin_instalacion:
+        PASO1_EXTRA["tarifa_instalacion"] = ""        # llenar_si_editable no escribe nada
     if args.otros_datos:
         PASO1_EXTRA["otros_datos"] = args.otros_datos
     PASO1_EXTRA["contacto"] = {"enlace": args.enlace, "fono": args.fono, "email": args.email}

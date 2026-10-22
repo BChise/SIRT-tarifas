@@ -15,16 +15,28 @@ Si una corrección sirve para todos los servicios, se hace aquí una sola vez.
 
 import csv
 import re
+import sys
 from datetime import date, datetime
 from itertools import combinations, product
 from pathlib import Path
+
+# En Windows la consola puede no aceptar «», ✖ o →: se escribe siempre en UTF-8 (sin cortar el script).
+for _flujo in (sys.stdout, sys.stderr):
+    try:
+        _flujo.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 
 # =============================================================================
 # CONFIGURACIÓN GENERAL
 # =============================================================================
 
-CDP_URL = "http://localhost:9222"
+# Puerto del Edge controlable. Para trabajar en paralelo con un segundo Edge (otro perfil y otro
+# puerto), en esa consola: set SIRT_PUERTO=9223 (los subprocesos lo heredan).
+import os as _os
+PUERTO = _os.environ.get("SIRT_PUERTO", "9222").strip() or "9222"
+CDP_URL = f"http://localhost:{PUERTO}"
 DOMINIO_SIRT = "sirt"
 TIMEOUT = 30_000
 
@@ -51,12 +63,21 @@ MESES = [
 # CONEXIÓN Y NAVEGACIÓN
 # =============================================================================
 
-def obtener_pagina_sirt(context):
-    for page in context.pages:
-        if DOMINIO_SIRT in page.url:
-            return page
+# Para trabajar en paralelo en el MISMO Edge (misma sesión): cada cmd usa otra pestaña de SIRT.
+# set SIRT_PESTANA=2  → usa la 2.ª pestaña de SIRT (contando de izquierda a derecha y por ventana).
+PESTANA = int(_os.environ.get("SIRT_PESTANA", "1") or "1")
 
-    raise RuntimeError("No se encontró una pestaña abierta de SIRT.")
+
+def obtener_pagina_sirt(context):
+    sirt = [page for page in context.pages if DOMINIO_SIRT in page.url]
+    if not sirt:
+        raise RuntimeError("No se encontró una pestaña abierta de SIRT.")
+    if PESTANA > len(sirt):
+        raise RuntimeError(f"SIRT_PESTANA={PESTANA}, pero solo hay {len(sirt)} pestaña(s) de SIRT abiertas.")
+    page = sirt[PESTANA - 1]
+    if PESTANA > 1 or len(sirt) > 1:
+        print(f"Usando la pestaña {PESTANA} de SIRT ({len(sirt)} abiertas).")
+    return page
 
 
 def abrir_nueva_tarifa(page) -> None:
@@ -188,10 +209,45 @@ def completar_paso_1(page, nombre: str, servicio: str, alcances, paso1: dict) ->
     return instalacion
 
 
+def cerrar_calendarios(page) -> None:
+    """Si un calendario quedó abierto (SIRT a veces tarda en cerrarlo), su fondo tapa el botón
+    «Guardar y continuar» (vistos: TE-EMP-CM-165 el 20/10 y TE-PTV-FN-012 el 21/10)."""
+    for _ in range(3):
+        fondo = page.locator(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")
+        if fondo.count() == 0:
+            return
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
+
+
+def campos_con_error(page) -> list[str]:
+    """«Campo: mensaje» de los campos que SIRT marca en rojo (p. ej. «Tarifa Instalación: Este
+    apartado es obligatorio.»), para que el error diga qué faltó y no solo «Timeout»."""
+    try:
+        return page.evaluate("""() => Array.from(document.querySelectorAll('mat-error, .mat-mdc-form-field-error'))
+            .filter(e => e.offsetParent !== null)
+            .map(e => { const campo = e.closest('mat-form-field, .form-group, div');
+                        let etiqueta = '';
+                        for (let p = e.parentElement; p && !etiqueta; p = p.parentElement) {
+                            const l = p.querySelector('mat-label, label');
+                            if (l && l.innerText.trim()) etiqueta = l.innerText.trim(); }
+                        return (etiqueta ? etiqueta + ': ' : '') + e.innerText.trim(); })
+            .filter((t, i, a) => t && a.indexOf(t) === i)""")
+    except Exception:
+        return []
+
+
 def guardar_paso_1(page) -> str:
     """Guarda el paso 1 y devuelve el número de registro (borrador) creado."""
+    cerrar_calendarios(page)
     page.get_by_role("button", name="Guardar y continuar con el paso").click()
-    page.wait_for_url(re.compile(r"step=2"))
+    try:
+        page.wait_for_url(re.compile(r"step=2"))
+    except Exception:
+        faltan = campos_con_error(page)
+        if faltan:
+            raise RuntimeError("SIRT no guardó el paso 1: " + " · ".join(faltan)) from None
+        raise
 
     coincidencia = re.search(r"nueva-tarifa(?:-promocional)?/(\d+)", page.url)  # también promociones
     return coincidencia.group(1) if coincidencia else ""
@@ -381,9 +437,15 @@ def agregar_bolsa_datos(page, seccion: str, fila: dict) -> None:
     for plataforma in fila["plataformas"]:
         opcion_en_overlay(page, plataforma).click()
 
+    # Se hace clic en una esquina del fondo: en el centro está la propia lista
+    # abierta (con 3 o más plataformas la lista tapa el centro y el clic no llega,
+    # visto el 20/10 con «YouTube + TikTok»).
     fondo = page.locator(".cdk-overlay-transparent-backdrop")
     if fondo.count() > 0:
-        fondo.last.click()
+        try:
+            fondo.last.click(position={"x": 5, "y": 5}, timeout=5_000)
+        except Exception:
+            fondo.last.dispatch_event("click")
     else:
         page.keyboard.press("Escape")
 
@@ -446,6 +508,7 @@ def completar_textos_finales(page, condiciones: str, restricciones: str) -> None
 
 
 def guardar_paso_2(page) -> None:
+    cerrar_calendarios(page)
     page.get_by_role("button", name="Guardar y continuar con el paso").click()
     page.get_by_role("button", name="Confirmar Tarifa", exact=True).wait_for(state="visible")
 
@@ -616,6 +679,34 @@ def valor_tarifa_registrado(nombre: str) -> str | None:
     with VALORES_REGISTRADOS.open("r", newline="", encoding="utf-8-sig") as entrada:
         valores = [f["valor_servicio"] for f in csv.DictReader(entrada, delimiter=";") if f.get("nombre") == nombre]
     return valores[-1] if valores else None
+
+
+CODIGOS_SIRT = Path(__file__).resolve().parent / "resultados" / "codigos_sirt.csv"
+
+
+def guardar_codigo_sirt(nombre: str, codigo: str, id_tarifa="") -> None:
+    """Anota el Código SIRT (p. ej. TPRDS2026000693) y el ID interno de una tarifa."""
+    if not codigo:
+        return
+    if codigo_sirt_registrado(nombre) == codigo:
+        return
+    CODIGOS_SIRT.parent.mkdir(parents=True, exist_ok=True)
+    nuevo = not CODIGOS_SIRT.exists()
+    with CODIGOS_SIRT.open("a", newline="", encoding="utf-8-sig") as salida:
+        escritor = csv.writer(salida, delimiter=";")
+        if nuevo:
+            escritor.writerow(["nombre", "codigo_sirt", "id_tarifa", "fecha_hora"])
+        escritor.writerow([nombre, codigo, id_tarifa or "", datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
+
+def codigo_sirt_registrado(nombre: str, con_id: bool = False):
+    """Último Código SIRT anotado para la tarifa ("" si no hay); con_id=True → (código, ID)."""
+    filas = []
+    if CODIGOS_SIRT.exists():
+        with CODIGOS_SIRT.open("r", newline="", encoding="utf-8-sig") as entrada:
+            filas = [f for f in csv.DictReader(entrada, delimiter=";") if f.get("nombre") == nombre]
+    codigo, ident = (filas[-1]["codigo_sirt"], filas[-1].get("id_tarifa", "")) if filas else ("", "")
+    return (codigo, ident) if con_id else codigo
 
 
 CAMPOS_CONTACTO = {   # SIRT los precarga con los datos del operador; se reemplazan solo si se piden
